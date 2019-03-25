@@ -1,0 +1,7 @@
+int[] a;
+int[][] matrix=new int[3][4];
+int main( ){
+    a[0]=1;
+	println("too young too simple.");
+	return 0;
+}
