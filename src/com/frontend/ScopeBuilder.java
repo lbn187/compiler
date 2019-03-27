@@ -51,6 +51,9 @@ public class ScopeBuilder {
                 if (!curscope.add(tmp.name,functype)) {
                     throw new Exception("Redefine");
                 }
+                if (!sonscope.add(tmp.name,functype)) {
+                    throw new Exception("Redefine");
+                }
                 localresolver(sonscope,tmp.block);
             }else if(o instanceof VariableDefNode){
                 VariableDefNode tmp=(VariableDefNode)o;
