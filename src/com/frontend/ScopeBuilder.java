@@ -3,7 +3,7 @@ import com.frontend.Scope;
 import com.Type.*;
 import com.AST.*;
 public class ScopeBuilder {
-    public Scope scoperoot=new Scope(null,"",true);
+    public Scope scoperoot;
     void init(){
         ClassDefineType stringtype=new ClassDefineType();
         stringtype.typename="string";
@@ -38,8 +38,8 @@ public class ScopeBuilder {
                     throw new Exception("Redefine"+curnode.loc.toString());
                 }
             }else if(o instanceof FunctionDefNode) {
+                o.belong=curscope;
                 FunctionDefNode tmp = (FunctionDefNode) o;
-                tmp.belong=curscope;
                 Scope sonscope = curscope.addson();
                 sonscope.classflag=false;
                 FunctionDefineType functype = new FunctionDefineType(tmp.type);
@@ -62,9 +62,9 @@ public class ScopeBuilder {
             }else if(o instanceof VariableDefNode){
                 VariableDefNode tmp=(VariableDefNode)o;
                 get(curscope,tmp);
-                if(!curscope.add(tmp.name,tmp.type)){
-                    throw new Exception("Redefine"+curnode.loc.toString());
-                }
+                //if(!curscope.add(tmp.name,tmp.type)){
+                //    throw new Exception("Redefine"+curnode.loc.toString());
+                //}
             }else{
                 get(curscope,o);
             }
@@ -88,7 +88,10 @@ public class ScopeBuilder {
         }
     }
     public void work(Node astroot) throws Exception {
+        scoperoot=new Scope();
+        if(scoperoot==null)System.out.println("!!!");
         init();
+        if(scoperoot==null)System.out.println("!!!");
         get(scoperoot,astroot);
     }
 }

@@ -1,5 +1,5 @@
 grammar MxStar;
-program: (variableDefine|classPart|functionPart)* EOF;
+program: (variableDefine|classPart|functionPart)*;
 variableDefine: thetype name=Identifier ('=' expression)? ';';
 classPart: 'class' name=Identifier '{' (variableDefine|functionPart)* '}';
 functionPart: thetype? name=Identifier (('(' (parameter (',' parameter)*)? ')')|('()')) block;

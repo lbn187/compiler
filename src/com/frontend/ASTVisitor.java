@@ -124,9 +124,10 @@ abstract public class ASTVisitor {
         }
         public void visit(NullStmtNode u)throws Exception{}
     public void visit(ProgramNode u)throws Exception{
-        for(VariableDefNode o:u.variables)visit(o);
-        for(ClassDefNode o:u.classes)visit(o);
-        for(FunctionDefNode o:u.functions)visit(o);
+        for(Node o:u.son)visit(o);
+       // for(VariableDefNode o:u.variables)visit(o);
+       // for(ClassDefNode o:u.classes)visit(o);
+       // for(FunctionDefNode o:u.functions)visit(o);
     }
     /*void visit(Node u){
         if(u instanceof ExprNode)visit((ExprNode)u);

@@ -10,6 +10,13 @@ public class Scope{
     public Map<String,Type> map;
     public String name;
     public boolean classflag;
+    public Scope(){
+        son=new ArrayList<Scope>();
+        map=new Hashtable<String,Type>();
+        father=null;
+        name="";
+        classflag=true;
+    }
     public Scope(Scope fa,String s,boolean flag){
         son=new ArrayList<Scope>();
         map=new Hashtable<String,Type>();

@@ -8,10 +8,12 @@ import java.util.ArrayList;
 abstract public class Node {
     public Location loc;
     public Type type;
-    public String name="";
+    public String name;
     public Scope belong;
     public Node(){
         type=new VoidType();
+        name="";
+        belong=null;
     }
     public List<Node> getAll(){return null;}
     public void print(String s){

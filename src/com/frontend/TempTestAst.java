@@ -147,12 +147,14 @@ public class TempTestAst {
     public void dfs(ProgramNode u,String s){
         s=s+delta;
         u.print(s);
-        for(VariableDefNode o:u.variables)
+        for(Node o:u.son)
+            dfs(o,s);
+        /*for(VariableDefNode o:u.variables)
             dfs(o,s);
         for(ClassDefNode o:u.classes)
             dfs(o,s);
         for(FunctionDefNode o:u.functions)
-            dfs(o,s);
+            dfs(o,s);*/
     }
     public void dfs(ReturnNode u,String s){
         s=s+delta;

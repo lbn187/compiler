@@ -15,12 +15,16 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
     @Override public ProgramNode visitProgram(MxStarParser.ProgramContext ctx) {
         ProgramNode u=new ProgramNode();
         //System.out.println("VISIT PROGRAM");
-        for(MxStarParser.VariableDefineContext o:ctx.variableDefine())
+        for (int i=0;i<ctx.getChildCount(); ++i){
+            //System.out.println("VISIT");
+            u.son.add(visit(ctx.getChild(i)));
+        }
+      /*  for(MxStarParser.VariableDefineContext o:ctx.variableDefine())
             u.variables.add((VariableDefNode)visit(o));
         for(MxStarParser.ClassPartContext o:ctx.classPart())
             u.classes.add((ClassDefNode)visit(o));
         for(MxStarParser.FunctionPartContext o:ctx.functionPart())
-            u.functions.add((FunctionDefNode)visit(o));
+            u.functions.add((FunctionDefNode)visit(o));*/
         u.type=new VoidType();
         u.loc=new Location(ctx.start);
         return u;
