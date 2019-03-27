@@ -7,9 +7,6 @@ import com.frontend.*;
 import com.AST.*;
 import java.io.*;
 public class Main {
-    /*
-        问题：Creator、数组
-     */
     public static void main(String[] args) throws Exception {
         String fileName = "5";
         InputStream is = new FileInputStream ("example/" + fileName + ".txt");
@@ -19,10 +16,10 @@ public class Main {
         MxStarLexer lexer=new MxStarLexer(input);
         CommonTokenStream tokens=new CommonTokenStream(lexer);
         MxStarParser parser=new MxStarParser(tokens);
-        ParseTree tree=parser.program();//以program为规则开始语法分析
+        ParseTree tree=parser.program();
        // parser.removeErrorListeners();
         parser.setErrorHandler(new BailErrorStrategy());
-        System.out.println(tree.toStringTree(parser));//以文本形式打印树
+        System.out.println(tree.toStringTree(parser));
         ASTBuilder astbuilder=new ASTBuilder();
         Node root=astbuilder.visit(tree);
         ScopeBuilder scopebuilder=new ScopeBuilder();
