@@ -304,7 +304,7 @@ public class SemanticChecker extends ASTVisitor {
         ClassName="main";
     }
     public void visit(FunctionDefNode u)throws Exception{
-        if(u.type.typename.equals("null")){//构造函数
+        if(u.type.typename.equals("null")){
             if(!u.name.equals(ClassName)){
                 throw new Exception("Construct Name Wrong");
             }

@@ -511,7 +511,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         }else{
             u.type=new ClassType(ctx.name.getText());
         }
-     //   System.out.println("<CreatorNode> 处理="+ctx.getText()+" typename="+u.type.typename);
         for(MxStarParser.ExpressionContext o:ctx.expression())
             u.exprs.add((ExprNode)visit(o));
         u.loc=new Location(ctx.start);
