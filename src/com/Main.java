@@ -8,10 +8,10 @@ import com.AST.*;
 import java.io.*;
 public class Main {
     public static void main(String[] args) throws Exception {
-        String fileName = "5";
-        InputStream is = new FileInputStream ("example/" + fileName + ".txt");
-        //InputStream is=System.in;
-        //OutputStream os=System.out;
+       // String fileName = "5";
+       // InputStream is = new FileInputStream ("example/" + fileName + ".txt");
+        InputStream is=System.in;
+        OutputStream os=System.out;
         ANTLRInputStream input=new ANTLRInputStream(is);
         MxStarLexer lexer=new MxStarLexer(input);
         CommonTokenStream tokens=new CommonTokenStream(lexer);
