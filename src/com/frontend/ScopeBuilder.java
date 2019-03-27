@@ -4,7 +4,7 @@ import com.Type.*;
 import com.AST.*;
 public class ScopeBuilder {
     public Scope scoperoot=new Scope(null,"");
-    void init(){//一些已经定义的函数
+    void init(){
         ClassDefineType stringtype=new ClassDefineType();
         stringtype.typename="string";
         stringtype.add("length",new FunctionDefineType(new IntType()));
@@ -34,7 +34,6 @@ public class ScopeBuilder {
                 ClassDefineType tmptype=new ClassDefineType(sonscope.map);
                 if(!curscope.add(tmp.name,tmptype)){
                     throw new Exception("Redefine");
-                    //System.out.println("重定义变量 name="+tmp.name+","+tmp.loc.toString());
                 }
             }else if(o instanceof FunctionDefNode) {
                 FunctionDefNode tmp = (FunctionDefNode) o;
@@ -47,12 +46,10 @@ public class ScopeBuilder {
                     //System.out.print("SONSCOPE name="+ttmp.name+" type="+ttmp.type.typename);
                     if (!sonscope.add(ttmp.name, ttmp.type)) {
                         throw new Exception("Redefine");
-                        //System.out.println("重定义变量 name=" + ttmp.name + "," + ttmp.loc.toString());
                     }
                 }
                 if (!curscope.add(tmp.name,functype)) {
                     throw new Exception("Redefine");
-                    //System.out.println("重定义变量 name=" + tmp.name + "," + tmp.loc.toString());
                 }
                 localresolver(sonscope,tmp.block);
             }else if(o instanceof VariableDefNode){
@@ -60,7 +57,6 @@ public class ScopeBuilder {
                 get(curscope,tmp);
                 if(!curscope.add(tmp.name,tmp.type)){
                     throw new Exception("Redefine");
-                    //System.out.println("重定义变量 name="+tmp.name+","+tmp.loc.toString());
                 }
             }else{
                 get(curscope,o);
@@ -79,7 +75,6 @@ public class ScopeBuilder {
                 localresolver(curscope,tmp);
                 if(!curscope.add(tmp.name,tmp.type)){
                     throw new Exception("Redefine");
-                    //System.out.println("重定义变量"+tmp.loc.toString());
                 }
             }else localresolver(curscope,o);
         }
@@ -87,12 +82,5 @@ public class ScopeBuilder {
     public void work(Node astroot) throws Exception {
         init();
         get(scoperoot,astroot);
-        //main函数检查
     }
-    /*
-     * There is three things to do:
-     * Matching the name of each var to their definition.
-     * Matching the type of each var to their definition.
-     * Check the validity of expressions
-     * */
 }
