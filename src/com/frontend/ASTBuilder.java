@@ -334,7 +334,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * 	 * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public AssignNode visitExprassign(MxStarParser.ExprassignContext ctx) {
-        System.out.println("<AssignNode>");
+        //System.out.println("<AssignNode>");
         AssignNode u=new AssignNode();
         u.exprl=(ExprNode)visit(ctx.expression(0));
         u.exprr=(ExprNode)visit(ctx.expression(1));

@@ -7,11 +7,11 @@ public class ArrayType extends Type {
         super();
     }
     public ArrayType(Type type,int dimention){
-        deeptype=type;
+        this.deeptype=type;
         if(dimention==1){
-            basetype=type;
+            this.basetype=type;
         }else{
-            basetype=new ArrayType(type,dimention-1);
+            this.basetype=new ArrayType(type,dimention-1);
         }
         this.typename=basetype.typename+"[]";
     }

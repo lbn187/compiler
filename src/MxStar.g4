@@ -46,7 +46,7 @@ expression: '(' expression ')'                                                  
 			| <assoc=right> expression '=' expression                                # exprassign
 			;
 creator: allthetype (('['expression']')+ ('['']')*)
-        | name=Identifier
+        | name=Identifier (('(' ')')|('()'))?
         ;
 Identifier: [a-zA-Z][a-zA-Z0-9_]*;
 ConstString: '"'Char*?'"';

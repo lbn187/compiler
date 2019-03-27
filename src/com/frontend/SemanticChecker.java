@@ -24,16 +24,12 @@ public class SemanticChecker extends ASTVisitor {
         return false;
     }
     boolean ExprMatching(Type a,Type b) throws Exception{
-        if(a instanceof ArrayType)a=((ArrayType)a).deeptype;
-        if(b instanceof ArrayType)b=((ArrayType)b).deeptype;
         if(Complex(a)==true||Complex(b)==true)return false;
         if(a.typename.equals(b.typename))return true;
         return false;
     }
     boolean AssignMatching(Type a,Type b) throws Exception{
         if(a instanceof ArrayType)if(b instanceof NullType)return true;
-        if(a instanceof ArrayType)a=((ArrayType)a).deeptype;
-        if(b instanceof ArrayType)b=((ArrayType)b).deeptype;
         if(Complex(a)==true||Complex(b)==true)return false;
         if(a.typename.equals(b.typename))return true;
         if((b instanceof NullType)&&(a instanceof ClassType)&&!(a instanceof StringType))return true;
@@ -232,10 +228,10 @@ public class SemanticChecker extends ASTVisitor {
     public void visit(SuffixOpNode u)throws Exception{
         visit((UnaryOpNode)u);
     }
-    /*public void visit(CreatorNode u){
+    public void visit(CreatorNode u)throws Exception{
         for(ExprNode o:u.exprs)
             visit(o);
-    }*/
+    }
     //public void visit(BlockNode u){
     //    for(StmtNode o:u.stmts)visit(o);
     //}

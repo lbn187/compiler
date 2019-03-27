@@ -83,4 +83,10 @@ public class ScopeBuilder {
         init();
         get(scoperoot,astroot);
     }
+    /*
+     * There is three things to do:
+     * Matching the name of each var to their definition.
+     * Matching the type of each var to their definition.
+     * Check the validity of expressions
+     * */
 }
