@@ -17,7 +17,7 @@ public class Main {
         CommonTokenStream tokens=new CommonTokenStream(lexer);
         MxStarParser parser=new MxStarParser(tokens);
         ParseTree tree=parser.program();
-       // parser.removeErrorListeners();
+        // parser.removeErrorListeners();
         parser.setErrorHandler(new BailErrorStrategy());
         System.out.println(tree.toStringTree(parser));
         ASTBuilder astbuilder=new ASTBuilder();

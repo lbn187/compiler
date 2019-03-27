@@ -56,16 +56,13 @@ public class SemanticChecker extends ASTVisitor {
         visit(u.exprl);
         visit(u.exprr);
         if(!IsLeft(u.exprl)){
-            throw new Exception("赋值语句左端不是左值");
-            //System.out.println("赋值语句左端不是左值 "+u.loc.toString());
+            throw new Exception("assign's left not LHS");
         }
         if(u.exprl.name.equals("this")){
-            throw new Exception("赋值语句左端为this");
-            //System.out.println("赋值语句左端为this "+u.loc.toString());
+            throw new Exception("assign's left is this");
         }
         if(!AssignMatching(u.exprl.type,u.exprr.type)){
-            throw new Exception("赋值语句类型不匹配");
-            //System.out.println("赋值语句类型不匹配 "+u.loc.toString());
+            throw new Exception("assign unmatching");
         }
         u.type=new VoidType();
     }
@@ -81,35 +78,30 @@ public class SemanticChecker extends ASTVisitor {
             }else if(ExprMatching(u.exprl.type,new IntType())&&ExprMatching(u.exprr.type,new IntType())){
                 u.type=new IntType();
             }else{
-                throw new Exception("双目运算符类型不匹配");
-                //System.out.println("双目运算符类型不匹配 operator="+op+" "+u.loc.toString());
+                throw new Exception("binaryop not matching");
             }
         }
         if(op.equals("-")||op.equals("*")||op.equals("/")||op.equals("%")||op.equals("&")||op.equals("|")||op.equals("^")||op.equals(">>")||op.equals("<<")){
             if(!ExprMatching(u.exprl.type,new IntType())||!ExprMatching(u.exprr.type,new IntType())){
-                throw new Exception("双目运算符类型不匹配");
-                //System.out.println("双目运算符类型不匹配 operator="+op+" "+u.loc.toString());
+                throw new Exception("binaryop not matching");
             }
             u.type=new IntType();
         }
         if(op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")){
             if(!ExprMatching(u.exprl.type,u.exprr.type)){
-                throw new Exception("双目运算符类型不匹配");
-                //System.out.println("双目运算符类型不匹配 operator="+op+" "+u.loc.toString());
+                throw new Exception("binaryop not matching");
             }
             u.type=new BoolType();
         }
         if(op.equals("==")||op.equals("!=")){
             if(!CompareEqualMatching(u.exprl.type,u.exprr.type)){
-                throw new Exception("双目运算符类型不匹配");
-                //System.out.println("双目运算符类型不匹配 operator="+op+" "+u.loc.toString());
+                throw new Exception("binaryop not matching");
             }
             u.type=new BoolType();
         }
         if(op.equals("&&")||op.equals("||")){
             if(!ExprMatching(u.exprl.type,new BoolType())||!ExprMatching(u.exprr.type,new BoolType())){
-                throw new Exception("双目运算符类型不匹配");
-                //System.out.println("双目运算符类型不匹配 operator="+op+" "+u.loc.toString());
+                throw new Exception("binaryop not matching");
             }
             u.type=new BoolType();
         }
@@ -119,23 +111,19 @@ public class SemanticChecker extends ASTVisitor {
             visit(o);
         Type w=scoperoot.get(u.name);
         if(w==null){
-            throw new Exception("函数没有定义");
-            //System.out.println("函数没有定义 name="+u.name+" "+u.loc.toString());
+            throw new Exception("function undefine");
         }else if(!(w instanceof FunctionDefineType)){
-            throw new Exception("不是函数");
-            //System.out.println("不是函数 name="+u.name+" "+u.loc.toString());
+            throw new Exception("not a function");
         }else{
             FunctionDefineType p=(FunctionDefineType)w;
             if(u.exprs.size()!=p.parameters.size()){
-                throw new Exception("函数个数不匹配");
-                //System.out.println("函数个数不匹配 name="+u.name+" "+u.loc.toString());
+                throw new Exception("function number wrong");
             }else{
                 boolean flag=true;
                 for(int i=0;i<u.exprs.size();i++)
                     if(!ExprMatching(u.exprs.get(i).type,p.parameters.get(i)))flag=false;
                 if(flag==false){
-                    throw new Exception("函数类型不匹配");
-                    //System.out.println("函数类型不匹配 name=" + u.name + " " + u.loc.toString());
+                    throw new Exception("function don't matching");
                 }
             }
             u.type=p.variable;
@@ -150,62 +138,51 @@ public class SemanticChecker extends ASTVisitor {
         visit(u.exprname);
         visit(u.exprexpr);
         if(!(u.exprname.type instanceof ArrayType)){
-            throw new Exception("未定义的数组类型");
-            //System.out.println("未定义的数组类型 name="+u.exprname.type.typename+" "+u.loc.toString());
+            throw new Exception("UnDefine ArrayType");
         }else u.type=((ArrayType)u.exprname.type).basetype;
     }
     public void visit(MemberNode u)throws Exception{
         visit(u.expr);
         if(u.expr.type instanceof ArrayType){
             if(!u.member.name.equals("size")||u.member.getAll().size()!=0){
-                throw new Exception("数组的Size函数错误");
-                //System.out.println("数组的Size函数错误 "+u.loc.toString());
+                throw new Exception("Wrong Array's Size");
             }
             u.type=new IntType();
         }else{
             for(Node o:u.member.getAll())
                 visit(o);
             if(!(u.expr.type instanceof ClassType)){
-                throw new Exception("A.x中的A应该是一个类");
-                //System.out.println("A.x中的A应该是一个类 "+u.loc.toString());
+                throw new Exception("MemberWrong");
             }else{
                 ClassDefineType classtype=(ClassDefineType)scoperoot.get(u.expr.type.typename);
                 Type insidetype=classtype.get(u.member.name);
                 if(insidetype==null){
-                    throw new Exception("A.func()函数没有定义");
-                    //System.out.println("A.func()函数没有定义 name="+u.name+" "+u.loc.toString());
+                    throw new Exception("MemberWrong");
                 }
                 if(u.member instanceof FuncExprNode){
                     FuncExprNode uu=(FuncExprNode)u.member;
                     if(!(insidetype instanceof FunctionDefineType)){
-                        throw new Exception("A.func()不是函数");
-                        //System.out.println("A.func()不是函数 name="+u.name+" "+u.loc.toString());
+                        throw new Exception("MemberWrong");
                     }else{
                         FunctionDefineType p=(FunctionDefineType)insidetype;
                         if(uu.exprs.size()!=p.parameters.size()){
-                            throw new Exception("A.func()函数个数不匹配");
-                            //System.out.println("A.func()函数个数不匹配 name="+u.name+" "+u.loc.toString());
+                            throw new Exception("MemberWrong");
                         }else{
                             boolean flag=true;
                             for(int i=0;i<uu.exprs.size();i++)
                                 if(!ExprMatching(uu.exprs.get(i).type,p.parameters.get(i)))flag=false;
                             if(flag==false){
-                                throw new Exception("A.func()函数类型不匹配");
-                                //System.out.println("A.func()函数类型不匹配 name=" + u.name + " " + u.loc.toString());
+                                throw new Exception("MemberWrong");
                             }
                         }
                         u.type=p.variable;
                     }
                 }else if(u.member instanceof ArefNode){
                     if(!(insidetype instanceof ArrayType)){
-                        throw new Exception("A.a[]期望是数组类型");
-                        //System.out.println("A.a[]期望是数组类型 "+u.loc.toString());
+                        throw new Exception("MemberWrong");
                     }
                     u.type=ArrayType((ArrayType)insidetype,(ArefNode)u.member);
                 }else{
-                    //   if(!(insidetype instanceof VariableType)){
-                    //     System.out.println("A.x未定义的x name=" + u.name + " " + u.loc.toString());
-                    // }
                     u.type=insidetype;
                 }
             }
@@ -214,8 +191,7 @@ public class SemanticChecker extends ASTVisitor {
     public void visit(VariableNode u)throws Exception{
         if(u.name.equals("this")){
             if(ClassName.equals("main")){
-                throw new Exception("THIS不存在");
-                //System.out.println("THIS不存在 "+u.loc.toString());
+                throw new Exception("THIS not exist");
             }
             u.type=new ClassType(ClassName);
             return;
@@ -224,8 +200,7 @@ public class SemanticChecker extends ASTVisitor {
         u.type=o.get(u.name);
         if(u.type!=null)System.out.println("Variablename="+u.name+" Variabletype="+u.type.typename);
         if(u.type==null){
-            throw new Exception("变量不存在");
-            //System.out.println("变量不存在 name="+u.name+" "+u.loc.toString());
+            throw new Exception("variable not exist");
         }
     }
     //public void visit(BoolLiteralNode u){}
@@ -236,19 +211,16 @@ public class SemanticChecker extends ASTVisitor {
         String op=u.operator;
         visit(u.expr);
         if((op.equals("++")||op.equals("--"))&&!IsLeft(u.expr)){
-            throw new Exception("不是左值");
-            //System.out.println("不是左值 operator="+u.operator+" "+u.loc.toString());
+            throw new Exception("not a LHSNode");
         }
         if(op.equals("~")||op.equals("+")||op.equals("-")||op.equals("++")||op.equals("--")){
             if(!ExprMatching(u.expr.type,new IntType())){
-                throw new Exception("类型不匹配");
-                //System.out.println("类型不匹配 operator="+u.operator+" "+u.loc.toString());
+                throw new Exception("Type Unmatching");
             }
         }
         if(op.equals("!")){
             if(!ExprMatching(u.expr.type,new BoolType())){
-                throw new Exception("类型不匹配");
-                //System.out.println("类型不匹配 operator="+u.operator+" "+u.loc.toString());
+                throw new Exception("Type Unmatching");
             }
         }
         if(op.equals("++")||op.equals("--")||op.equals("~")||op.equals("+")||op.equals("-"))u.type=new IntType();
@@ -269,14 +241,12 @@ public class SemanticChecker extends ASTVisitor {
     //}
     public void visit(BreakNode u)throws Exception{
         if(loopcnt==0){
-            throw new Exception("Break语句不在循环中");
-            //System.out.println("Break语句不在循环中 "+u.loc.toString());
+            throw new Exception("BreakWrong");
         }
     }
     public void visit(ContinueNode u)throws Exception{
         if(loopcnt==0){
-            throw new Exception("Continue语句不在循环中");
-            //System.out.println("Continue语句不在循环中 "+u.loc.toString());
+            throw new Exception("ContinueWrong");
         }
     }
     public void visit(ForNode u)throws Exception{
@@ -287,8 +257,7 @@ public class SemanticChecker extends ASTVisitor {
         visit(u.stmt);
         if(u.mid!=null){
             if(!ExprMatching(u.mid.type,new BoolType())){
-                throw new Exception("For语句里的判断表达式不是BOOL类型");
-                //System.out.println("For语句里的判断表达式不是BOOL类型"+u.loc.toString());
+                throw new Exception("ForWrong");
             }
         }
         loopcnt--;
@@ -298,27 +267,23 @@ public class SemanticChecker extends ASTVisitor {
         visit(u.ifstmt);
         visit(u.elsestmt);
         if(!ExprMatching(u.expr.type,new BoolType())){
-            throw new Exception("IF语句里的表达式不是BOOL类型");
-            //System.out.println("IF语句里的表达式不是BOOL类型 "+u.loc.toString());
+            throw new Exception("IFWrong");
         }
     }
     public void visit(ReturnNode u)throws Exception{
         if(u.expr!=null)visit(u.expr);
         if(u.expr==null){
             if(!ExprMatching(returntype,new VoidType())){
-                throw new Exception("Return语句返回值类型错误");
-                //System.out.println("Return语句返回值类型错误 "+u.loc.toString());
+                throw new Exception("ReturnWrong");
             }
         }else{
             if(u.expr.type==null){
                 if(!(returntype instanceof ArrayType)&&!(returntype instanceof ClassType)){
-                    throw new Exception("Return语句返回值类型错误");
-                    //System.out.println("Return语句返回值类型错误 "+u.loc.toString());
+                    throw new Exception("ReturnWrong");
                 }
             }else{
                 if(!ExprMatching(returntype,u.expr.type)){
-                    throw new Exception("Return语句返回值类型错误");
-                    //System.out.println("Return语句返回值类型错误 "+u.loc.toString());
+                    throw new Exception("ReturnWrong");
                 }
             }
         }
@@ -329,8 +294,7 @@ public class SemanticChecker extends ASTVisitor {
         visit(u.stmt);
         loopcnt--;
         if(!ExprMatching(u.expr.type,new BoolType())){
-            throw new Exception("While语句里的判断表达式不是BOOL类型");
-            //System.out.println("While语句里的判断表达式不是BOOL类型"+u.loc.toString());
+            throw new Exception("WhileWrong");
         }
     }
     public void visit(ClassDefNode u)throws Exception{
@@ -342,12 +306,10 @@ public class SemanticChecker extends ASTVisitor {
     public void visit(FunctionDefNode u)throws Exception{
         if(u.type.typename.equals("null")){//构造函数
             if(!u.name.equals(ClassName)){
-                throw new Exception("构造函数函数名与类名不等");
-                //System.out.println("构造函数函数名与类名不等 "+u.loc.toString());
+                throw new Exception("Construct Name Wrong");
             }
         }else if(!TypeChecker(u.type)){
-            throw new Exception("类型未定义");
-            //System.out.println("类型未定义 name="+u.type.typename+" "+u.loc.toString());
+            throw new Exception("Type Undefined");
         }
         returntype=u.type;
         for(VariableDefNode o:u.variables)visit(o);
@@ -357,23 +319,19 @@ public class SemanticChecker extends ASTVisitor {
     public void visit(VariableDefNode u)throws Exception{
         Type type=u.type;
         if(type instanceof VoidType){
-            throw new Exception("定义了Void变量");
-            //System.out.println("定义了Void变量 "+u.loc.toString());
+            throw new Exception("Void Defination");
         }
         if(type instanceof ArrayType)
             if(((ArrayType)type).deeptype instanceof VoidType){
-                throw new Exception("定义了Void变量");
-                //System.out.println("定义了Void变量 "+u.loc.toString());
+                throw new Exception("Void Defination");
             }
         if(!TypeChecker(type)){
-            throw new Exception("没有定义这种类型");
-            //System.out.println("没有定义这种类型 name="+type.typename+" ,"+u.loc.toString());
+            throw new Exception("Type Undefined");
         }
         if(u.expr!=null){
             visit(u.expr);
             if(!AssignMatching(type,u.expr.type)){
-                throw new Exception("赋值类型不匹配");
-                //System.out.println("赋值类型不匹配 "+u.loc.toString());
+                throw new Exception("AssignTypeUnmatching");
             }
         }
     }
@@ -381,8 +339,7 @@ public class SemanticChecker extends ASTVisitor {
         Scope tmp=u.belong;
         Type w=u.belong.get("main");
         if(!(w instanceof FunctionDefineType)||!(((FunctionDefineType)w).variable instanceof IntType)){
-            throw new Exception("Main函数错误");
-            //System.out.println("Main函数错误");
+            throw new Exception("MainWrong");
         }
         for(VariableDefNode o:u.variables)visit(o);
         for(ClassDefNode o:u.classes)visit(o);

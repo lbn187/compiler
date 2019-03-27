@@ -58,7 +58,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
             u.functions.add((FunctionDefNode)visit(o));
         for(int i=0;i<u.functions.size();i++){
             Node o=u.functions.get(i);
-            if(o.name==null)o.name=u.name;//构造函数
+            if(o.name==null)o.name=u.name;
         }
         return u;
     }
@@ -296,7 +296,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         StringLiteralNode u=new StringLiteralNode();
         String s=ctx.name.getText();
         String nowv="";
-        for(int i=1;i<s.length()-1;)//去括号，去转义
+        for(int i=1;i<s.length()-1;)
             if(s.charAt(i)=='\\'){
                 if(s.charAt(i+1)=='\\')nowv+="\\";else
                 if(s.charAt(i+1)=='n')nowv+="\n";else

@@ -33,7 +33,7 @@ public class ScopeBuilder {
                 get(sonscope,tmp);
                 ClassDefineType tmptype=new ClassDefineType(sonscope.map);
                 if(!curscope.add(tmp.name,tmptype)){
-                    throw new Exception("重定义变量");
+                    throw new Exception("Redefine");
                     //System.out.println("重定义变量 name="+tmp.name+","+tmp.loc.toString());
                 }
             }else if(o instanceof FunctionDefNode) {
@@ -46,12 +46,12 @@ public class ScopeBuilder {
                     functype.add(ttmp.type);
                     //System.out.print("SONSCOPE name="+ttmp.name+" type="+ttmp.type.typename);
                     if (!sonscope.add(ttmp.name, ttmp.type)) {
-                        throw new Exception("重定义变量");
+                        throw new Exception("Redefine");
                         //System.out.println("重定义变量 name=" + ttmp.name + "," + ttmp.loc.toString());
                     }
                 }
                 if (!curscope.add(tmp.name,functype)) {
-                    throw new Exception("重定义变量");
+                    throw new Exception("Redefine");
                     //System.out.println("重定义变量 name=" + tmp.name + "," + tmp.loc.toString());
                 }
                 localresolver(sonscope,tmp.block);
@@ -59,7 +59,7 @@ public class ScopeBuilder {
                 VariableDefNode tmp=(VariableDefNode)o;
                 get(curscope,tmp);
                 if(!curscope.add(tmp.name,tmp.type)){
-                    throw new Exception("重定义变量");
+                    throw new Exception("Redefine");
                     //System.out.println("重定义变量 name="+tmp.name+","+tmp.loc.toString());
                 }
             }else{
@@ -78,7 +78,7 @@ public class ScopeBuilder {
                 VariableDefNode tmp=(VariableDefNode)o;
                 localresolver(curscope,tmp);
                 if(!curscope.add(tmp.name,tmp.type)){
-                    throw new Exception("重定义变量");
+                    throw new Exception("Redefine");
                     //System.out.println("重定义变量"+tmp.loc.toString());
                 }
             }else localresolver(curscope,o);
