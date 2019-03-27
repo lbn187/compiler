@@ -14,7 +14,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      */
     @Override public ProgramNode visitProgram(MxStarParser.ProgramContext ctx) {
         ProgramNode u=new ProgramNode();
-        System.out.println("VISIT PROGRAM");
+        //System.out.println("VISIT PROGRAM");
         for(MxStarParser.VariableDefineContext o:ctx.variableDefine())
             u.variables.add((VariableDefNode)visit(o));
         for(MxStarParser.ClassPartContext o:ctx.classPart())
@@ -35,7 +35,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         VariableDefNode u=new VariableDefNode();
         u.name=ctx.name.getText();
         u.type=TypeBuilder.getType(ctx.thetype().getText());
-        System.out.println("<VariableDefineNode> name="+u.name+" type="+u.type.typename);
+        //System.out.println("<VariableDefineNode> name="+u.name+" type="+u.type.typename);
         u.loc=new Location(ctx.start);
         if(ctx.expression()!=null)u.expr=(ExprNode)visit(ctx.expression());
         return u;
@@ -51,7 +51,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         u.name=ctx.name.getText();
         u.loc=new Location(ctx.start);
         u.type=new ClassType(ctx.name.getText());
-        System.out.println("<ClassDefNode> name="+u.name+" type=class<"+u.type.typename+">");
+        //System.out.println("<ClassDefNode> name="+u.name+" type=class<"+u.type.typename+">");
         for(MxStarParser.VariableDefineContext o:ctx.variableDefine())
             u.variables.add((VariableDefNode)visit(o));
         for(MxStarParser.FunctionPartContext o:ctx.functionPart())
@@ -71,8 +71,8 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
     @Override public FunctionDefNode visitFunctionPart(MxStarParser.FunctionPartContext ctx) {
         FunctionDefNode u=new FunctionDefNode();
         u.name=ctx.name.getText();
-        if(ctx.thetype()!=null) u.type=TypeBuilder.getType(ctx.thetype().getText());else {}
-        System.out.println("<FunctionDefNode> name="+u.name+" type="+u.type.typename);
+        if(ctx.thetype()!=null) u.type=TypeBuilder.getType(ctx.thetype().getText());else u.type=new NullType();
+        //System.out.println("<FunctionDefNode> name="+u.name);
         u.loc=new Location(ctx.start);
         for(MxStarParser.ParameterContext o:ctx.parameter())
             u.variables.add((VariableDefNode)visit(o));
@@ -102,7 +102,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         VariableDefNode u=new VariableDefNode();
         u.name=ctx.name.getText();
         u.type=TypeBuilder.getType(ctx.thetype().getText());
-        System.out.println("<VariableDefNode> name="+u.name+" type="+u.type.typename);
+        //System.out.println("<VariableDefNode> name="+u.name+" type="+u.type.typename);
         u.loc=new Location(ctx.start);
         u.expr=null;
         return u;
@@ -114,7 +114,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public Node visitThetype(MxStarParser.ThetypeContext ctx) {
-        System.out.println("WHAT??? visitThetype");
+        //System.out.println("WHAT??? visitThetype");
         return visitChildren(ctx);
     }
     /**
@@ -124,7 +124,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public Node visitAllthetype(MxStarParser.AllthetypeContext ctx) {
-        System.out.println("WHAT??? visitAllthetype");
+        //System.out.println("WHAT??? visitAllthetype");
         return visitChildren(ctx);
     }
     /**
@@ -134,7 +134,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public Node visitBasicthetype(MxStarParser.BasicthetypeContext ctx) {
-        System.out.println("WHAT?? visitBasicthetype");
+        //System.out.println("WHAT?? visitBasicthetype");
         return visitChildren(ctx);
     }
     /**
@@ -145,7 +145,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      */
     @Override public BlockNode visitBlock(MxStarParser.BlockContext ctx) {
         BlockNode u=new BlockNode();
-        System.out.println("<BlockNode>");
+        //System.out.println("<BlockNode>");
         for(MxStarParser.StmtContext o:ctx.stmt())
             u.stmts.add((StmtNode)visit(o));
         u.loc=new Location(ctx.start);
@@ -167,7 +167,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public IfNode visitStmtif(MxStarParser.StmtifContext ctx) {
-        System.out.println("<IfNode>");
+        //System.out.println("<IfNode>");
         IfNode u=new IfNode();
         u.loc=new Location(ctx.start);
         u.expr=(ExprNode)visit(ctx.expression());
@@ -182,7 +182,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public WhileNode visitStmtwhile(MxStarParser.StmtwhileContext ctx) {
-        System.out.println("<WhileNode>");
+        //System.out.println("<WhileNode>");
         WhileNode u=new WhileNode();
         u.loc=new Location(ctx.start);
         u.expr=(ExprNode)visit(ctx.expression());
@@ -196,7 +196,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public ForNode visitStmtfor(MxStarParser.StmtforContext ctx) {
-        System.out.println("<ForNode>");
+        //System.out.println("<ForNode>");
         ForNode u=new ForNode();
         u.loc=new Location(ctx.start);
         if(ctx.pre!=null)u.pre=(ExprNode)visit(ctx.pre);
@@ -212,7 +212,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public BreakNode visitStmtbreak(MxStarParser.StmtbreakContext ctx) {
-        System.out.println("<BreakNode>");
+        //System.out.println("<BreakNode>");
         BreakNode u=new BreakNode();
         u.loc=new Location(ctx.start);
         return u;
@@ -224,7 +224,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public ContinueNode visitStmtcontinue(MxStarParser.StmtcontinueContext ctx) {
-        System.out.println("<ContinueNode>");
+        //System.out.println("<ContinueNode>");
         ContinueNode u=new ContinueNode();
         u.loc=new Location(ctx.start);
         return u;
@@ -236,7 +236,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public ReturnNode visitStmtreturn(MxStarParser.StmtreturnContext ctx) {
-        System.out.println("<ReturnNode>");
+        //System.out.println("<ReturnNode>");
         ReturnNode u=new ReturnNode();
         u.loc=new Location(ctx.start);
         if(ctx.expression()!=null)u.expr=(ExprNode)visit(ctx.expression());
@@ -249,7 +249,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public ExprStmtNode visitStmtexpression(MxStarParser.StmtexpressionContext ctx) {
-        System.out.println("<ExprStmtNode>");
+       // System.out.println("<ExprStmtNode>");
         ExprStmtNode u=new ExprStmtNode();
         u.loc=new Location(ctx.start);
         u.expr=(ExprNode)visit(ctx.expression());
@@ -271,7 +271,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public NullLiteralNode visitExprnull(MxStarParser.ExprnullContext ctx) {
-        System.out.println("<NullLiteralNode>");
+      //  System.out.println("<NullLiteralNode>");
         NullLiteralNode u=new NullLiteralNode();
         u.loc=new Location(ctx.start);
         u.type=new NullType();
@@ -295,7 +295,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
     @Override public StringLiteralNode visitExprstring(MxStarParser.ExprstringContext ctx) {
         StringLiteralNode u=new StringLiteralNode();
         String s=ctx.name.getText();
-        String nowv=null;
+        String nowv="";
         for(int i=1;i<s.length()-1;)//去括号，去转义
             if(s.charAt(i)=='\\'){
                 if(s.charAt(i+1)=='\\')nowv+="\\";else
@@ -308,7 +308,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
                 i++;
             }
         u.name=nowv;
-        System.out.println("<StringLiteralNode> name="+u.name);
+       // System.out.println("<StringLiteralNode> name="+u.name);
         u.loc=new Location(ctx.start);
         u.type=new StringType();
         return u;
@@ -322,7 +322,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
     @Override public PrefixOpNode visitExprprefix(MxStarParser.ExprprefixContext ctx) {
         PrefixOpNode u=new PrefixOpNode();
         u.operator=ctx.op.getText();
-        System.out.println("<PrefixOpNode> operator="+u.operator);
+     //   System.out.println("<PrefixOpNode> operator="+u.operator);
         u.expr=(ExprNode)visit(ctx.expression());
         u.loc=new Location(ctx.start);
         return u;
@@ -351,22 +351,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         VariableNode u=new VariableNode();
         u.loc=new Location(ctx.start);
         u.name="this";
-        System.out.println("<VariableNode> name="+u.name);
-        return u;
-    }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation returns the result of calling
-     * {@link #visitChildren} on {@code ctx}.</p>
-     */
-    @Override public LogicalOrNode visitExpror(MxStarParser.ExprorContext ctx) {
-        System.out.println("<LogicalOrNode>");
-        LogicalOrNode u=new LogicalOrNode();
-        u.exprl=(ExprNode)visit(ctx.expression(0));
-        u.exprr=(ExprNode)visit(ctx.expression(1));
-        u.loc=new Location(ctx.start);
-        u.operator=ctx.op.getText();
+     //   System.out.println("<VariableNode> name="+u.name);
         return u;
     }
     /**
@@ -378,7 +363,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
     @Override public SuffixOpNode visitExprsuffix(MxStarParser.ExprsuffixContext ctx) {
         SuffixOpNode u=new SuffixOpNode();
         u.operator=ctx.op.getText();
-        System.out.println("SuffixOpNode  operatpr="+u.operator);
+      //  System.out.println("SuffixOpNode  operatpr="+u.operator);
         u.expr=(ExprNode)visit(ctx.expression());
         u.loc=new Location(ctx.start);
         return u;
@@ -390,10 +375,11 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public BoolLiteralNode visitExprfalse(MxStarParser.ExprfalseContext ctx){
-        System.out.println("<BoolLiteralNode> false");
+      //  System.out.println("<BoolLiteralNode> false");
         BoolLiteralNode u=new BoolLiteralNode();
         u.flag=false;
         u.loc=new Location(ctx.start);
+        u.type=new BoolType();
         return u;
     }
     /**
@@ -405,24 +391,9 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
     @Override public MemberNode visitExprsmember(MxStarParser.ExprsmemberContext ctx) {
         MemberNode u=new MemberNode();
         u.loc=new Location(ctx.start);
-        u.membername=ctx.name.getText();
-        System.out.println("<MemberNode> membername="+u.membername);
-        u.expr=(ExprNode)visit(ctx.expression());
-        return u;
-    }
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation returns the result of calling
-     * {@link #visitChildren} on {@code ctx}.</p>
-     */
-    @Override public LogicalAndNode visitExprand(MxStarParser.ExprandContext ctx) {
-        System.out.println("<LogicalAndNode>");
-        LogicalAndNode u=new LogicalAndNode();
-        u.exprl=(ExprNode)visit(ctx.expression(0));
-        u.exprr=(ExprNode)visit(ctx.expression(1));
-        u.loc=new Location(ctx.start);
-        u.operator=ctx.op.getText();
+        u.expr=(ExprNode)visit(ctx.expression(0));
+        u.member=(ExprNode)visit(ctx.expression(1));
+     //   System.out.println("<MemberNode>");
         return u;
     }
     /**
@@ -432,15 +403,12 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public FuncExprNode visitExprfunction(MxStarParser.ExprfunctionContext ctx) {
-        Boolean flag=false;
         FuncExprNode u=new FuncExprNode();
         u.name=ctx.name.getText();
-        System.out.println("<FuncExprNode> name="+u.name);
+     //   System.out.println("<FuncExprNode> name="+u.name);
         for(MxStarParser.ExpressionContext o:ctx.expression()){
-            if(flag==true)u.exprs.add((ExprNode)visit(o));
-            flag=true;
+            u.exprs.add((ExprNode)visit(o));
         }
-
         u.loc=new Location(ctx.start);
         return u;
     }
@@ -453,7 +421,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
     @Override public VariableNode visitExpridentifier(MxStarParser.ExpridentifierContext ctx) {
         VariableNode u=new VariableNode();
         u.name=ctx.name.getText();
-        System.out.println("<VariableNode> name="+u.name);
+     //   System.out.println("<VariableNode> name="+u.name);
         u.loc=new Location(ctx.start);
         return u;
     }
@@ -466,7 +434,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
     @Override public IntLiteralNode visitExprinteger(MxStarParser.ExprintegerContext ctx) {
         IntLiteralNode u=new IntLiteralNode();
         u.name=ctx.name.getText();
-        System.out.println("<IntLiteralNode> name="+u.name);
+      //  System.out.println("<IntLiteralNode> name="+u.name);
         u.type=new IntType();
         u.loc=new Location(ctx.start);
         return u;
@@ -480,7 +448,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
     @Override public BinaryOpNode visitExprbinary(MxStarParser.ExprbinaryContext ctx) {
         BinaryOpNode u=new BinaryOpNode();
         u.operator=ctx.op.getText();
-        System.out.println("<BinaryOpNode> operator="+u.operator);
+     //   System.out.println("<BinaryOpNode> operator="+u.operator);
         u.exprl=(ExprNode)visit(ctx.expression(0));
         u.exprr=(ExprNode)visit(ctx.expression(1));
         u.loc=new Location(ctx.start);
@@ -493,10 +461,11 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public BoolLiteralNode visitExprtrue(MxStarParser.ExprtrueContext ctx) {
-        System.out.println("<BoolLiteralNode> true");
+       // System.out.println("<BoolLiteralNode> true");
         BoolLiteralNode u=new BoolLiteralNode();
         u.flag=true;
         u.loc=new Location(ctx.start);
+        u.type=new BoolType();
         return u;
     }
     /**
@@ -506,7 +475,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public ArefNode visitExprexpr(MxStarParser.ExprexprContext ctx) {
-        System.out.println("<ArefNode>");
+     //   System.out.println("<ArefNode>");
         ArefNode u=new ArefNode();
         u.exprname=(ExprNode)visit(ctx.expression(0));
         u.exprexpr=(ExprNode)visit(ctx.expression(1));
@@ -530,7 +499,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public CreatorNode visitCreator(MxStarParser.CreatorContext ctx) {
-
         CreatorNode u=new CreatorNode();
         if(ctx.allthetype()!=null){
             Type basetype;
@@ -543,14 +511,14 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         }else{
             u.type=new ClassType(ctx.name.getText());
         }
-        System.out.println("<CreatorNode> 处理="+ctx.getText()+" typename="+u.type.typename);
+     //   System.out.println("<CreatorNode> 处理="+ctx.getText()+" typename="+u.type.typename);
         for(MxStarParser.ExpressionContext o:ctx.expression())
             u.exprs.add((ExprNode)visit(o));
         u.loc=new Location(ctx.start);
         return u;
     }
     @Override public NullStmtNode visitStmtblank(MxStarParser.StmtblankContext ctx){
-        System.out.println("<NullStmtNode>");
+      //  System.out.println("<NullStmtNode>");
         NullStmtNode u=new NullStmtNode();
         return u;
     }

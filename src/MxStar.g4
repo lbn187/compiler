@@ -28,9 +28,9 @@ expression: '(' expression ')'                                                  
 			| 'false'                                                                # exprfalse
 			| 'this'                                                                 # exprthis
             | 'new' creator                                                          # exprnew
-            | name=expression  (('(' (expression (',' expression)*)? ')')|('()'))    # exprfunction
+            | name=Identifier  (('(' (expression (',' expression)*)? ')')|('()'))    # exprfunction
 			| expression '[' expression ']'                                          # exprexpr
-			| expression '.' name=Identifier                                         # exprsmember
+			| expression '.' expression                                              # exprsmember
 			| op=('!'|'~'|'+'|'-'|'++'|'--') expression                              # exprprefix
 			| expression op=('++'|'--')                                              # exprsuffix
 			| expression op=('*'|'/'|'%') expression                                 # exprbinary
@@ -41,8 +41,8 @@ expression: '(' expression ')'                                                  
 			| expression op='&' expression                                           # exprbinary
 			| expression op='^' expression                                           # exprbinary
 			| expression op='|' expression                                           # exprbinary
-			| expression op='&&' expression                                          # exprand
-			| expression op='||' expression                                          # expror
+			| expression op='&&' expression                                          # exprbinary
+			| expression op='||' expression                                          # exprbinary
 			| <assoc=right> expression '=' expression                                # exprassign
 			;
 creator: allthetype (('['expression']')+ ('['']')*)
@@ -51,7 +51,7 @@ creator: allthetype (('['expression']')+ ('['']')*)
 Identifier: [a-zA-Z][a-zA-Z0-9_]*;
 ConstString: '"'Char*?'"';
 ConstInteger: [1-9][0-9]* | '0';
-fragment Char: .|'\\n'|'\\"'|'\\\\';
-WS: [ \t\r\n]+ -> skip
-;
+fragment Char: ~["\\\n]|'\\'["n\\];
+WS: [ \t\r\n]+ -> skip;
 Comment: '//' .*? '\r'? '\n' ->skip;
+Comment2: '/*' .*? '*/' -> skip;

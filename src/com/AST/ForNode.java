@@ -17,9 +17,9 @@ public class ForNode extends StmtNode {
     }
     public List<Node> getAll() {
         List<Node> tmp = new ArrayList<Node>();
-        tmp.add(pre);
-        tmp.add(mid);
-        tmp.add(suc);
+        if(pre!=null)tmp.add(pre);
+        if(mid!=null)tmp.add(mid);
+        if(suc!=null)tmp.add(suc);
         tmp.add(stmt);
         return tmp;
     }

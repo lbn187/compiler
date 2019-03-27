@@ -59,14 +59,10 @@ public class TempTestAst {
         dfs(u.exprr,s);
     }
     public void dfs(BinaryOpNode u,String s){
-        if(u instanceof LogicalAndNode)dfs((LogicalAndNode)u,s);
-        else if(u instanceof LogicalOrNode)dfs((LogicalOrNode)u,s);
-        else {
             s = s + delta;
             u.print(s);
             dfs(u.exprl, s);
             dfs(u.exprr, s);
-        }
     }
     public void dfs(BlockNode u,String s){
         s=s+delta;
@@ -133,22 +129,11 @@ public class TempTestAst {
         s=s+delta;
         u.print(s);
     }
-    public void dfs(LogicalAndNode u,String s){
-        s=s+delta;
-        u.print(s);
-        dfs(u.exprl,s);
-        dfs(u.exprr,s);
-    }
-    public void dfs(LogicalOrNode u,String s){
-        s=s+delta;
-        u.print(s);
-        dfs(u.exprl,s);
-        dfs(u.exprr,s);
-    }
     public void dfs(MemberNode u,String s){
         s=s+delta;
         u.print(s);
         dfs(u.expr,s);
+        dfs(u.member,s);
     }
     public void dfs(NullLiteralNode u,String s){
         s=s+delta;

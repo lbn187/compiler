@@ -6,7 +6,7 @@ class A{
 }
 int main(){//WHAT???
     A a=new A;
-    A.x=8;
+    a.x=8;
     bool flag=true;
     string s="abcde\n\\\afg";
     int[] b=null;

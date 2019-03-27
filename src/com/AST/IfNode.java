@@ -17,7 +17,7 @@ public class IfNode extends StmtNode {
         List<Node> tmp = new ArrayList<Node>();
         tmp.add(expr);
         tmp.add(ifstmt);
-        tmp.add(elsestmt);
+        if(elsestmt!=null)tmp.add(elsestmt);
         return tmp;
     }
     public void print(String s){

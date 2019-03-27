@@ -53,6 +53,7 @@ ConstString=52
 ConstInteger=53
 WS=54
 Comment=55
+Comment2=56
 '='=1
 ';'=2
 'class'=3

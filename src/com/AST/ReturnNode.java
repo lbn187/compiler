@@ -11,7 +11,7 @@ public class ReturnNode extends StmtNode {
     }
     public List<Node> getAll() {
         List<Node> tmp = new ArrayList<Node>();
-        tmp.add(expr);
+        if(expr!=null)tmp.add(expr);
         return tmp;
     }
     public void print(String s){

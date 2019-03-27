@@ -7,6 +7,7 @@ abstract public class StmtNode extends Node{
     public StmtNode(){
         super();
     }
+    public List<Node> getall(){return null;}
     public void print(String s){
         System.out.println(s+"<StmtNode> name:"+name+"type: "+type.toString());
     }

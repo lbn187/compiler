@@ -7,6 +7,7 @@ abstract public class LiteralNode extends ExprNode{
     public LiteralNode(){
         super();
     }
+    public List<Node> getall(){return null;}
     public void print(String s){
         System.out.println(s+"<LiteralNode> name:"+name+"type: "+type.toString());
     }

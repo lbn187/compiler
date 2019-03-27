@@ -7,6 +7,7 @@ abstract public class LHSNode extends ExprNode {
     public LHSNode(){
         super();
     }
+    public List<Node> getAll(){return null;}
     public void print(String s){
         System.out.println(s+"<LHSNode> name:"+name+"type: "+type.toString());
     }
