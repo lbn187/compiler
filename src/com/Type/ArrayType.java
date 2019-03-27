@@ -15,6 +15,10 @@ public class ArrayType extends Type {
         }
         this.typename=basetype.typename+"[]";
     }
+    public boolean equals(Type a){
+        if(!(a instanceof ArrayType))return false;
+        return basetype.equals(((ArrayType)a).basetype);
+    }
     public String toString(){
         return "array";
     }

@@ -22,6 +22,15 @@ public class FunctionDefineType extends Type{
     public void add(Type param){
         parameters.add(param);
     }
+    public boolean equals(Type a){
+        if(!(a instanceof FunctionDefineType))return false;
+        FunctionDefineType b=(FunctionDefineType)a;
+        if(!(variable).equals(b.variable))return false;
+        if(parameters.size()!=(b.parameters.size()))return false;
+        for(int i=0;i<parameters.size();i++)
+            if(!parameters.get(i).equals(b.parameters.get(i)))return false;
+        return true;
+    }
     public String toString(){
         return "function";
     }

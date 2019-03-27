@@ -17,4 +17,7 @@ public class ClassDefineType extends Type {
     public Type get(String s){
         return map.get(s);
     }
+    public boolean equals(Type a){
+        return false;
+    }
 }

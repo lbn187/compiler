@@ -3,7 +3,7 @@ import com.frontend.Scope;
 import com.Type.*;
 import com.AST.*;
 public class ScopeBuilder {
-    public Scope scoperoot=new Scope(null,"");
+    public Scope scoperoot=new Scope(null,"",true);
     void init(){
         ClassDefineType stringtype=new ClassDefineType();
         stringtype.typename="string";
@@ -30,36 +30,40 @@ public class ScopeBuilder {
             if(o instanceof ClassDefNode){
                 ClassDefNode tmp=(ClassDefNode)o;
                 Scope sonscope=curscope.addson();
+                sonscope.classflag=true;
                 get(sonscope,tmp);
                 ClassDefineType tmptype=new ClassDefineType(sonscope.map);
+                //map.put(tmp.name,sonscope);
                 if(!curscope.add(tmp.name,tmptype)){
-                    throw new Exception("Redefine");
+                    throw new Exception("Redefine"+curnode.loc.toString());
                 }
             }else if(o instanceof FunctionDefNode) {
                 FunctionDefNode tmp = (FunctionDefNode) o;
+                tmp.belong=curscope;
                 Scope sonscope = curscope.addson();
+                sonscope.classflag=false;
                 FunctionDefineType functype = new FunctionDefineType(tmp.type);
                 for (VariableDefNode u : tmp.variables) {
                     VariableDefNode ttmp = u;
                     ttmp.belong = sonscope;
                     functype.add(ttmp.type);
                     //System.out.print("SONSCOPE name="+ttmp.name+" type="+ttmp.type.typename);
-                    if (!sonscope.add(ttmp.name, ttmp.type)) {
-                        throw new Exception("Redefine");
-                    }
+                    //if (!sonscope.add(ttmp.name, ttmp.type)) {
+                    //    throw new Exception("Redefine"+curnode.loc.toString());
+                    //}
                 }
                 if (!curscope.add(tmp.name,functype)) {
-                    throw new Exception("Redefine");
+                    throw new Exception("Redefine"+curnode.loc.toString());
                 }
-                if (!sonscope.add(tmp.name,functype)) {
-                    throw new Exception("Redefine");
-                }
+          //      if (!sonscope.add(tmp.name,functype)) {
+            //        throw new Exception("Redefine"+curnode.loc.toString());
+              //  }
                 localresolver(sonscope,tmp.block);
             }else if(o instanceof VariableDefNode){
                 VariableDefNode tmp=(VariableDefNode)o;
                 get(curscope,tmp);
                 if(!curscope.add(tmp.name,tmp.type)){
-                    throw new Exception("Redefine");
+                    throw new Exception("Redefine"+curnode.loc.toString());
                 }
             }else{
                 get(curscope,o);
@@ -73,23 +77,18 @@ public class ScopeBuilder {
             if((o instanceof BlockNode)||((curnode instanceof ForNode)||(curnode instanceof WhileNode)||(curnode instanceof IfNode))&&(o instanceof StmtNode)){
                 Scope sonscope=curscope.addson();
                 localresolver(sonscope,o);
-            }else if(o instanceof VariableDefNode){
+            }else localresolver(curscope,o);
+                /*if(o instanceof VariableDefNode){
                 VariableDefNode tmp=(VariableDefNode)o;
                 localresolver(curscope,tmp);
                 if(!curscope.add(tmp.name,tmp.type)){
                     throw new Exception("Redefine");
                 }
-            }else localresolver(curscope,o);
+            }else localresolver(curscope,o);*/
         }
     }
     public void work(Node astroot) throws Exception {
         init();
         get(scoperoot,astroot);
     }
-    /*
-     * There is three things to do:
-     * Matching the name of each var to their definition.
-     * Matching the type of each var to their definition.
-     * Check the validity of expressions
-     * */
 }

@@ -5,6 +5,10 @@ public class StringType extends ClassType {
         super();
         typename="string";
     }
+    public boolean equals(Type a){
+        if(a instanceof StringType)return true;
+        return false;
+    }
     public String toString(){
         return "string";
     }

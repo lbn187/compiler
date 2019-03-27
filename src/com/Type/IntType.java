@@ -5,6 +5,10 @@ public class IntType extends Type {
         super();
         typename="int";
     }
+    public boolean equals(Type a){
+        if(a instanceof IntType)return true;
+        return false;
+    }
     public String toString(){
         return "integer";
     }

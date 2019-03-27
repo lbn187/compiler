@@ -5,6 +5,7 @@ abstract public class Type {
     public Type(){
         typename="";
     }
+    public abstract boolean equals(Type a);
     public String toString(){
         return "type";
     }
