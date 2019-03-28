@@ -209,7 +209,6 @@ public class SemanticChecker extends ASTVisitor {
             u.type=new IntType();
             return;
         }
-        for(Node o:u.member.getAll())visit(o);
         if(!(u.expr.type instanceof ClassType)){
             throw new Exception("MemberWrong1"+u.loc.toString());
         }
@@ -329,7 +328,7 @@ public class SemanticChecker extends ASTVisitor {
     public void visit(ReturnNode u)throws Exception{
         if(u.expr!=null)visit(u.expr);
         if(u.expr==null){
-            if(!ExprMatching(returntype,new VoidType())){
+            if(!ExprMatching(returntype,new VoidType())&&!(returntype instanceof NullType)){
                 throw new Exception("ReturnWrong1"+u.loc.toString());
             }
         }else{

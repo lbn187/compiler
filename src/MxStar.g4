@@ -27,10 +27,10 @@ expression: '(' expression ')'                                                  
 			| 'true'                                                                 # exprtrue
 			| 'false'                                                                # exprfalse
 			| 'this'                                                                 # exprthis
-            | 'new' creator                                                          # exprnew
-            | name=Identifier  (('(' (expression (',' expression)*)? ')')|('()'))    # exprfunction
-			| expression '[' expression ']'                                          # exprexpr
 			| expression '.' expression                                              # exprsmember
+            | 'new' creator                                                          # exprnew
+			| expression '[' expression ']'                                          # exprexpr
+			| name=Identifier  (('(' (expression (',' expression)*)? ')')|('()'))    # exprfunction
 			| op=('!'|'~'|'+'|'-'|'++'|'--') expression                              # exprprefix
 			| expression op=('++'|'--')                                              # exprsuffix
 			| expression op=('*'|'/'|'%') expression                                 # exprbinary
