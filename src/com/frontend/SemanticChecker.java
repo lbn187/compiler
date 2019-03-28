@@ -218,6 +218,7 @@ public class SemanticChecker extends ASTVisitor {
         if(type==null){
             throw new Exception("MemberWrong2"+u.loc.toString()+"  "+u.member.name);
         }
+        for(Node o:u.member.getAll())visit(o);
         if(u.member instanceof FuncExprNode){
             if(!(type instanceof FunctionDefineType)){
                 throw new Exception("MemberWrong3"+u.loc.toString());
