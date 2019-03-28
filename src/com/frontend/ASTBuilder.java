@@ -484,6 +484,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         u.exprname=(ExprNode)visit(ctx.expression(0));
         u.exprexpr=(ExprNode)visit(ctx.expression(1));
         u.loc=new Location(ctx.start);
+        u.name=u.exprname.name;
         return u;
     }
     /**

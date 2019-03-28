@@ -10,10 +10,12 @@ abstract public class Node {
     public Type type;
     public String name;
     public Scope belong;
+    public boolean inclass;
     public Node(){
         type=new VoidType();
         name="";
         belong=null;
+        inclass=false;
     }
     public List<Node> getAll(){return null;}
     public void print(String s){

@@ -53,8 +53,7 @@ public class SemanticChecker extends ASTVisitor {
             if(!(tmpnode instanceof ArefNode))return null;
             return ArrayChecker((ArrayType)tmptype,(ArefNode)tmpnode);
         }else{
-            if(tmptype.equals(tmpnode.type))return tmptype;
-            return null;
+            return tmptype;
         }
     }
     Type FunctionChecker(FunctionDefineType type,FuncExprNode node){
@@ -215,9 +214,10 @@ public class SemanticChecker extends ASTVisitor {
             throw new Exception("MemberWrong1"+u.loc.toString());
         }
         ClassDefineType classtype=(ClassDefineType)scoperoot.get(u.expr.type.typename);
+        if(classtype==null)System.out.println("CAN NOT Find classtype"+u.loc.toString());
         Type type=classtype.get(u.member.name);
         if(type==null){
-            throw new Exception("MemberWrong2"+u.loc.toString());
+            throw new Exception("MemberWrong2"+u.loc.toString()+"  "+u.member.name);
         }
         if(u.member instanceof FuncExprNode){
             if(!(type instanceof FunctionDefineType)){
@@ -330,16 +330,16 @@ public class SemanticChecker extends ASTVisitor {
         if(u.expr!=null)visit(u.expr);
         if(u.expr==null){
             if(!ExprMatching(returntype,new VoidType())){
-                throw new Exception("ReturnWrong"+u.loc.toString());
+                throw new Exception("ReturnWrong1"+u.loc.toString());
             }
         }else{
-            if(u.expr.type==null){
+            if(u.expr instanceof NullLiteralNode){
                 if(!(returntype instanceof ArrayType)&&!(returntype instanceof ClassType)){
-                    throw new Exception("ReturnWrong"+u.loc.toString());
+                    throw new Exception("ReturnWrong2"+u.loc.toString());
                 }
             }else{
                 if(!ExprMatching(returntype,u.expr.type)){
-                    throw new Exception("ReturnWrong"+u.loc.toString());
+                    throw new Exception("ReturnWrong3"+u.loc.toString());
                 }
             }
         }
@@ -396,12 +396,12 @@ public class SemanticChecker extends ASTVisitor {
                 throw new Exception("AssignTypeUnmatching"+u.loc.toString());
             }
         }
-        //if(u.belong.classflag==false) {
+        if(u.inclass==false) {
         //    System.out.println("LOC="+u.loc.toString());
             if (!u.belong.add(u.name, type)) {
                 throw new Exception("Redefine"+u.loc.toString());
             }
-        //}
+        }
     }
     public void visit(ProgramNode u)throws Exception{
         Scope tmp=u.belong;

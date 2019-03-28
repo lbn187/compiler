@@ -9,9 +9,9 @@ public class ArrayType extends Type {
     public ArrayType(Type type,int dimention){
         this.deeptype=type;
         if(dimention==1){
-            this.basetype=type;
+            basetype=type;
         }else{
-            this.basetype=new ArrayType(type,dimention-1);
+            basetype=new ArrayType(type,dimention-1);
         }
         this.typename=basetype.typename+"[]";
     }

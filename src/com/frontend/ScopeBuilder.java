@@ -23,7 +23,7 @@ public class ScopeBuilder {
         FunctionDefineType toStringtype=new FunctionDefineType(new StringType(),new IntType());
         scoperoot.add("toString",toStringtype);
     }
-    void get(Scope curscope,Node curnode)throws Exception{
+    void get(Scope curscope,Node curnode,int ok)throws Exception{
         curnode.belong=curscope;
         //System.out.println("<Node> name="+curnode.name+" scopename"+curnode.belong.name);
         for(Node o:curnode.getAll()){
@@ -31,7 +31,7 @@ public class ScopeBuilder {
                 ClassDefNode tmp=(ClassDefNode)o;
                 Scope sonscope=curscope.addson();
                 sonscope.classflag=true;
-                get(sonscope,tmp);
+                get(sonscope,tmp,1);
                 ClassDefineType tmptype=new ClassDefineType(sonscope.map);
                 //map.put(tmp.name,sonscope);
                 if(!curscope.add(tmp.name,tmptype)){
@@ -61,12 +61,16 @@ public class ScopeBuilder {
                 localresolver(sonscope,tmp.block);
             }else if(o instanceof VariableDefNode){
                 VariableDefNode tmp=(VariableDefNode)o;
-                get(curscope,tmp);
-                //if(!curscope.add(tmp.name,tmp.type)){
-                //    throw new Exception("Redefine"+curnode.loc.toString());
-                //}
+                get(curscope,tmp,ok);
+                if(ok==1){
+                    o.inclass=true;
+                    //System.out.println("ADD name="+tmp.name+" type="+tmp.type.typename);
+                    if(!curscope.add(tmp.name,tmp.type)){
+                        throw new Exception("Redefine"+curnode.loc.toString());
+                    }
+                }
             }else{
-                get(curscope,o);
+                get(curscope,o,ok);
             }
         }
     }
@@ -92,6 +96,6 @@ public class ScopeBuilder {
         if(scoperoot==null)System.out.println("!!!");
         init();
         if(scoperoot==null)System.out.println("!!!");
-        get(scoperoot,astroot);
+        get(scoperoot,astroot,0);
     }
 }
