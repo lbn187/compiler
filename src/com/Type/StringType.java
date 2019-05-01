@@ -4,6 +4,7 @@ public class StringType extends ClassType {
     public StringType(){
         super();
         typename="string";
+        size=8;
     }
     public boolean equals(Type a){
         if(a instanceof StringType)return true;

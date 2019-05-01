@@ -1,6 +1,7 @@
 package com.Type;
 
 abstract public class Type {
+    public int size;
     public String typename;
     public Type(){
         typename="";

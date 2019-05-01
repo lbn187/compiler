@@ -7,29 +7,31 @@ import java.util.Map;
 public class Scope{
     public List<Scope> son;
     public Scope father;
-    public Map<String,Type> map;
+    public Map<String,Information> map;
     public String name;
     public boolean classflag;
+    int offset=0;
     public Scope(){
         son=new ArrayList<Scope>();
-        map=new Hashtable<String,Type>();
+        map=new Hashtable<String,Information>();
         father=null;
         name="";
         classflag=true;
     }
     public Scope(Scope fa,String s,boolean flag){
         son=new ArrayList<Scope>();
-        map=new Hashtable<String,Type>();
+        map=new Hashtable<String,Information>();
         father=fa;
         name=s;
         classflag=flag;
     }
     public boolean add(String str,Type id){
         if(map.get(str)!=null)return false;
-        map.put(str,id);
+        map.put(str,new Information(id,offset));
+        offset+=id.size;
         return true;
     }
-    public Type get(String str){
+    public Information get(String str){
         if(map.get(str)!=null)return map.get(str);
         if(father!=null)return father.get(str);
         return null;

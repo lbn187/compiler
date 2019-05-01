@@ -7,17 +7,20 @@ public class FunctionDefineType extends Type{
     public List<Type> parameters;
     public FunctionDefineType(){
         super();
+        size=0;
     }
     public FunctionDefineType(Type v){
         super();
         variable=v;
         parameters=new ArrayList<Type>();
+        size=0;
     }
     public FunctionDefineType(Type v,Type... params){
         super();
         variable=v;
         parameters=new ArrayList<Type>();
         for(int i=0;i<params.length;i++)parameters.add(params[i]);
+        size=0;
     }
     public void add(Type param){
         parameters.add(param);

@@ -4,7 +4,7 @@ import com.frontend.ASTVisitor;
 import java.util.List;
 import java.util.ArrayList;
 public class IntLiteralNode extends LiteralNode {
-    String value;
+    public String value;
     public IntLiteralNode(){
         super();
         value=null;

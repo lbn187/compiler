@@ -5,6 +5,7 @@ public class ArrayType extends Type {
     public Type deeptype;
     public ArrayType(){
         super();
+        size=8;
     }
     public ArrayType(Type type,int dimention){
         this.deeptype=type;
@@ -14,6 +15,7 @@ public class ArrayType extends Type {
             basetype=new ArrayType(type,dimention-1);
         }
         this.typename=basetype.typename+"[]";
+        size=8;
     }
     public boolean equals(Type a){
         if(!(a instanceof ArrayType))return false;

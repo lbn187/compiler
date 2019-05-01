@@ -118,7 +118,7 @@ public class SemanticChecker extends ASTVisitor {
     public void visit(FuncExprNode u)throws Exception{
         for(ExprNode o:u.exprs)
             visit(o);
-        Type type=u.belong.get(u.name);
+        Type type=u.belong.get(u.name).type;
         if(type==null){
             throw new Exception("NoDefineFunc"+u.loc.toString());
         }
@@ -212,9 +212,9 @@ public class SemanticChecker extends ASTVisitor {
         if(!(u.expr.type instanceof ClassType)){
             throw new Exception("MemberWrong1"+u.loc.toString());
         }
-        ClassDefineType classtype=(ClassDefineType)scoperoot.get(u.expr.type.typename);
+        ClassDefineType classtype=(ClassDefineType)scoperoot.get(u.expr.type.typename).type;
         if(classtype==null)System.out.println("CAN NOT Find classtype"+u.loc.toString());
-        Type type=classtype.get(u.member.name);
+        Type type=classtype.get(u.member.name).type;
         if(type==null){
             throw new Exception("MemberWrong2"+u.loc.toString()+"  "+u.member.name);
         }
@@ -253,7 +253,7 @@ public class SemanticChecker extends ASTVisitor {
             return;
         }
         Scope o=u.belong;
-        u.type=o.get(u.name);
+        u.type=o.get(u.name).type;
         if(u.type!=null)System.out.println("Variablename="+u.name+" Variabletype="+u.type.typename);
         if(u.type==null){
             throw new Exception("variable not exist"+u.loc.toString());
@@ -362,7 +362,7 @@ public class SemanticChecker extends ASTVisitor {
             }
         }
         for(FunctionDefNode o:u.functions)visit(o);
-        u.type=scoperoot.get(u.name);
+        u.type=scoperoot.get(u.name).type;
         ClassName="main";
     }
     public void visit(FunctionDefNode u)throws Exception{
@@ -405,7 +405,7 @@ public class SemanticChecker extends ASTVisitor {
     }
     public void visit(ProgramNode u)throws Exception{
         Scope tmp=u.belong;
-        Type w=u.belong.get("main");
+        Type w=u.belong.get("main").type;
         if(!(w instanceof FunctionDefineType)||!(((FunctionDefineType)w).variable instanceof IntType)){
             throw new Exception("MainWrong"+u.loc.toString());
         }
