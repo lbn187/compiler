@@ -10,8 +10,8 @@ abstract public class IRInst {
     public IRInst pre=null;
     public IRInst next=null;
     boolean deleteflag=false;
-    public List<Register>registerlist=new ArrayList<>();//该指令用到的register
-    public List<Value>valuelist=new ArrayList<>();//该指令用到的value
+    public List<Register>registerlist=new ArrayList<>();//used register
+    public List<Value>valuelist=new ArrayList<>();//used value
     public IRInst(IRBlock cur,IRInst prev,IRInst nextv){
         curblock=cur;
         pre=prev;
