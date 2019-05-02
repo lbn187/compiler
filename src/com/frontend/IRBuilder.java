@@ -308,20 +308,22 @@ public class IRBuilder extends ASTVisitor{
             visit(u.expr);
             return;
         }
-        VirtualRegister register = null;
         visit(u.expr);
         if (op .equals("+")) {
             u.register = u.expr.register;
         }
         if (op.equals("-")||op.equals("~")) {
+            VirtualRegister register = new VirtualRegister(null);
             CurBlock.add(new UnaryOpIR(CurBlock, register, op, u.expr.register));
             u.register=register;
         }
         if (op.equals("++")) {
+            VirtualRegister register = new VirtualRegister(null);
             CurBlock.add(new BinaryOpIR(CurBlock,register,"+",u.expr.register,new Immediate(1)));
             u.register=register;
         }
         if(op.equals("--")){
+            VirtualRegister register = new VirtualRegister(null);
             CurBlock.add(new BinaryOpIR(CurBlock,register,"-",u.expr.register,new Immediate(1)));
             u.register=register;
         }
