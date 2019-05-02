@@ -4,7 +4,7 @@ public class NullType extends Type {
     public NullType(){
         super();
         typename="null";
-        size=8;
+        size=4;
     }
     public boolean equals(Type a){
         if(a instanceof NullType)return true;

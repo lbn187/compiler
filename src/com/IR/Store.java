@@ -6,7 +6,7 @@ public class Store extends IRInst {
     public int offset;
     public Value value;
     //isstaticdata
-    public Store(IRBlock blk,int sz,Value addr,int off,Value val){
+    public Store(IRBlock blk,int sz,Value addr,Value val,int off){
         super(blk);
         size=sz;
         address=addr;

@@ -4,7 +4,7 @@ public class VoidType extends Type{
     public VoidType(){
         super();
         typename="void";
-        size=8;
+        size=4;
     }
     public boolean equals(Type a){
         if(a instanceof VoidType)return true;

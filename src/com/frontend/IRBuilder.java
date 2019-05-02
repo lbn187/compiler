@@ -28,15 +28,15 @@ public class IRBuilder extends ASTVisitor{
     public void Assign(boolean memflag,int size,Value address,int offset,ExprNode expr){
         if(expr.trueblock==null){
             if(memflag==true){
-                CurBlock.add(new Store(CurBlock,size,address,offset,expr.register));
+                CurBlock.add(new Store(CurBlock,size,address,expr.register,offset));
             }else{
                 CurBlock.add(new Move(CurBlock,(Register)address,expr.register));
             }
         }else{
             IRBlock blk=new IRBlock(CurFunction,null);
             if(memflag==true){
-                expr.trueblock.add(new Store(CurBlock,size,address,offset,new Immediate(1)));
-                expr.falseblock.add(new Store(CurBlock,size,address,offset,new Immediate(0)));
+                expr.trueblock.add(new Store(CurBlock,size,address,new Immediate(1),offset));
+                expr.falseblock.add(new Store(CurBlock,size,address,new Immediate(0),offset));
             }else{
                 expr.trueblock.add(new Move(CurBlock,(VirtualRegister)address,new Immediate(1)));
                 expr.falseblock.add(new Move(CurBlock,(VirtualRegister)address,new Immediate(0)));
@@ -61,7 +61,23 @@ public class IRBuilder extends ASTVisitor{
         return false;
     }
     public void visit(ArefNode u)throws Exception{
-        //to do ...................................................
+        boolean adflag=AddressFlag;
+        AddressFlag=false;
+        visit(u.exprname);
+        visit(u.exprexpr);
+        AddressFlag=adflag;
+        Value tmp=new Immediate(((ArrayType)u.exprname.type).deeptype.size);
+        VirtualRegister register=new VirtualRegister(null);
+        CurBlock.add(new BinaryOpIR(CurBlock,register,"*",u.exprexpr.register,tmp));
+        CurBlock.add(new BinaryOpIR(CurBlock,register,"+",u.exprname.register,register));
+        if(AddressFlag==true){
+            u.address=register;
+            u.offset=4;
+        }else{
+            CurBlock.add(new Load(CurBlock,register,u.type.size,register,4));
+            u.register=register;
+            if(u.trueblock!=null)CurBlock.addend(new Branch(CurBlock,u.register,u.trueblock,u.falseblock));
+        }
     }
     public void visit(AssignNode u)throws Exception{
         if(LogicalJudge(u.exprr)){
@@ -82,7 +98,8 @@ public class IRBuilder extends ASTVisitor{
     }
     public void visit(BinaryOpNode u)throws Exception{
         String op=u.operator;
-        if(op=="+"||op=="-"||op=="*"||op=="/"||op=="%"||op==">>"||op=="<<"||op=="&"||op=="|"||op=="^"){
+        if(op.equals("+")||op.equals("-")||op.equals("*")||op.equals("/")||op.equals("%")||op.equals(">>")||op.equals("<<")||
+                op.equals("&")||op.equals("|")||op.equals("^")){
             if(u.type instanceof StringType){
                 //to do ...............................................
             }else{
@@ -93,8 +110,8 @@ public class IRBuilder extends ASTVisitor{
                 CurBlock.add(new BinaryOpIR(CurBlock,register,u.operator,u.exprl.register,u.exprr.register));
             }
         }
-        if(op=="&&"||op=="||"){
-            if(op=="&&") {
+        if(op.equals("&&")||op.equals("||")){
+            if(op.equals("&&")) {
                 u.exprl.trueblock=new IRBlock(CurFunction,"lhs_true");
                 u.exprl.falseblock=u.falseblock;
                 visit(u.exprl);
@@ -109,7 +126,7 @@ public class IRBuilder extends ASTVisitor{
             u.exprr.falseblock=u.falseblock;
             visit(u.exprr);
         }
-        if(op=="<"||op=="<="||op==">"||op==">="||op=="=="||op=="!="){
+        if(op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")||op.equals("==")||op.equals("!=")){
             if(u.exprl.type instanceof StringType){
                 //to do ..................................
             }else{
@@ -141,7 +158,22 @@ public class IRBuilder extends ASTVisitor{
         CurBlock.add(new Jump(CurBlock,CurLoopBlock));
     }
     public void visit(CreatorNode u)throws Exception{
-        //to do ..................................
+        VirtualRegister register=new VirtualRegister(null);
+        if(u.type instanceof ClassType){
+            //to do .......................................
+        }else{
+            ExprNode firstv=u.exprs.get(0);
+            boolean addressflag=AddressFlag;
+            AddressFlag=false;
+            visit(firstv);
+            AddressFlag=addressflag;
+            ArrayType type=(ArrayType)u.type;
+            CurBlock.add(new BinaryOpIR(CurBlock,register,"*",firstv.register,new Immediate(type.deeptype.size)));
+            CurBlock.add(new BinaryOpIR(CurBlock,register,"+",register,new Immediate(4)));
+            CurBlock.add(new Allocation(CurBlock,register,register));
+            CurBlock.add(new Store(CurBlock,4,register,firstv.register,0));
+        }
+        u.register=register;
     }
     public void visit(ForNode u)throws Exception{
         IRBlock condblock=new IRBlock(CurFunction,"for_cond");
@@ -179,7 +211,9 @@ public class IRBuilder extends ASTVisitor{
         VirtualRegister register=null;
         CurBlock.add(new Call(CurBlock,register,function,arglist));
         u.register=register;
-        //to do   if trueblock!=null ..................
+        if(u.trueblock!=null){
+            CurBlock.addend(new Branch(CurBlock,u.register,u.trueblock,u.falseblock));
+        }
     }
     public void visit(FunctionDefNode u)throws Exception{
         CurFunctionStaticMap.clear();
@@ -256,7 +290,12 @@ public class IRBuilder extends ASTVisitor{
         }
     }
     public void visit(StringLiteralNode u)throws Exception{
-        //to do .................
+        StringData data=irroot.strings.get(u.name);
+        if(data==null){
+            data=new StringData(u.name);
+            irroot.strings.put(u.name,data);
+        }
+        u.register=data;
     }
     public void visit(SuffixOpNode u)throws Exception{
         visit((UnaryOpNode)u);
@@ -271,18 +310,18 @@ public class IRBuilder extends ASTVisitor{
         }
         VirtualRegister register = null;
         visit(u.expr);
-        if (op == "+") {
+        if (op .equals("+")) {
             u.register = u.expr.register;
         }
-        if (op == "-" || op == "~") {
+        if (op.equals("-")||op.equals("~")) {
             CurBlock.add(new UnaryOpIR(CurBlock, register, op, u.expr.register));
             u.register=register;
         }
-        if (op == "++") {
+        if (op.equals("++")) {
             CurBlock.add(new BinaryOpIR(CurBlock,register,"+",u.expr.register,new Immediate(1)));
             u.register=register;
         }
-        if(op=="--"){
+        if(op.equals("--")){
             CurBlock.add(new BinaryOpIR(CurBlock,register,"-",u.expr.register,new Immediate(1)));
             u.register=register;
         }
