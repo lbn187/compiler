@@ -17,6 +17,7 @@ public class IRBuilder extends ASTVisitor{
     public boolean AddressFlag=false;
     //public boolean FunctionArgFlag=false;
     public IRRoot irroot=new IRRoot();
+    public VirtualRegister returnvalue;
     public Map<StaticData,VirtualRegister> CurFunctionStaticMap=new HashMap<>();
     public IRBuilder(){
 
@@ -181,15 +182,19 @@ public class IRBuilder extends ASTVisitor{
         //to do   if trueblock!=null ..................
     }
     public void visit(FunctionDefNode u)throws Exception{
-        exitblock=new IRBlock(CurFunction,CurFunction.name+".exit");
         CurFunctionStaticMap.clear();
         CurFunction=new Function(u.name,u.type,u.type.size,u.variables);
+        exitblock=new IRBlock(CurFunction,CurFunction.name+".exit");
         irroot.functions.put(u.name,CurFunction);
         CurBlock=CurFunction.startblock;
+        if(u.type instanceof VoidType){
+            returnvalue=null;
+        }else{
+            returnvalue=new VirtualRegister("returnvalue");
+            CurBlock.add(new Move(CurBlock,returnvalue,new Immediate(0)));
+        }
         visit(u.block);
-        VirtualRegister returnregister=null;
-        if(!(u.type instanceof VoidType))returnregister=new VirtualRegister("returnvalue");
-        exitblock.addend(new Return(exitblock,returnregister));
+        exitblock.addend(new Return(exitblock,returnvalue));
     }
     public void visit(IfNode u)throws Exception{
         IRBlock trueblock=new IRBlock(CurFunction,"if_true");
@@ -233,19 +238,19 @@ public class IRBuilder extends ASTVisitor{
        // }
     }
     public void visit(ReturnNode u)throws Exception{
-        if(u.type instanceof VoidType){
+        if(u.expr==null){
             CurBlock.add(new Jump(CurBlock,exitblock));
         }else{
             if(LogicalJudge(u.expr)){
                 u.expr.trueblock=new IRBlock(CurFunction,null);
                 u.expr.falseblock=new IRBlock(CurFunction,null);
                 visit(u.expr);
-                VirtualRegister reg=new VirtualRegister("returnvalue");
-                Assign(false,4,reg,0,u.expr);
+                //VirtualRegister reg=new VirtualRegister("returnvalue");
+                Assign(false,4,returnvalue,0,u.expr);
                 CurBlock.addend(new Jump(CurBlock,exitblock));
             }else{
                 visit(u.expr);
-                CurBlock.add(new Move(CurBlock,new VirtualRegister("returnvalue"),u.expr.register));
+                CurBlock.add(new Move(CurBlock,returnvalue,u.expr.register));
                 CurBlock.addend(new Jump(CurBlock,exitblock));
             }
         }

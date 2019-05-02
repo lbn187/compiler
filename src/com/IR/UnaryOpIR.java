@@ -3,11 +3,11 @@ package com.IR;
 public class UnaryOpIR extends IRInst {
     public Register dest;
     public Value value;
-    public String operation;
+    public String operator;
     public UnaryOpIR(IRBlock blk,Register reg,String ope,Value val){
         super(blk);
         dest=reg;
-        operation=ope;
+        operator=ope;
         value=val;
     }
     @Override

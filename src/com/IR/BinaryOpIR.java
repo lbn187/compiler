@@ -4,11 +4,11 @@ public class BinaryOpIR extends IRInst{
     public Register dest;
     public Value lvalue;
     public Value rvalue;
-    public String operation;
+    public String operator;
     public BinaryOpIR(IRBlock blk,Register reg,String ope,Value lhs,Value rhs){
         super(blk);
         dest=reg;
-        operation=ope;
+        operator=ope;
         lvalue=lhs;
         rvalue=rhs;
     }

@@ -7,6 +7,7 @@ import java.util.List;
 import com.Type.*;
 public class Function {
     public List<VirtualRegister>args=new ArrayList<>();
+    public List<IRBlock>blocks=new ArrayList<>();
     public String name;
     public IRBlock startblock;
     public IRBlock endblock;

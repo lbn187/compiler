@@ -2,8 +2,8 @@ package com.IR;
 //$dest = alloc $size
 public class Allocation extends IRInst {
     public Register dest;
-    public int size;
-    public Allocation(IRBlock blk,Register reg,int sz){
+    public Value size;
+    public Allocation(IRBlock blk,Register reg,Value sz){
         super(blk);
         dest=reg;
         size=sz;

@@ -9,6 +9,7 @@ public class IRBlock {
     public IRBlock(Function func,String s){
         function=func;
         name=s;
+        func.blocks.add(this);
     }
     public void accept(IRVisitor visitor) {
         visitor.visit(this);

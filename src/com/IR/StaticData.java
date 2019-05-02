@@ -5,8 +5,4 @@ abstract public class StaticData extends Register{
     public StaticData(String s){
         name=s;
     }
-    @Override
-    public void accept(IRVisitor visitor) {
-        visitor.visit(this);
-    }
 }
