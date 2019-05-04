@@ -9,5 +9,14 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="antlr-runtime-3.5.2" level="project" />
     <orderEntry type="library" exported="" name="src" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://C:/Xilinx/SDK/2018.2/tps/win64/jre/lib/ext/nashorn.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

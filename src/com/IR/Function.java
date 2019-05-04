@@ -12,11 +12,13 @@ public class Function {
     public String name;
     public int VirtualRegisterCnt=0;
     public int BlockCnt=0;
+    public boolean flag;
     public void accept(IRVisitor visitor) {
         visitor.visit(this);
     }
     public Function(String s,boolean initflag){
         name=s;
+        flag=initflag;
         if(initflag==false){
             head=tail=AddBlock(".entry");
         }

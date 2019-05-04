@@ -5,8 +5,7 @@ public class Immediate extends Value {
     public Immediate(int val){
         value=val;
     }
-    @Override
-    public void accept(IRVisitor visitor) {
-        visitor.visit(this);
+    public String toString() {
+        return String.valueOf(value);
     }
 }

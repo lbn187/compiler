@@ -295,6 +295,7 @@ public class IRBuilder extends ASTVisitor{
             if((op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")||op.equals("==")||op.equals("!="))&&u.trueblock!=null){
                 CurBlock.add(new Branch(CurBlock,register,u.trueblock,u.falseblock));
             }
+            return;
         }
         if(op.equals("+")||op.equals("-")||op.equals("*")||op.equals("/")||op.equals("%")||op.equals(">>")||op.equals("<<")||
                 op.equals("&")||op.equals("|")||op.equals("^")||op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")||op.equals("==")||op.equals("!=")){
@@ -389,11 +390,7 @@ public class IRBuilder extends ASTVisitor{
             return;
         }
         if(name.equals("toString")){
-            List<Value>args=new ArrayList<>();
-            args.add(u.exprs.get(0).register);
-            VirtualRegister reg=CurFunction.AddVirtualRegister("res");
-            CurBlock.add(new Call(CurBlock,reg,ScopeBuilder.TOSTRING,args));
-            return;
+            //TODO
         }
         if(name.equals("length")){
             //TODO

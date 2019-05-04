@@ -5,4 +5,7 @@ abstract public class Register extends Value{
     public Register(String s){
         name=s;
     }
+    public String toString(){
+        return name;
+    }
 }

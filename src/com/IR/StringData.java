@@ -9,8 +9,7 @@ public class StringData extends Value{
         value=s;
         id=++StringCnt;
     }
-    @Override
-    public void accept(IRVisitor visitor) {
-        visitor.visit(this);
+    public String toString() {
+        return "$str_" + id;
     }
 }
