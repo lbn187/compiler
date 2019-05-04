@@ -4,6 +4,18 @@ import com.Type.*;
 import com.AST.*;
 public class ScopeBuilder {
     public Scope scoperoot;
+    public final static FunctionDefineType STRING_PRINT=new FunctionDefineType(new VoidType(),new StringType());
+    public final static FunctionDefineType STRING_PRINTLN=new FunctionDefineType(new VoidType(),new StringType());
+    public final static FunctionDefineType GETSTRING=new FunctionDefineType(new StringType());
+    public final static FunctionDefineType GETINT=new FunctionDefineType(new IntType());
+    public final static FunctionDefineType TOSTRING=new FunctionDefineType(new StringType(),new IntType());
+    public final static FunctionDefineType STRING_ADD=new FunctionDefineType(new StringType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_EQ=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_NEQ=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_LT=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_GT=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_LEQ=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_GEQ=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
     void init(){
         ClassDefineType stringtype=new ClassDefineType();
         stringtype.typename="string";
@@ -12,16 +24,18 @@ public class ScopeBuilder {
         stringtype.add("parseInt",new FunctionDefineType(new IntType()));
         stringtype.add("ord",new FunctionDefineType(new IntType(),new IntType()));
         scoperoot.add("string",stringtype);
-        FunctionDefineType printtype=new FunctionDefineType(new VoidType(),new StringType());
-        scoperoot.add("print",printtype);
-        FunctionDefineType printlntype=new FunctionDefineType(new VoidType(),new StringType());
-        scoperoot.add("println",printlntype);
-        FunctionDefineType getStringtype=new FunctionDefineType(new StringType());
-        scoperoot.add("getString",getStringtype);
-        FunctionDefineType getInttype=new FunctionDefineType(new IntType());
-        scoperoot.add("getInt",getInttype);
-        FunctionDefineType toStringtype=new FunctionDefineType(new StringType(),new IntType());
-        scoperoot.add("toString",toStringtype);
+        scoperoot.add("print",STRING_PRINT);
+        scoperoot.add("println",STRING_PRINTLN);
+        scoperoot.add("getString",GETSTRING);
+        scoperoot.add("getInt",GETINT);
+        scoperoot.add("toString",TOSTRING);
+        scoperoot.add("_ADD",STRING_ADD);
+        scoperoot.add("_EQ",STRING_EQ);
+        scoperoot.add("_NEQ",STRING_NEQ);
+        scoperoot.add("_LT",STRING_LT);
+        scoperoot.add("_GT",STRING_GT);
+        scoperoot.add("_LEQ",STRING_LEQ);
+        scoperoot.add("_GEQ",STRING_GEQ);
     }
     void get(Scope curscope,Node curnode,int ok)throws Exception{
         curnode.belong=curscope;

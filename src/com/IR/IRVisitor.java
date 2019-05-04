@@ -22,6 +22,8 @@ public interface IRVisitor {
     void visit(Store node);
     void visit(Move node);
     void visit(StringData node);
-    void visit(ArraySpace node);
+    void visit(Malloc node);
+    void visit(GlobalRegister node);
+    //void visit(ArraySpace node);
     //void visit(Register node);
 }

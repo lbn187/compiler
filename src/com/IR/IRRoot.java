@@ -8,10 +8,11 @@ import java.util.Map;
 public class IRRoot {
     public Map<String, Function> functions=new LinkedHashMap<>();
     public Map<String, StringData> strings=new LinkedHashMap<>();
-    public List<StaticData> datas=new ArrayList<>();
-
+    public List<GlobalRegister> globalregisters=new ArrayList<>();
     public IRRoot() {
         strings.put("\\n", new StringData("\\n"));
+        Function global=new Function("__Global",false);
+        functions.put(global.name,global);
     }
     public void accept(IRVisitor visitor) {
         visitor.visit(this);

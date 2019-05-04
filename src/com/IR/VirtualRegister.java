@@ -1,10 +1,12 @@
 package com.IR;
 
 public class VirtualRegister extends Register{
-    String name;
-    public VirtualRegister(String s){
-        name=s;
+    public int id;
+    public VirtualRegister(String s,int v){
+        super("%"+s+"_"+v);
+        id=v;
     }
+    @Override
     public void accept(IRVisitor visitor) {
         visitor.visit(this);
     }
