@@ -3,7 +3,7 @@ import com.frontend.ASTVisitor;
 import com.AST.*;
 import com.Type.*;
 public class SemanticChecker extends ASTVisitor {
-    public Scope scoperoot;
+    public static Scope scoperoot;
     Type returntype;
     String ClassName;
     int loopcnt;

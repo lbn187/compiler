@@ -9,6 +9,7 @@ import com.AST.*;
 import com.Type.*;
 import com.frontend.Information;
 import com.frontend.ScopeBuilder;
+import com.frontend.SemanticChecker;
 public class IRBuilder extends ASTVisitor{
     public IRBlock CurBlock;
     public IRBlock CurLoopBlock;
@@ -300,7 +301,7 @@ public class IRBuilder extends ASTVisitor{
             VirtualRegister ptr=CurFunction.AddVirtualRegister("ClassPtr");
             CurBlock.add(new Load(CurBlock,ptr,ptrptr));
             if(o.type instanceof FunctionDefineType)return ptr;
-            Immediate off=new Immediate(o.expr.belong.get(o.name).offset);
+            Immediate off=new Immediate(SemanticChecker.scoperoot.get(o.expr.type.typename).offset);
             VirtualRegister addr=CurFunction.AddVirtualRegister("MemberAddress");
             CurBlock.add(new BinaryOpIR(CurBlock,addr,"+",ptr,off));
             return addr;
