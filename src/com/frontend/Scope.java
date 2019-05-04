@@ -27,7 +27,7 @@ public class Scope{
     }
     public boolean add(String str,Type id){
         if(map.get(str)!=null)return false;
-        map.put(str,new Information(id,offset));
+        map.put(str,new Information(id,offset,classflag));
         offset+=id.size;
         return true;
     }

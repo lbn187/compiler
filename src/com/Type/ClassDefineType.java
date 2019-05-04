@@ -18,7 +18,7 @@ public class ClassDefineType extends Type {
         map.put(s,tp);
     }
     public void add(String s,Type tp){
-        Information info=new Information(tp,0);//???
+        Information info=new Information(tp,0,true);//???
         map.put(s,info);
     }
     public Information get(String s){

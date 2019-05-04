@@ -5,8 +5,10 @@ public class Information {
     public Type type;
     public int offset;
     public Register register=null;
-    public Information(Type t,int off){
+    public boolean classflag;
+    public Information(Type t,int off,boolean flag){
         type=t;
         offset=off;
+        classflag=flag;
     }
 }

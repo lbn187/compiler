@@ -29,11 +29,11 @@ public class Main {
         scopebuilder.work(root);
         SemanticChecker semanticchecker=new SemanticChecker(scopebuilder.scoperoot);
         root.accept(semanticchecker);
-        /*IRBuilder irbuilder=new IRBuilder();
+        IRBuilder irbuilder=new IRBuilder();
         irbuilder.getIR(root);
         IRRoot irroot=irbuilder.irroot;
         System.out.println("-----------START PRINT-----------------");
         irroot.accept(new IRPrinter(out));
-        System.out.println("-----------END PRINT-----------------");*/
+        System.out.println("-----------END PRINT-----------------");
     }
 }

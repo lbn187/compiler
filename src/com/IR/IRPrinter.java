@@ -130,7 +130,7 @@ public class IRPrinter implements IRVisitor {
     public void visit(Branch node) {
 //        if (node.getIfFalse() == null)
 //            System.out.println("null false");
-        println("br " + node.flag + " <" + node.trueblock.id + "> <" + node.falseblock.id + ">");
+        println("br " + node.flag.toString() + " <" + String.valueOf(node.trueblock.id) + "> <" + String.valueOf(node.falseblock.id) + ">");
     }
 
     public void visit(Jump node) {

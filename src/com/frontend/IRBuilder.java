@@ -53,16 +53,37 @@ public class IRBuilder extends ASTVisitor{
     public boolean LogicalJudge(ExprNode u){
         if(u instanceof BinaryOpNode){
             String op=((BinaryOpNode)u).operator;
-            if(op=="&&"||op=="||")return true;else return false;
+            if(op.equals("&&")||op.equals("||"))return true;else return false;
         }else if(u instanceof UnaryOpNode){
             String op=((UnaryOpNode)u).operator;
-            if(op=="!")return true;else return false;
+            if(op.equals("!"))return true;else return false;
         }else return false;
     }
     public boolean MemoryJudge(ExprNode u){
         if(u instanceof ArefNode)return true;
         if(u instanceof MemberNode)return true;
         return false;
+    }
+    public void visitexprprocess(ExprNode u)throws Exception{
+        if(LogicalJudge(u)){
+            u.trueblock=CurFunction.AddBlock("expr_bool_true");
+            u.falseblock=CurFunction.AddBlock("expr_bool_false");
+            IRBlock mergeblock=CurFunction.AddBlock("expr_bool_merge");
+            CurBlock.AddNext(u.trueblock);
+            u.trueblock.AddNext(u.falseblock);
+            u.falseblock.AddNext(mergeblock);
+            VirtualRegister reg=CurFunction.AddVirtualRegister("BoolValueAddress");
+            CurFunction.head.addfront(new Allocation(CurFunction.head,reg,8));
+            visit(u);
+            u.trueblock.add(new Store(u.trueblock,reg,new Immediate(1)));
+            u.trueblock.add(new Jump(u.trueblock,mergeblock));
+            u.falseblock.add(new Store(u.falseblock,reg,new Immediate(0)));
+            u.falseblock.add(new Jump(u.falseblock,mergeblock));
+            VirtualRegister val=CurFunction.AddVirtualRegister("BoolValue");
+            mergeblock.add(new Load(mergeblock,val,reg));
+            u.register=reg;
+            CurBlock=mergeblock;
+        }else visit(u);
     }
     public void visit(ProgramNode u)throws Exception{
         InitBlock=irroot.functions.get("__Global").head;
@@ -82,7 +103,7 @@ public class IRBuilder extends ASTVisitor{
             if(u.expr!=null){
                 CurFunction=irroot.functions.get("__Global");
                 CurBlock=InitBlock;
-                visit(u.expr);
+                visitexprprocess(u.expr);
                 CurBlock.add(new Store(CurBlock,reg,u.expr.register));
                 InitBlock=CurBlock;
             }
@@ -91,7 +112,7 @@ public class IRBuilder extends ASTVisitor{
             information.register = reg;
             CurFunction.head.addfront(new Allocation(CurFunction.head, reg, 8));
             if (u.expr != null) {
-                visit(u.expr);
+                visitexprprocess(u.expr);
                 CurBlock.add(new Store(CurBlock, reg, u.expr.register));
             }
         }
@@ -157,17 +178,17 @@ public class IRBuilder extends ASTVisitor{
         IRBlock PreLoopAfterBlock=CurLoopAfterBlock;
         CurLoopBlock=condblock;
         CurLoopAfterBlock=afterblock;
-        if(u.pre!=null)visit(u.pre);
+        if(u.pre!=null)visitexprprocess(u.pre);
         CurBlock.add(new Jump(CurBlock,condblock));
         if(u.mid!=null) {
             CurBlock = condblock;
             u.mid.trueblock = loopblock;
             u.mid.falseblock = afterblock;
-            visit(u.mid);
+            visitexprprocess(u.mid);
         }
         CurBlock=loopblock;
         visit(u.stmt);
-        if(u.suc!=null)visit(u.suc);
+        if(u.suc!=null)visitexprprocess(u.suc);
         CurBlock.add(new Jump(CurBlock,condblock));
         CurBlock=afterblock;
         CurLoopBlock=PreLoopBlock;
@@ -188,7 +209,7 @@ public class IRBuilder extends ASTVisitor{
         CurBlock=condblock;
         u.expr.trueblock=loopblock;
         u.expr.falseblock=afterblock;
-        visit(u.expr);
+        visitexprprocess(u.expr);
         CurBlock=loopblock;
         visit(u.stmt);
         CurBlock.add(new Jump(CurBlock,condblock));
@@ -208,7 +229,7 @@ public class IRBuilder extends ASTVisitor{
         }
         u.expr.trueblock=trueblock;
         if(u.elsestmt==null)u.expr.falseblock=mergeblock;else u.expr.falseblock=falseblock;
-        visit(u.expr);
+        visitexprprocess(u.expr);
         CurBlock=trueblock;
         visit(u.ifstmt);
         CurBlock.add(new Jump(CurBlock,mergeblock));
@@ -223,7 +244,7 @@ public class IRBuilder extends ASTVisitor{
         if(u.expr==null){
             CurBlock.add(new Jump(CurBlock,ExitBlock));
         }else{
-            visit(u.expr);
+            visitexprprocess(u.expr);
             CurBlock.add(new Move(CurBlock,returnvalue,u.expr.register));
             CurBlock.add(new Jump(CurBlock,ExitBlock));
         }
@@ -249,7 +270,7 @@ public class IRBuilder extends ASTVisitor{
             ArefNode o=(ArefNode)u;
             VirtualRegister ptr;
             if(o.exprname instanceof CreatorNode || o.exprname instanceof FuncExprNode){
-                visit(o.exprname);
+                visitexprprocess(o.exprname);
                 ptr=(VirtualRegister)o.exprname.register;
             }else{
                 Value ptrptr=GetLhsAddress(o.exprname);
@@ -258,7 +279,7 @@ public class IRBuilder extends ASTVisitor{
             }
             VirtualRegister base=CurFunction.AddVirtualRegister("ArrayBase");
             CurBlock.add(new BinaryOpIR(CurBlock,base,"+",ptr,new Immediate(8)));//store the ptr
-            visit(o.exprexpr);
+            visitexprprocess(o.exprexpr);
             VirtualRegister off=CurFunction.AddVirtualRegister("Offset");
             CurBlock.add(new BinaryOpIR(CurBlock,off,"*",o.exprexpr.register,new Immediate(8)));
             VirtualRegister elementaddress=CurFunction.AddVirtualRegister("ElementAddress");
@@ -267,9 +288,23 @@ public class IRBuilder extends ASTVisitor{
         }else
         if(u instanceof MemberNode){
             MemberNode o=(MemberNode)u;
-            //TODO
-        }else
-        System.out.println("GetLhsAddress Wrong");
+            if(o.expr instanceof StringLiteralNode){
+                visitexprprocess(o.expr);
+                return o.expr.register;
+            }
+            if((o.expr instanceof FuncExprNode)&&(o.type instanceof FunctionDefineType)){
+                visitexprprocess(o.expr);
+                return o.expr.register;
+            }
+            Value ptrptr=GetLhsAddress(o.expr);
+            VirtualRegister ptr=CurFunction.AddVirtualRegister("ClassPtr");
+            CurBlock.add(new Load(CurBlock,ptr,ptrptr));
+            if(o.type instanceof FunctionDefineType)return ptr;
+            Immediate off=new Immediate(o.expr.belong.get(o.name).offset);
+            VirtualRegister addr=CurFunction.AddVirtualRegister("MemberAddress");
+            CurBlock.add(new BinaryOpIR(CurBlock,addr,"+",ptr,off));
+            return addr;
+        }else System.out.println("GetLhsAddress Wrong");
         return null;
     }
     public void visit(AssignNode u)throws Exception{
@@ -280,8 +315,8 @@ public class IRBuilder extends ASTVisitor{
     public void visit(BinaryOpNode u)throws Exception{
         String op=u.operator;
         if(u.exprl.type instanceof StringType){
-            visit(u.exprl);
-            visit(u.exprr);
+            visitexprprocess(u.exprl);
+            visitexprprocess(u.exprr);
             VirtualRegister register=CurFunction.AddVirtualRegister("res");
             List<Value>args=new ArrayList<>();
             args.add(u.exprl.register);
@@ -301,8 +336,8 @@ public class IRBuilder extends ASTVisitor{
         }
         if(op.equals("+")||op.equals("-")||op.equals("*")||op.equals("/")||op.equals("%")||op.equals(">>")||op.equals("<<")||
                 op.equals("&")||op.equals("|")||op.equals("^")||op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")||op.equals("==")||op.equals("!=")){
-            visit(u.exprl);
-            visit(u.exprr);
+            visitexprprocess(u.exprl);
+            visitexprprocess(u.exprr);
             VirtualRegister register=CurFunction.AddVirtualRegister("res");
             u.register=register;
             CurBlock.add(new BinaryOpIR(CurBlock,register,u.operator,u.exprl.register,u.exprr.register));
@@ -315,18 +350,18 @@ public class IRBuilder extends ASTVisitor{
                 u.exprl.trueblock=CurFunction.AddBlock("lhs_true");
                 CurBlock.AddNext(u.exprl.trueblock);
                 u.exprl.falseblock=u.falseblock;
-                visit(u.exprl);
+                visitexprprocess(u.exprl);
                 CurBlock=u.exprl.trueblock;
             }else{
                 u.exprl.trueblock=u.trueblock;
                 u.exprl.falseblock=CurFunction.AddBlock("lhs_false");
                 CurBlock.AddNext(u.exprl.falseblock);
-                visit(u.exprl);
+                visitexprprocess(u.exprl);
                 CurBlock=u.exprl.falseblock;
             }
             u.exprr.trueblock=u.trueblock;
             u.exprr.falseblock=u.falseblock;
-            visit(u.exprr);
+            visitexprprocess(u.exprr);
         }
     }
     public void visit(SuffixOpNode u)throws Exception{
@@ -340,7 +375,7 @@ public class IRBuilder extends ASTVisitor{
         if (op.equals("!")) {
             u.expr.trueblock = u.trueblock;
             u.expr.falseblock = u.falseblock;
-            visit(u.expr);
+            visitexprprocess(u.expr);
             return;
         }
         visit(u.expr);
@@ -364,69 +399,68 @@ public class IRBuilder extends ASTVisitor{
         }
     }
     public void visit(FuncExprNode u)throws Exception{
-        /*String name=u.name;
-        if(name.equals("print")){
-            visit(u.exprs.get(0));
+        Type type=u.exprs.get(0).type;
+        if(type==ScopeBuilder.STRING_PRINT){
+            visitexprprocess(u.exprs.get(1));
             List<Value>args=new ArrayList<>();
-            args.add(u.exprs.get(0).register);
+            args.add(u.exprs.get(1).register);
             CurBlock.add(new Call(CurBlock,null,ScopeBuilder.STRING_PRINT,args));
             return;
         }
-        if(name.equals("println")){
-            visit(u.exprs.get(0));
+        if(type==ScopeBuilder.STRING_PRINTLN){
+            visitexprprocess(u.exprs.get(1));
             List<Value>args=new ArrayList<>();
-            args.add(u.exprs.get(0).register);
+            args.add(u.exprs.get(1).register);
             CurBlock.add(new Call(CurBlock,null,ScopeBuilder.STRING_PRINTLN,args));
             return;
         }
-        if(name.equals("getString")){
+        if(type==ScopeBuilder.GETSTRING){
             List<Value>args=new ArrayList<>();
             VirtualRegister ptr=CurFunction.AddVirtualRegister("StringPtr");
             CurBlock.add(new Call(CurBlock,ptr,ScopeBuilder.GETSTRING,args));
+            u.register=ptr;
             return;
         }
-        if(name.equals("getInt")){
+        if(type==ScopeBuilder.GETINT){
             List<Value>args=new ArrayList<>();
             VirtualRegister reg=CurFunction.AddVirtualRegister("res");
             CurBlock.add(new Call(CurBlock,reg,ScopeBuilder.GETINT,args));
+            u.register=reg;
             return;
         }
-        if(name.equals("toString")){
-            //TODO
+        if(type==ScopeBuilder.TOSTRING){
+            visitexprprocess(u.exprs.get(1));
+            List<Value>args=new ArrayList<>();
+            args.add(u.exprs.get(1).register);
+            VirtualRegister reg=CurFunction.AddVirtualRegister("res");
+            CurBlock.add(new Call(CurBlock,null,ScopeBuilder.STRING_PRINTLN,args));
+            u.register=reg;
+            return;
         }
-        if(name.equals("length")){
-            //TODO
-        }
-        if (name.equals("substring")) {
-            //TODO
-        }
-        if(name.equals("parseInt")){
-            //TODO
-        }
-        if(name.equals("ord")){
-            //TODO
-        }
-        if(name.equals("size")){
-            //TODO
-        }
-        if(u.belong.classflag==true){
-            //TODO
-        }*/
         //WRONG  not belong.name
-        /*
-        Function function=irroot.functions.get(u.belong.name+"_"+u.name);
-        List<Value>args;
-        for(ExprNode o:u.exprs){
-            visit(o);
-            args.add(o.register);
+        List<Value>args=new ArrayList<>();
+        if(u.exprs.get(0) instanceof MemberNode){
+            args.add(GetLhsAddress(u.exprs.get(0)));
+        }else if(u.belong.classflag==true){
+            //TODO  maybe wrong
+            VirtualRegister ptr=CurFunction.AddVirtualRegister("ClassPtr");
+            CurBlock.add(new Load(CurBlock,ptr,ThisAddress));
+            args.add(ptr);
+        }else
+        if(type==ScopeBuilder.STRING_LENGTH||type==ScopeBuilder.STRING_SUBSTRING||type==ScopeBuilder.STRING_PARSEINT||type==ScopeBuilder.STRING_ORD||type==ScopeBuilder.ARRAY_SIZE){
+            args.add(GetLhsAddress(u.exprs.get(0)));
+        }
+        for(int i=1;i<u.exprs.size();i++){
+            visitexprprocess(u.exprs.get(i));
+            args.add(u.exprs.get(i).register);
         }
         VirtualRegister register=null;
         if(!(u.type instanceof VoidType))register=CurFunction.AddVirtualRegister("res");
-        CurBlock.add(new Call(CurBlock,register,function,arglist));
+        CurBlock.add(new Call(CurBlock,register,(FunctionDefineType)type,args));
         u.register=register;
         if((u.type instanceof BoolType)&&u.trueblock!=null){
             CurBlock.add(new Branch(CurBlock,u.register,u.trueblock,u.falseblock));
-        }*/
+        }
     }
     public void visit(ArefNode u)throws Exception{
         Value address=GetLhsAddress(u);
