@@ -1,6 +1,6 @@
 package com.Type;
 
-public class StringType extends ClassType {
+public class StringType extends Type {
     public StringType(){
         super();
         typename="string";

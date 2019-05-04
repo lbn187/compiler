@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.ArrayList;
 public class MemberNode extends LHSNode {
     public ExprNode expr;
-    public ExprNode member;
+    public String name;
     public MemberNode(){
         super();
     }
     public List<Node> getAll() {
         List<Node> tmp = new ArrayList<Node>();
         tmp.add(expr);
-        tmp.add(member);
+        //tmp.add(member);
         return tmp;
     }
     public void print(String s){

@@ -16,14 +16,26 @@ public class ScopeBuilder {
     public final static FunctionDefineType STRING_GT=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
     public final static FunctionDefineType STRING_LEQ=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
     public final static FunctionDefineType STRING_GEQ=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_LENGTH=new FunctionDefineType(new IntType());
+    public final static FunctionDefineType STRING_SUBSTRING=new FunctionDefineType(new StringType(),new IntType(),new IntType());
+    public final static FunctionDefineType STRING_PARSEINT=new FunctionDefineType(new IntType());
+    public final static FunctionDefineType STRING_ORD=new FunctionDefineType(new IntType(),new IntType());
+    public final static FunctionDefineType ARRAY_SIZE=new FunctionDefineType(new IntType());
     void init(){
+        /*
         ClassDefineType stringtype=new ClassDefineType();
         stringtype.typename="string";
         stringtype.add("length",new FunctionDefineType(new IntType()));
         stringtype.add("substring",new FunctionDefineType(new StringType(),new IntType(),new IntType()));
         stringtype.add("parseInt",new FunctionDefineType(new IntType()));
         stringtype.add("ord",new FunctionDefineType(new IntType(),new IntType()));
-        scoperoot.add("string",stringtype);
+        scoperoot.add("string",stringtype);*/
+
+        scoperoot.add("string.length",STRING_LENGTH);
+        scoperoot.add("string.substring",STRING_SUBSTRING);
+        scoperoot.add("string.parseInt",STRING_PARSEINT);
+        scoperoot.add("string.ord",STRING_ORD);
+        scoperoot.add("array.size",ARRAY_SIZE);
         scoperoot.add("print",STRING_PRINT);
         scoperoot.add("println",STRING_PRINTLN);
         scoperoot.add("getString",GETSTRING);
@@ -55,7 +67,7 @@ public class ScopeBuilder {
                 o.belong=curscope;
                 FunctionDefNode tmp = (FunctionDefNode) o;
                 Scope sonscope = curscope.addson();
-                sonscope.classflag=false;
+                //sonscope.classflag=false;
                 FunctionDefineType functype = new FunctionDefineType(tmp.type);
                 for (VariableDefNode u : tmp.variables) {
                     VariableDefNode ttmp = u;

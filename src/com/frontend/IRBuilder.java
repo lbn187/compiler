@@ -233,7 +233,9 @@ public class IRBuilder extends ASTVisitor{
         if(u instanceof VariableNode){
             VariableNode o=(VariableNode)u;
             if(o.name.equals("this"))return ThisAddress;
+            //System.out.println(o.belong.name);
             if(o.belong.classflag==true){//is in a class
+                //System.out.println("INCLASS  "+o.name);
                 VirtualRegister reg=CurFunction.AddVirtualRegister("ClassPtr");
                 CurBlock.add(new Load(CurBlock,reg,ThisAddress));
                 Immediate offset=new Immediate(o.belong.get(u.name).offset);
@@ -362,7 +364,7 @@ public class IRBuilder extends ASTVisitor{
         }
     }
     public void visit(FuncExprNode u)throws Exception{
-        String name=u.name;
+        /*String name=u.name;
         if(name.equals("print")){
             visit(u.exprs.get(0));
             List<Value>args=new ArrayList<>();
@@ -409,7 +411,7 @@ public class IRBuilder extends ASTVisitor{
         }
         if(u.belong.classflag==true){
             //TODO
-        }
+        }*/
         //WRONG  not belong.name
         /*
         Function function=irroot.functions.get(u.belong.name+"_"+u.name);
@@ -439,6 +441,15 @@ public class IRBuilder extends ASTVisitor{
         Value address=GetLhsAddress(u);
         VirtualRegister reg=CurFunction.AddVirtualRegister("MemberValue");
         CurBlock.add(new Load(CurBlock,reg,address));
+        u.register=reg;
+        if((u.type instanceof BoolType)&&u.trueblock!=null){
+            CurBlock.add(new Branch(CurBlock,u.register,u.trueblock,u.falseblock));
+        }
+    }
+    public void visit(VariableNode u)throws Exception{
+        Value addr=GetLhsAddress(u);
+        VirtualRegister reg=CurFunction.AddVirtualRegister("idValue");
+        CurBlock.add(new Load(CurBlock,reg,addr));
         u.register=reg;
         if((u.type instanceof BoolType)&&u.trueblock!=null){
             CurBlock.add(new Branch(CurBlock,u.register,u.trueblock,u.falseblock));

@@ -395,8 +395,9 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
     @Override public MemberNode visitExprsmember(MxStarParser.ExprsmemberContext ctx) {
         MemberNode u=new MemberNode();
         u.loc=new Location(ctx.start);
-        u.expr=(ExprNode)visit(ctx.expression(0));
-        u.member=(ExprNode)visit(ctx.expression(1));
+        u.expr=(ExprNode)visit(ctx.expression());
+        u.name=ctx.name.getText();
+        //u.member=(ExprNode)visit(ctx.expression(1));
         //   System.out.println("<MemberNode>");
         return u;
     }
@@ -408,7 +409,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      */
     @Override public FuncExprNode visitExprfunction(MxStarParser.ExprfunctionContext ctx) {
         FuncExprNode u=new FuncExprNode();
-        u.name=ctx.name.getText();
+        //u.name=ctx.name.getText();
         //   System.out.println("<FuncExprNode> name="+u.name);
         for(MxStarParser.ExpressionContext o:ctx.expression()){
             u.exprs.add((ExprNode)visit(o));

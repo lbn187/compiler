@@ -57,9 +57,9 @@ public class SemanticChecker extends ASTVisitor {
         }
     }
     Type FunctionChecker(FunctionDefineType type,FuncExprNode node){
-        if(type.parameters.size()!=node.exprs.size())return null;
+        if(type.parameters.size()!=(node.exprs.size()-1))return null;
         for(int i=0;i<type.parameters.size();i++)
-            if(!type.parameters.get(i).equals(node.exprs.get(i).type))return null;
+            if(!type.parameters.get(i).equals(node.exprs.get(i+1).type))return null;
         return type.variable;
     }
     public void visit(AssignNode u) throws Exception{
@@ -116,9 +116,11 @@ public class SemanticChecker extends ASTVisitor {
         }
     }
     public void visit(FuncExprNode u)throws Exception{
-        for(ExprNode o:u.exprs)
-            visit(o);
-        Type type=u.belong.get(u.name).type;
+        visit(u.exprs.get(0));
+        Type type=u.exprs.get(0).type;
+        for(int i=1;i<u.exprs.size();i++){
+            visit(u.exprs.get(i));
+        }
         if(type==null){
             throw new Exception("NoDefineFunc"+u.loc.toString());
         }
@@ -203,6 +205,45 @@ public class SemanticChecker extends ASTVisitor {
     public void visit(MemberNode u)throws Exception{
         visit(u.expr);
         if(u.expr.type instanceof ArrayType){
+            Type type=u.belong.get("array."+u.name).type;
+            if(type instanceof FunctionDefineType){
+                u.type=(FunctionDefineType)type;
+                return;
+            }
+            throw new Exception("MemberWrong2"+u.loc.toString());
+        }
+        if(u.expr.type instanceof StringType){
+            Type type=u.belong.get("string."+u.name).type;
+            if(type instanceof FunctionDefineType){
+                u.type=(FunctionDefineType)type;
+                return;
+            }
+            throw new Exception("MemberWrong3"+u.loc.toString());
+        }
+        if(u.expr.type instanceof ClassType){
+            ClassDefineType classtype=(ClassDefineType)scoperoot.get(u.expr.type.typename).type;
+            if(classtype==null)System.out.println("CAN NOT Find classtype"+u.loc.toString());
+            Information info=classtype.get(u.name);
+            if(info==null){
+                throw new Exception("MemberWrong4"+u.loc.toString());
+            }
+            u.type=info.type;
+            /*
+            if(info.type instanceof FunctionDefineType){
+                u.type=(FunctionDefineType)info.type;
+                return;
+            }
+            if(info.type instanceof VariableType){
+                u.type=((VariableType)info.type).type;
+                return;
+            }*/
+            return;
+        }
+        throw new Exception("MemberWrong1"+u.loc.toString());
+        /*
+        visit(u.expr);
+        if(u.expr.type instanceof ArrayType){
+            //Information info=u.belong.
             if(!u.member.name.equals("size")||u.member.getAll().size()!=0){
                 throw new Exception("Wrong Array's Size"+u.loc.toString());
             }
@@ -242,7 +283,7 @@ public class SemanticChecker extends ASTVisitor {
                 throw new Exception("MemberWrong7"+u.loc.toString());
             }
             u.type=type;
-        }
+        }*/
     }
     public void visit(VariableNode u)throws Exception{
         if(u.name.equals("this")){

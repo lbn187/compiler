@@ -133,7 +133,7 @@ public class TempTestAst {
         s=s+delta;
         u.print(s);
         dfs(u.expr,s);
-        dfs(u.member,s);
+        //dfs(u.member,s);
     }
     public void dfs(NullLiteralNode u,String s){
         s=s+delta;

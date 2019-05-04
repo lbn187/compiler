@@ -40,7 +40,7 @@ abstract public class ASTVisitor {
             }
             public void visit(MemberNode u)throws Exception{
                 visit(u.expr);
-                visit(u.member);
+                //visit(u.member);
             }
             public void visit(VariableNode u)throws Exception{
             }

@@ -16,7 +16,7 @@ public class Scope{
         map=new Hashtable<String,Information>();
         father=null;
         name="";
-        classflag=true;
+        classflag=false;
     }
     public Scope(Scope fa,String s,boolean flag){
         son=new ArrayList<Scope>();
