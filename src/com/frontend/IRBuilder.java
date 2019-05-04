@@ -491,7 +491,25 @@ public class IRBuilder extends ASTVisitor{
         }
     }
     public void visit(CreatorNode u)throws Exception {
-        //TODO
+        if(u.exprs.size()==0){
+            VirtualRegister ptr=CurFunction.AddVirtualRegister("ClassPtr");
+            Type type=SemanticChecker.scoperoot.get(u.type.typename).type;
+            if(!(type instanceof ClassDefineType)){
+                throw new Exception("CreatorWrong"+u.loc.toString());
+            }
+            ClassDefineType classtype=(ClassDefineType)type;
+            CurBlock.add(new Malloc(CurBlock,ptr,new Immediate(classtype.size)));
+            if(classtype.get(classtype.typename)!=null){
+                Type func=(classtype.get(type.typename).type);
+                if(!(func instanceof FunctionDefineType)){
+                    throw new Exception("CreatorWrong"+u.loc.toString());
+                }
+                List<Value>args=new ArrayList<>();
+                args.add(ptr);
+                CurBlock.add(new Call(CurBlock,null,(FunctionDefineType)func,args));
+            }
+            u.register=ptr;
+        }
     }
     public void visit(NullStmtNode u)throws Exception{
 

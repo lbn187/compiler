@@ -58,7 +58,7 @@ public class ScopeBuilder {
                 Scope sonscope=curscope.addson();
                 sonscope.classflag=true;
                 get(sonscope,tmp,1);
-                ClassDefineType tmptype=new ClassDefineType(sonscope.map);
+                ClassDefineType tmptype=new ClassDefineType(sonscope.map,sonscope.offset);
                 //map.put(tmp.name,sonscope);
                 if(!curscope.add(tmp.name,tmptype)){
                     throw new Exception("Redefine"+curnode.loc.toString());
