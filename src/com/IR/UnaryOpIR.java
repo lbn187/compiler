@@ -1,10 +1,10 @@
 package com.IR;
 //dest=operation value
 public class UnaryOpIR extends IRInst {
-    public Register dest;
+    public VirtualRegister dest;
     public Value value;
     public String operator;
-    public UnaryOpIR(IRBlock blk,Register reg,String ope,Value val){
+    public UnaryOpIR(IRBlock blk,VirtualRegister reg,String ope,Value val){
         super(blk);
         dest=reg;
         operator=ope;

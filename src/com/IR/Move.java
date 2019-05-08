@@ -1,9 +1,9 @@
 package com.IR;
 //dest=value
 public class Move extends IRInst {
-    public Register dest;
+    public VirtualRegister dest;
     public Value value;
-    public Move(IRBlock blk,Register reg,Value val){
+    public Move(IRBlock blk,VirtualRegister reg,Value val){
         super(blk);
         dest=reg;
         value=val;

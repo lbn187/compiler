@@ -106,7 +106,7 @@ public class IRPrinter implements IRVisitor {
             funcCall.append(node.dest).append(" = ");
         }
         //TODO
-        //funcCall.append(node.function.name).append(" ( ");
+        funcCall.append(node.function.typename).append(" ( ");
         for (Value arg : node.args) {
             funcCall.append(arg).append(" ");
         }

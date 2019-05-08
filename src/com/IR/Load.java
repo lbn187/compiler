@@ -3,7 +3,7 @@ package com.IR;
 
 //dest=V[address]
 public class Load extends IRInst {
-    public Register dest;
+    public VirtualRegister dest;
     //public int size;
     public Value address;
     //public int offset;
@@ -15,7 +15,7 @@ public class Load extends IRInst {
         address=addr;
         offset=off;
     }*/
-    public Load(IRBlock blk,Register reg,Value addr){
+    public Load(IRBlock blk,VirtualRegister reg,Value addr){
         super(blk);
         dest=reg;
         address=addr;

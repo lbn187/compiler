@@ -4,23 +4,23 @@ import com.Type.*;
 import com.AST.*;
 public class ScopeBuilder {
     public Scope scoperoot;
-    public final static FunctionDefineType STRING_PRINT=new FunctionDefineType(new VoidType(),new StringType());
-    public final static FunctionDefineType STRING_PRINTLN=new FunctionDefineType(new VoidType(),new StringType());
-    public final static FunctionDefineType GETSTRING=new FunctionDefineType(new StringType());
-    public final static FunctionDefineType GETINT=new FunctionDefineType(new IntType());
-    public final static FunctionDefineType TOSTRING=new FunctionDefineType(new StringType(),new IntType());
-    public final static FunctionDefineType STRING_ADD=new FunctionDefineType(new StringType(),new StringType(),new StringType());
-    public final static FunctionDefineType STRING_EQ=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
-    public final static FunctionDefineType STRING_NEQ=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
-    public final static FunctionDefineType STRING_LT=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
-    public final static FunctionDefineType STRING_GT=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
-    public final static FunctionDefineType STRING_LEQ=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
-    public final static FunctionDefineType STRING_GEQ=new FunctionDefineType(new BoolType(),new StringType(),new StringType());
-    public final static FunctionDefineType STRING_LENGTH=new FunctionDefineType(new IntType());
-    public final static FunctionDefineType STRING_SUBSTRING=new FunctionDefineType(new StringType(),new IntType(),new IntType());
-    public final static FunctionDefineType STRING_PARSEINT=new FunctionDefineType(new IntType());
-    public final static FunctionDefineType STRING_ORD=new FunctionDefineType(new IntType(),new IntType());
-    public final static FunctionDefineType ARRAY_SIZE=new FunctionDefineType(new IntType());
+    public final static FunctionDefineType STRING_PRINT=new FunctionDefineType("print",new VoidType(),new StringType());
+    public final static FunctionDefineType STRING_PRINTLN=new FunctionDefineType("println",new VoidType(),new StringType());
+    public final static FunctionDefineType GETSTRING=new FunctionDefineType("getString",new StringType());
+    public final static FunctionDefineType GETINT=new FunctionDefineType("getInt",new IntType());
+    public final static FunctionDefineType TOSTRING=new FunctionDefineType("toString",new StringType(),new IntType());
+    public final static FunctionDefineType STRING_ADD=new FunctionDefineType("_ADD",new StringType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_EQ=new FunctionDefineType("_EQ",new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_NEQ=new FunctionDefineType("_NEQ",new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_LT=new FunctionDefineType("_LT",new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_GT=new FunctionDefineType("_GT",new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_LEQ=new FunctionDefineType("_LEQ",new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_GEQ=new FunctionDefineType("_GEQ",new BoolType(),new StringType(),new StringType());
+    public final static FunctionDefineType STRING_LENGTH=new FunctionDefineType("string.length",new IntType());
+    public final static FunctionDefineType STRING_SUBSTRING=new FunctionDefineType("string.substring",new StringType(),new IntType(),new IntType());
+    public final static FunctionDefineType STRING_PARSEINT=new FunctionDefineType("string.parseInt",new IntType());
+    public final static FunctionDefineType STRING_ORD=new FunctionDefineType("string.ord",new IntType(),new IntType());
+    public final static FunctionDefineType ARRAY_SIZE=new FunctionDefineType("array.size",new IntType());
     void init(){
         /*
         ClassDefineType stringtype=new ClassDefineType();
@@ -68,7 +68,7 @@ public class ScopeBuilder {
                 FunctionDefNode tmp = (FunctionDefNode) o;
                 Scope sonscope = curscope.addson();
                 //sonscope.classflag=false;
-                FunctionDefineType functype = new FunctionDefineType(tmp.type);
+                FunctionDefineType functype = new FunctionDefineType(tmp.name,tmp.type);
                 for (VariableDefNode u : tmp.variables) {
                     VariableDefNode ttmp = u;
                     ttmp.belong = sonscope;

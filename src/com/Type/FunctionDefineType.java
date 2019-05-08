@@ -1,10 +1,12 @@
 package com.Type;
 import com.Type.Type;
+import com.IR.*;
 import java.util.List;
 import java.util.ArrayList;
 public class FunctionDefineType extends Type{
     public Type variable;
     public List<Type> parameters;
+    public Function ir;
     public FunctionDefineType(){
         super();
         size=0;
@@ -15,8 +17,9 @@ public class FunctionDefineType extends Type{
         parameters=new ArrayList<Type>();
         size=0;
     }
-    public FunctionDefineType(Type v,Type... params){
+    public FunctionDefineType(String s,Type v,Type... params){
         super();
+        typename=s;
         variable=v;
         parameters=new ArrayList<Type>();
         for(int i=0;i<params.length;i++)parameters.add(params[i]);

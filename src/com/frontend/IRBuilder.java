@@ -392,12 +392,13 @@ public class IRBuilder extends ASTVisitor{
         if (op.equals("++")) {
             VirtualRegister register = CurFunction.AddVirtualRegister("res");
             CurBlock.add(new BinaryOpIR(CurBlock,register,"+",u.expr.register,new Immediate(1)));
-            CurBlock.add(new Move(CurBlock,(Register)u.expr.register,register));
+            CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
+            //TODO youhua
         }
         if(op.equals("--")){
             VirtualRegister register = CurFunction.AddVirtualRegister("res");
             CurBlock.add(new BinaryOpIR(CurBlock,register,"-",u.expr.register,new Immediate(1)));
-            CurBlock.add(new Move(CurBlock,(Register)u.expr.register,register));
+            CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
         }
     }
     public void visit(FuncExprNode u)throws Exception{

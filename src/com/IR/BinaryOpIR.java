@@ -1,11 +1,11 @@
 package com.IR;
 //rt=lv op rv
 public class BinaryOpIR extends IRInst{
-    public Register dest;
+    public VirtualRegister dest;
     public Value lvalue;
     public Value rvalue;
     public String operator;
-    public BinaryOpIR(IRBlock blk,Register reg,String ope,Value lhs,Value rhs){
+    public BinaryOpIR(IRBlock blk,VirtualRegister reg,String ope,Value lhs,Value rhs){
         super(blk);
         dest=reg;
         operator=ope;

@@ -6,6 +6,8 @@ import org.antlr.v4.runtime.tree.*;
 import com.frontend.*;
 import com.AST.*;
 import com.IR.*;
+import com.nasm.*;
+import com.backend.*;
 import java.io.*;
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -35,5 +37,9 @@ public class Main {
         System.out.println("-----------START PRINT-----------------");
         irroot.accept(new IRPrinter(out));
         System.out.println("-----------END PRINT-----------------");
+        Translator translator=new Translator();
+        Nasm nasmroot=translator.getNasm(irroot);
+        NasmPrinter nasmprinter=new NasmPrinter();
+        nasmprinter.visit(nasmroot);
     }
 }

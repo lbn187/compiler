@@ -1,9 +1,9 @@
 package com.IR;
 
 public class Malloc extends IRInst{
-    Register dest;
-    Value size;
-    public Malloc(IRBlock blk,Register reg,Value sz){
+    public VirtualRegister dest;
+    public Value size;
+    public Malloc(IRBlock blk,VirtualRegister reg,Value sz){
         super(blk);
         dest=reg;
         size=sz;
