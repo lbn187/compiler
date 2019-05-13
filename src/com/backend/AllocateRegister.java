@@ -1,5 +1,5 @@
 package com.backend;
-import javafx.util.*;
+//import javafx.util.*;
 import java.util.*;
 import java.io.*;
 import com.backend.LiveTester;
@@ -25,13 +25,13 @@ public class AllocateRegister {
     public Set<Mov> WorklistMove = new LinkedHashSet<>();
     public Set<Mov> ActiveMove = new LinkedHashSet<>();
 
-    public Set<Pair<VReg, VReg>> EdgeSet = new HashSet<>();
+    public Set<EdgePair> EdgeSet = new HashSet<>();
     public Map<VReg, Set<VReg>> EdgelistMap = new HashMap<>();
     public Map<VReg, Integer> DegreeMap = new HashMap<>();
     public Map<VReg, Set<Mov>> MovelistMap = new HashMap<>();
     public Map<VReg, VReg> AliasMap = new HashMap<>();
     public static void visit(Nasm nasm) throws IOException {
-      //  System.out.println("VISIT-------------");
+        //  System.out.println("VISIT-------------");
         for(Func func:nasm.Functions){
             AllocateRegister allocator=new AllocateRegister(func);
             allocator.run();
@@ -63,13 +63,13 @@ public class AllocateRegister {
         MovelistMap.clear();
         AliasMap.clear();
         for(Block block:func.Blocks){
-          //  System.out.println("BLOCK: "+block.name);
+            //  System.out.println("BLOCK: "+block.name);
             for(Inst inst:block.Insts){
                 Set<VReg> regs = new HashSet<>();
                 regs.addAll(inst.CalDefine());
                 regs.addAll(inst.CalUse());
                 for(VReg reg:regs){
-             //       System.out.println("REG: "+regs.toString());
+                    //       System.out.println("REG: "+regs.toString());
                     if(reg.PrecolorFlag==true)PreColor.add(reg);
                     else Init.add(reg);
                 }
@@ -187,9 +187,9 @@ public class AllocateRegister {
     }
 
     public void addEdge(VReg u, VReg v) {
-        if (u == v || EdgeSet.contains(new Pair<>(u, v))) return;
-        EdgeSet.add(new Pair<>(u, v));
-        EdgeSet.add(new Pair<>(v, u));
+        if (u == v || EdgeSet.contains(new EdgePair(u,v))) return;
+        EdgeSet.add(new EdgePair(u,v));
+        EdgeSet.add(new EdgePair(v,u));
         if (u.PrecolorFlag==false) {
             EdgelistMap.get(u).add(v);
             int d = DegreeMap.get(u) + 1;
@@ -211,7 +211,7 @@ public class AllocateRegister {
             } else if (moveRelated(n)) {
                 FreezeWork.add(n);
             } else {
-              //  System.out.println("FINDSIMPLE:"+n.toString());
+                //  System.out.println("FINDSIMPLE:"+n.toString());
                 SimpleWork.add(n);
             }
         }
@@ -286,7 +286,7 @@ public class AllocateRegister {
     }
 
     public boolean ok(VReg t, VReg r) {
-        return DegreeMap.get(t) < K || t.PrecolorFlag==true || EdgeSet.contains(new Pair<>(t, r));
+        return DegreeMap.get(t) < K || t.PrecolorFlag==true || EdgeSet.contains(new EdgePair(t,r));
     }
 
     public boolean conservative(Set<VReg> nodes) {
@@ -314,7 +314,7 @@ public class AllocateRegister {
         if (u == v) {
             CombineMove.add(mov);
             addWorkList(u);
-        } else if ((v.PrecolorFlag==true) || EdgeSet.contains(new Pair<>(u, v))) {
+        } else if ((v.PrecolorFlag==true) || EdgeSet.contains(new EdgePair(u, v))) {
             ConstrainMove.add(mov);
             addWorkList(u);
             addWorkList(v);
@@ -413,34 +413,34 @@ public class AllocateRegister {
     public void assignColors() {
         while (!StackSelect.isEmpty()) {
             VReg n = StackSelect.pop();
-           // System.out.println("INSTACK: "+n.toString());
+            // System.out.println("INSTACK: "+n.toString());
             NodeSelect.remove(n);
             Set<Integer>okColors=new HashSet<>();
             for(int i=0;i<14;i++){
-            //    System.out.println("+"+ColorRegs[i]);
+                //    System.out.println("+"+ColorRegs[i]);
                 okColors.add(new Integer(ColorRegs[i]));
             }
             for (VReg w : EdgelistMap.get(n)) {
                 VReg aw = getAliasMap(w);
                 if (ColoredNode.contains(aw) || PreColor.contains(aw)) {
-            //        System.out.println("-"+aw.PReg);
+                    //        System.out.println("-"+aw.PReg);
                     okColors.remove(new Integer(aw.PReg));
                 }
             }
-          //  System.out.println("GET: "+okColors.size());
+            //  System.out.println("GET: "+okColors.size());
             if (okColors.isEmpty()) {
                 SpillNode.add(n);
             } else {
                 ColoredNode.add(n);
                 n.PReg=okColors.iterator().next();
-            //    System.out.println(n.toString()+"------------PREG: "+Regs[n.PReg]);
+                //    System.out.println(n.toString()+"------------PREG: "+Regs[n.PReg]);
                 //String c = okColors.iterator().next();
                 //n.setColor();
             }
         }
         for (VReg n : CombineNode) {
             n.PReg=getAliasMap(n).PReg;
-          //  System.out.println(n.toString()+"------------PREG: "+Regs[n.PReg]);
+            //  System.out.println(n.toString()+"------------PREG: "+Regs[n.PReg]);
         }
     }
 
