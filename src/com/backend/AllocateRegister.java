@@ -1,17 +1,13 @@
 package com.backend;
-
-import javafx.util.Pair;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import com.backend.LiveTester;
+import javafx.util.*;
 import java.util.*;
+import java.io.*;
+import com.backend.LiveTester;
 import com.nasm.*;
 import static com.nasm.RegConst.*;
 public class AllocateRegister {
     public Func func;
     public int K = 14;
-    // node work lists, sets, and stacks (disjoint)
     public Set<VReg> PreColor = new LinkedHashSet<>();
     public Set<VReg> Init = new LinkedHashSet<>();
     public Set<VReg> SimpleWork = new LinkedHashSet<>();
@@ -22,13 +18,13 @@ public class AllocateRegister {
     public Set<VReg> ColoredNode = new LinkedHashSet<>();
     public Stack<VReg> StackSelect = new Stack<>();
     public Set<VReg> NodeSelect = new HashSet<>();
-    // move sets (disjoint)
+
     public Set<Mov> CombineMove = new LinkedHashSet<>();
     public Set<Mov> ConstrainMove = new LinkedHashSet<>();
     public Set<Mov> FrozenMove = new LinkedHashSet<>();
     public Set<Mov> WorklistMove = new LinkedHashSet<>();
     public Set<Mov> ActiveMove = new LinkedHashSet<>();
-    // other
+
     public Set<Pair<VReg, VReg>> EdgeSet = new HashSet<>();
     public Map<VReg, Set<VReg>> EdgelistMap = new HashMap<>();
     public Map<VReg, Integer> DegreeMap = new HashMap<>();
@@ -90,18 +86,6 @@ public class AllocateRegister {
             AliasMap.put(reg,null);
         }
     }
-
-    /*public void dump(String output) throws IOException {
-        NasmPrinter printer = new NasmPrinter();
-        printer.visit(func);
-        File fileName = new File(Config.tmpPath + output);
-        if (!fileName.exists()) {
-            if (!fileName.createNewFile()) {
-                throw new RuntimeException("cannot create a.asm");
-            }
-        }
-        printer.print(new PrintStream(fileName));
-    }*/
 
     public void run() throws IOException {
         int epoch = 0;
