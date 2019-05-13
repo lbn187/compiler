@@ -30,7 +30,7 @@ public class Translator implements IRVisitor{
             nasm.GlobalVariables.add(toNasm(o.toString()));
         }
         for(StringData o:irroot.strings.values()){
-            nasm.StringLiterals.put(o.toString(),o.value);
+            nasm.StringLiterals.put(toNasm(o.toString()),o.value);
         }
         for(Function o:irroot.functions.values()){
             if(o.flag==true){
@@ -39,23 +39,48 @@ public class Translator implements IRVisitor{
                 visit(o);
             }
         }
-        //TODO BlockSucc
+        for (IRBlock bb : BlockMap.keySet()) {
+            Block block = BlockMap.get(bb);
+            for (IRBlock succBB:bb.GetSuccs()) {
+                block.Succs.add(BlockMap.get(succBB));
+            }
+        }
     }
     public void visit(Function func){
+        //System.out.println("VISITFUNC  :"+func.name);
         CurFunc=new Func(func.name);
         nasm.Functions.add(CurFunc);
         CalleeMap=new HashMap<>();
-        for(int o:CalleeRegs){
-            CalleeMap.put(VRegs.get(o),new VReg("%local_"+Regs[o]));
+        for(int i=0;i<5;i++){
+            CalleeMap.put(VRegs.get(CalleeRegs[i]),new VReg("%local_"+Regs[CalleeRegs[i]]));
         }
         CurArgs=func.args;
         for(IRBlock o=func.head;o!=null;o=o.next)
                 visit(o);
     }
+    /*
+    TODO
+
+    public boolean CmpAndJmp(IRInst inst){
+        if(!(inst instanceof BinaryOpIR))return false;
+        BinaryOpIR first=(BinaryOpIR)inst;
+        String op=first.operator;
+        if(op.equals("==")||op.equals("!=")||op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")){
+            if(!(inst.next instanceof Branch))return false;
+            Branch second=(Branch)inst.next;
+            if(first.dest!=second.flag)return false;
+            AddCmp(first.a,first.b);
+
+        }else return false;
+    }
+
+     */
     public void visit(IRBlock block){
+        //System.out.println("    VISITBLOCK : "+block.name);
         CurBlock=CalBlock(block);
+       // System.out.println("        Curblockname : "+CurBlock.name);
         CurFunc.Blocks.add(CurBlock);
-        if(block.function.head==block){//is head
+        if(block.ishead()){//is head
             for(VReg o:CalleeMap.keySet()){
                 CurBlock.Insts.add(new Mov(CalleeMap.get(o),o));
             }
@@ -67,16 +92,13 @@ public class Translator implements IRVisitor{
             for(int i=0;i<min(CurArgs.size(),6);i++){
                 CurBlock.Insts.add(new Mov(CalVirtualRegister(CurArgs.get(i)),VRegs.get(Args[i])));
             }
-            if(block.function.name.equals("main")){
-                CurBlock.Insts.add(new CallFunc("__GlobalInit",0));
+            if(block.function.name.equals("_main")){
+                CurBlock.Insts.add(new CallFunc("__Global",0));
             }
         }
         for(IRInst inst=block.head;inst!=null;){
-            //if(CmpJmp(inst)){
-            //    inst=inst.next.next;
-            //}else{
-                inst=inst.next;
-            //}
+            visit(inst);
+            inst=inst.next;
         }
     }
     public void visit(IRInst inst){
@@ -117,14 +139,7 @@ public class Translator implements IRVisitor{
         VReg regl;
         VReg regr;
         if(op.equals("==")||op.equals("!=")||op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")){
-            if(lhs instanceof Immediate){
-                ++ImmCnt;
-                regl=new VReg("%cmplhs_"+ImmCnt);
-                CurBlock.Insts.add(new Mov(regl,new Imm(((Immediate)lhs).value)));
-            }else{
-                regl=(VReg)CalValue(lhs);
-            }
-            CurBlock.Insts.add(new Cmp(regl,CalValue(rhs)));
+            AddCmp(node.lvalue,node.rvalue);
             String name="";
             if(op.equals("=="))name="sete";
             if(op.equals("!="))name="setne";
@@ -192,6 +207,7 @@ public class Translator implements IRVisitor{
     }
     public void visit(Call node){
         int ParamCnt=node.args.size();
+        //System.out.println("NAME:"+node.function.typename+" SIZE:"+ParamCnt);
         int offset=0;
         if(ParamCnt>6){
             offset=(ParamCnt-6)*8;
@@ -219,25 +235,49 @@ public class Translator implements IRVisitor{
     public void visit(Move node){
         CurBlock.Insts.add(new Mov(CalVirtualRegister(node.dest),CalValue(node.value)));
     }
+    public void AddCmp(Value lhs,Value rhs){
+        Var lv;
+        if(lhs instanceof Immediate){
+            ++ImmCnt;
+            lv=new VReg("%cmplhs_"+ImmCnt);
+            int val=((Immediate)lhs).value;
+            CurBlock.Insts.add(new Mov(lv,new Imm(val)));
+        }else{
+            lv=CalValue(lhs);
+        }
+        CurBlock.Insts.add(new Cmp(lv,CalValue(rhs)));
+    }
+    public void AddJmp(IRBlock nextblock,IRBlock trueblock,IRBlock falseblock,String yes,String no){
+        if(nextblock==trueblock){
+            CurBlock.Insts.add(new Jmp(no,new Label(CalBlock(falseblock).name)));
+        }else{
+            CurBlock.Insts.add(new Jmp(yes,new Label(CalBlock(trueblock).name)));
+            if(nextblock!=falseblock){
+                CurBlock.Insts.add(new Jmp("jmp",new Label(CalBlock(falseblock).name)));
+            }
+        }
+    }
     public void visit(Branch node) {
-        VReg reg;
+        /*VReg reg;
         if(node.flag instanceof Immediate){
             ++ImmCnt;
             reg=new VReg("%cmplhs_"+ImmCnt);
             CurBlock.Insts.add(new Mov(reg,new Imm(((Immediate)node.flag).value)));
         }else{
             reg=(VReg)CalValue(node.flag);
-        }
-        CurBlock.Insts.add(new Cmp(reg,new Imm(0)));
-        CurBlock.Insts.add(new Jmp("jne",new Label(node.trueblock.name)));
-        CurBlock.Insts.add(new Jmp("jmp",new Label(node.falseblock.name)));
+        }*/
+        AddCmp(node.flag,new Immediate(0));
+        AddJmp(node.curblock.next,node.trueblock,node.falseblock,"jne","je");
+        //CurBlock.Insts.add(new Cmp(reg,new Imm(0)));
+        //CurBlock.Insts.add(new Jmp("jne",new Label(CalBlock(node.trueblock).name)));
+        //CurBlock.Insts.add(new Jmp("jmp",new Label(CalBlock(node.falseblock).name)));
     }
     public void visit(Jump node){
-        CurBlock.Insts.add(new Jmp("jmp",new Label(node.target.name)));
+        CurBlock.Insts.add(new Jmp("jmp",new Label(CalBlock(node.target).name)));
     }
     public void visit(Return node){
-        for(int i=0;i<6;i++){
-            CurBlock.Insts.add(new Mov(VRegs.get(CalleeRegs[i]),CalleeMap.get(VRegs.get(CalleeRegs[i]))));
+        for(VReg o:CalleeMap.keySet()){
+            CurBlock.Insts.add(new Mov(o,CalleeMap.get(o)));
         }
         if(node.value!=null){
             CurBlock.Insts.add(new Mov(rax,CalValue(node.value)));
@@ -257,7 +297,7 @@ public class Translator implements IRVisitor{
     public Block CalBlock(IRBlock block){
         if(!BlockMap.containsKey(block)){
             String s;
-            if(block.function.head==block){
+            if(block.ishead()){
                 s=block.function.name;
             }else{
                 ++BlockCnt;
@@ -268,15 +308,16 @@ public class Translator implements IRVisitor{
         return BlockMap.get(block);
     }
     public VReg CalVirtualRegister(VirtualRegister register){
-        if(!VirtualRegisterMap.containsKey(register)){
+        if(!VirtualRegisterMap.containsKey(register))
             VirtualRegisterMap.put(register,new VReg(register.toString()));
-        }
         return VirtualRegisterMap.get(register);
     }
     public Var CalValue(Value value){
         if(value instanceof Immediate)return new Imm(((Immediate)value).value);
         if(value instanceof VirtualRegister)return CalVirtualRegister((VirtualRegister)value);
-        if(value instanceof StringData)return new Label(toNasm(value.toString()));
+        if(value instanceof StringData) {
+            return new Label(toNasm(value.toString()));
+        }
         return null;
     }
 }

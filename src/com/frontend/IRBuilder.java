@@ -121,15 +121,20 @@ public class IRBuilder extends ASTVisitor{
     }
     public void visit(FunctionDefNode u)throws Exception {
         String name = u.belong.name + "_" + u.name;
+        Type type=ScopeBuilder.scoperoot.map.get(u.name).type;
+        if(!(type instanceof FunctionDefineType))System.out.println("-------------------------");
         CurFunction = new Function(name, false);
+        ((FunctionDefineType)type).ir=CurFunction;
         ExitBlock = CurFunction.AddBlock(CurFunction.name + ".exit");
         irroot.functions.put(name, CurFunction);
         CurBlock = CurFunction.head;
+        CurBlock.AddNext(ExitBlock);
         if (ClassFlag == true) {
             VirtualRegister ThisValue = CurFunction.AddVirtualRegister("ThisValue");
             CurFunction.args.add(ThisValue);
             ThisAddress = CurFunction.AddVirtualRegister("ThisAddress");
             CurFunction.head.addfront(new Store(CurFunction.head, ThisAddress, ThisValue));
+            CurBlock.add(new Store(CurBlock,ThisAddress,ThisValue));
         }
         for (VariableDefNode o : u.variables) {
             VirtualRegister ArgValue = CurFunction.AddVirtualRegister("ArgValue");
@@ -138,17 +143,19 @@ public class IRBuilder extends ASTVisitor{
             Information information = o.belong.get(o.name);
             information.register = ArgAddress;
             CurFunction.head.addfront(new Allocation(CurFunction.head, ArgAddress, 8));
-            CurBlock.add(new Store(CurBlock, ArgValue, ArgAddress));
+            CurBlock.add(new Store(CurBlock, ArgAddress, ArgValue));
         }
         if (u.type instanceof VoidType) {
             returnvalue = null;
         } else {
             returnvalue = CurFunction.AddVirtualRegister("ReturnValue");
+            CurBlock.addfront(new Allocation(CurBlock,returnvalue,8));
             CurBlock.add(new Move(CurBlock, returnvalue, new Immediate(0)));
         }
         visit(u.block);
+        //CurFunction.tail.add(new Jump(CurFunction.tail,ExitBlock));
         ExitBlock.add(new Return(ExitBlock, returnvalue));
-        CurFunction.Append(ExitBlock);
+        //CurFunction.Append(ExitBlock);
     }
     public void visit(ClassDefNode u)throws Exception{
         ClassFlag=true;
@@ -390,15 +397,27 @@ public class IRBuilder extends ASTVisitor{
             u.register=register;
         }
         if (op.equals("++")) {
-            VirtualRegister register = CurFunction.AddVirtualRegister("res");
-            CurBlock.add(new BinaryOpIR(CurBlock,register,"+",u.expr.register,new Immediate(1)));
-            CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
+            Value addr=GetLhsAddress(u.expr);
+            VirtualRegister prev=CurFunction.AddVirtualRegister("PreValue");
+            VirtualRegister nowv=CurFunction.AddVirtualRegister("NowValue");
+            CurBlock.add(new Load(CurBlock,prev,addr));
+            CurBlock.add(new UnaryOpIR(CurBlock,nowv,"++",prev));
+            CurBlock.add(new Store(CurBlock,addr,nowv));
+            if(u instanceof PrefixOpNode)u.register=nowv;else u.register=prev;
+            //CurBlock.add(new BinaryOpIR(CurBlock,register,"+",u.expr.register,new Immediate(1)));
+            //CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
             //TODO youhua
         }
         if(op.equals("--")){
-            VirtualRegister register = CurFunction.AddVirtualRegister("res");
-            CurBlock.add(new BinaryOpIR(CurBlock,register,"-",u.expr.register,new Immediate(1)));
-            CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
+            Value addr=GetLhsAddress(u.expr);
+            VirtualRegister prev=CurFunction.AddVirtualRegister("PreValue");
+            VirtualRegister nowv=CurFunction.AddVirtualRegister("NowValue");
+            CurBlock.add(new Load(CurBlock,prev,addr));
+            CurBlock.add(new UnaryOpIR(CurBlock,nowv,"--",prev));
+            CurBlock.add(new Store(CurBlock,addr,nowv));
+            if(u instanceof PrefixOpNode)u.register=nowv;else u.register=prev;
+            //CurBlock.add(new BinaryOpIR(CurBlock,register,"-",u.expr.register,new Immediate(1)));
+            //CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
         }
     }
     public void visit(FuncExprNode u)throws Exception{
@@ -436,7 +455,7 @@ public class IRBuilder extends ASTVisitor{
             List<Value>args=new ArrayList<>();
             args.add(u.exprs.get(1).register);
             VirtualRegister reg=CurFunction.AddVirtualRegister("res");
-            CurBlock.add(new Call(CurBlock,null,ScopeBuilder.STRING_PRINTLN,args));
+            CurBlock.add(new Call(CurBlock,reg,ScopeBuilder.TOSTRING,args));
             u.register=reg;
             return;
         }
@@ -449,7 +468,7 @@ public class IRBuilder extends ASTVisitor{
             VirtualRegister ptr=CurFunction.AddVirtualRegister("ClassPtr");
             CurBlock.add(new Load(CurBlock,ptr,ThisAddress));
             args.add(ptr);
-        }else
+        }
         if(type==ScopeBuilder.STRING_LENGTH||type==ScopeBuilder.STRING_SUBSTRING||type==ScopeBuilder.STRING_PARSEINT||type==ScopeBuilder.STRING_ORD||type==ScopeBuilder.ARRAY_SIZE){
             args.add(GetLhsAddress(u.exprs.get(0)));
         }
@@ -572,7 +591,8 @@ public class IRBuilder extends ASTVisitor{
         }else{
             Regs=new ArrayList<>();
             for(ExprNode o:u.exprs){
-                Regs.add(GetLhsAddress(o));
+                visit(o);
+                Regs.add(o.register);
             }
             u.register=CalPtr(0);
         }

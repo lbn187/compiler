@@ -1,6 +1,5 @@
 package com.nasm;
-
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SetFlag extends Inst {
@@ -12,5 +11,10 @@ public class SetFlag extends Inst {
     }
     public void accept(NasmVisitor visitor){
         visitor.visit(this);
+    }
+    public List<VReg> CalDefine(){
+        List<VReg>list=new ArrayList<>();
+        list.add(dest);
+        return list;
     }
 }

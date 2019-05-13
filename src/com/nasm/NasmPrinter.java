@@ -1,7 +1,13 @@
 package com.nasm;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.*;
+import static com.nasm.RegConst.*;
 public class NasmPrinter implements NasmVisitor{
-    public void visit(Nasm nasm){
+    public boolean AllocateFlag;
+    public void visit(Nasm nasm)throws Exception{
+        AllocateFlag=nasm.AllocateFlag;
         System.out.println("default rel");
         for(String s:nasm.GlobalVariables){
             System.out.println("global "+s);
@@ -10,7 +16,9 @@ public class NasmPrinter implements NasmVisitor{
             System.out.println("global "+s);
         }
         for(Func func:nasm.Functions){
-            System.out.println("global "+func.name);
+            if(func.name.equals("_main"))
+                System.out.println("global main");
+            else System.out.println("global "+func.name);
         }
         System.out.println("extern strcmp");
         System.out.println("extern memcpy");
@@ -20,11 +28,16 @@ public class NasmPrinter implements NasmVisitor{
         System.out.println("extern __sprintf_chk");
         System.out.println("extern __stack_chk_fail");
         System.out.println("extern __isoc99_scanf");
+        System.out.println("extern printf");
+        System.out.println("extern malloc");
+        System.out.println("extern strlen");
+        System.out.println("extern strcpy");
+        System.out.println("extern sprintf");
         System.out.println("");
-        System.out.println("SECTION .text");
+        System.out.println("    SECTION .text");
         for(Func func:nasm.Functions)visit(func);
         System.out.println("");
-        System.out.println("SECTION .data");
+        System.out.println("    SECTION .data");
         for (String label : nasm.StringLiterals.keySet()) {
             System.out.println("");
             System.out.println(label + ":");
@@ -46,10 +59,17 @@ public class NasmPrinter implements NasmVisitor{
             System.out.println(s+":");
             System.out.println("    resb 8");
         }
+        File file = new File("lib/to.asm");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String line;
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
     }
     public void visit(Func func){
         for(Block block:func.Blocks){
-            System.out.println("    "+block.name+":");
+            if(block.name.equals("_main"))System.out.println("main:");
+            else System.out.println(block.name+":");
             for(Inst inst:block.Insts){
                 visit(inst);
             }
@@ -59,10 +79,10 @@ public class NasmPrinter implements NasmVisitor{
         inst.accept(this);
     }
     public void visit(BinOp inst){
-        System.out.println("    "+inst.op+" "+get(inst.dest)+" "+inst.src);
+        System.out.println("    "+inst.op+" "+get(inst.dest)+","+get(inst.src));
     }
     public void visit(Cmp inst){
-        System.out.println("    cmp "+get(inst.a)+" "+get(inst.b));
+        System.out.println("    cmp "+get(inst.a)+","+get(inst.b));
     }
     public void visit(Cqo inst){
         System.out.println("    cqo");
@@ -71,13 +91,13 @@ public class NasmPrinter implements NasmVisitor{
         System.out.println("    call "+inst.name);
     }
     public void visit(IDiv inst){
-        System.out.println("    idiv "+get(inst.divisor));
+        System.out.println("    idiv "+get(inst.src));
     }
     public void visit(Jmp inst){
         System.out.println("    "+inst.op+" "+inst.label.name);
     }
     public void visit(Mov inst){
-        System.out.println("    mov "+get(inst.dest)+" "+get(inst.src));
+        System.out.println("    mov "+get(inst.dest)+","+get(inst.src));
     }
     public void visit(Nop inst){
         System.out.println("    nop");
@@ -105,12 +125,17 @@ public class NasmPrinter implements NasmVisitor{
         System.out.println("    "+inst.op+" "+get(inst.dest));
     }
     public String get(Var var){
+        if(AllocateFlag==false){
+            if(var instanceof VReg){
+                return ((VReg)var).name;
+            }
+            if(var instanceof Memory){
+                return ((Memory)var).getname();
+            }
+        }
         if(var instanceof VReg){
-            return ((VReg)var).name;
+            return Regs[((VReg)var).PReg];
         }
-        if(var instanceof Memory){
-            return ((Memory)var).getname();
-        }
-        return null;
+        return var.toString();
     }
 }

@@ -1,11 +1,18 @@
 package com.nasm;
+import java.util.List;
+import java.util.ArrayList;
 import com.IR.VirtualRegister;
+import static com.nasm.RegConst.*;
 public class Memory extends Var{
     public VReg base;
     public VReg index;
     public int offset;
     public Label label;
+    public int scale;
     public boolean ok=false;
+    public Memory(){
+        ok=false;
+    }
     public Memory(VReg reg){
         base=reg;
         ok=true;
@@ -19,9 +26,21 @@ public class Memory extends Var{
         label=l;
         ok=true;
     }
+    public List<VReg> CalUse(){
+        List<VReg> list=new ArrayList<>();
+        if(ok==false||label!=null)return list;
+        if(index!=null)list.add(index);
+        if(base!=rbp)list.add(base);
+        return list;
+    }
+    public void PushInStack(int off){
+        base=rbp;
+        offset=off;
+        ok=true;
+    }
     public String getname() {
         if (label != null) {
-            return "qword [rel " + label + "]";
+            return "qword [rel " + label.name + "]";
         } else {
 //            assert base != null;
             if (base == null) return "qword [ ]";
@@ -37,32 +56,28 @@ public class Memory extends Var{
             return builder.toString();
         }
     }
-
     public String toString() {
-        /*assert valid;
+        assert ok;
         if (label != null) {
             return "qword [rel " + label + "]";
         } else {
             assert base != null;
-//            StringBuilder builder = new StringBuilder("qword [" + base.getName() + "$" + base.getColor());
-            StringBuilder builder = new StringBuilder("qword [" + base.getColor());
+            StringBuilder builder = new StringBuilder("qword [" + Regs[base.PReg]);
             if (index != null) {
-//                builder.append(" + ").append(index.getName() + "$" + index.getColor());
-                builder.append(" + ").append(index.getColor());
+                builder.append(" + ").append(Regs[index.PReg]);
                 if (scale != 1) {
                     builder.append("*").append(scale);
                 }
             }
-            if (displacement != 0) {
-                if (displacement > 0) {
-                    builder.append(" + ").append(displacement);
+            if (offset != 0) {
+                if (offset > 0) {
+                    builder.append(" + ").append(offset);
                 } else {
-                    builder.append(" - ").append(-displacement);
+                    builder.append(" - ").append(-offset);
                 }
             }
             builder.append("]");
             return builder.toString();
-        }*/
-         return null;
+        }
     }
 }

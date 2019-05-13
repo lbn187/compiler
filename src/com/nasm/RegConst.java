@@ -7,6 +7,7 @@ public class RegConst {
     public static final int[] Args={5,4,3,2,8,9};//then put to stack
     public static final int[] CalleeRegs={1,12,13,14,15};//dont include rbp
     public static final int[] CallerRegs={0,2,3,4,5,8,9,10,11};
+    public static final int[] ColorRegs={0,2,3,1,4,5,8,9,10,11,12,13,14,15};
     public static final VReg rax;
     public static final VReg rbx;
     public static final VReg rcx;

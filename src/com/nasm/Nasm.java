@@ -10,4 +10,5 @@ public class Nasm {
     public List<Func>Functions=new ArrayList<>();
     public List<String>Builtins=new ArrayList<>();
     public List<String>Libs=new ArrayList<>();
+    public boolean AllocateFlag=false;
 }

@@ -5,4 +5,7 @@ public class Label extends Var{
     public Label(String s){
         name=s;
     }
+    public String toString(){
+        return name;
+    }
 }

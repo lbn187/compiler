@@ -7,6 +7,8 @@ import com.frontend.*;
 import com.AST.*;
 import com.IR.*;
 import com.nasm.*;
+import com.backend.StackBuilder;
+import com.backend.AllocateRegister;
 import com.backend.*;
 import java.io.*;
 public class Main {
@@ -34,12 +36,14 @@ public class Main {
         IRBuilder irbuilder=new IRBuilder();
         irbuilder.getIR(root);
         IRRoot irroot=irbuilder.irroot;
-        System.out.println("-----------START PRINT-----------------");
-        irroot.accept(new IRPrinter(out));
-        System.out.println("-----------END PRINT-----------------");
+        //System.out.println("-----------START PRINT-----------------");
+        //irroot.accept(new IRPrinter(out));
+        //System.out.println("-----------END PRINT-----------------");
         Translator translator=new Translator();
-        Nasm nasmroot=translator.getNasm(irroot);
+        Nasm nasm=translator.getNasm(irroot);
+        AllocateRegister.visit(nasm);
+        StackBuilder.visit(nasm);
         NasmPrinter nasmprinter=new NasmPrinter();
-        nasmprinter.visit(nasmroot);
+        nasmprinter.visit(nasm);
     }
 }

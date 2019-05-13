@@ -1,5 +1,8 @@
 package com.IR;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class IRBlock {
     public IRInst head=null;
     public IRInst tail=null;
@@ -62,5 +65,21 @@ public class IRBlock {
         if(next!=null)next.pre=blk;
         next=blk;
         if(this==function.tail)function.tail=blk;
+    }
+    public boolean ishead(){
+        if(function.head==this)return true;
+        return false;
+    }
+    public Set<IRBlock> GetSuccs() {
+        Set<IRBlock> succs = new HashSet<>();
+        if (tail instanceof Jump) {
+            succs.add(((Jump) tail).target);
+        }
+        if (tail instanceof Branch) {
+            succs.add(((Branch) tail).trueblock);
+            succs.add(((Branch) tail).falseblock);
+        }
+        // every basicBlock's tail is a BranchInst
+        return succs;
     }
 }

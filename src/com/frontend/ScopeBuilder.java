@@ -3,7 +3,7 @@ import com.frontend.Scope;
 import com.Type.*;
 import com.AST.*;
 public class ScopeBuilder {
-    public Scope scoperoot;
+    public static Scope scoperoot;
     public final static FunctionDefineType STRING_PRINT=new FunctionDefineType("print",new VoidType(),new StringType());
     public final static FunctionDefineType STRING_PRINTLN=new FunctionDefineType("println",new VoidType(),new StringType());
     public final static FunctionDefineType GETSTRING=new FunctionDefineType("getString",new StringType());
