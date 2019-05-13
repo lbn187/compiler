@@ -174,29 +174,35 @@ public class IRBuilder extends ASTVisitor{
     public void visit(ForNode u)throws Exception{
         IRBlock condblock=CurFunction.AddBlock("for_cond");
         IRBlock loopblock=CurFunction.AddBlock("for_loop");
+        IRBlock stepblock=CurFunction.AddBlock("for_step");
         IRBlock afterblock=CurFunction.AddBlock("for_after");
-        if(u.mid==null){
+        CurBlock.AddNext(condblock);
+        condblock.AddNext(loopblock);
+        loopblock.AddNext(stepblock);
+        stepblock.AddNext(afterblock);
+        /*if(u.mid==null){
             condblock=loopblock;
             CurBlock.AddNext(loopblock);
         }else {
             CurBlock.AddNext(condblock);
             condblock.AddNext(loopblock);
-        }
-        loopblock.AddNext(afterblock);
+        }*/
         IRBlock PreLoopBlock=CurLoopBlock;
         IRBlock PreLoopAfterBlock=CurLoopAfterBlock;
-        CurLoopBlock=condblock;
+        CurLoopBlock=stepblock;
         CurLoopAfterBlock=afterblock;
         if(u.pre!=null)visitexprprocess(u.pre);
         CurBlock.add(new Jump(CurBlock,condblock));
+        CurBlock=condblock;
         if(u.mid!=null) {
-            CurBlock = condblock;
             u.mid.trueblock = loopblock;
             u.mid.falseblock = afterblock;
             visitexprprocess(u.mid);
-        }
+        }else CurBlock.add(new Jump(CurBlock,loopblock));
         CurBlock=loopblock;
         visit(u.stmt);
+        CurBlock.add(new Jump(CurBlock,stepblock));
+        CurBlock=stepblock;
         if(u.suc!=null)visitexprprocess(u.suc);
         CurBlock.add(new Jump(CurBlock,condblock));
         CurBlock=afterblock;
