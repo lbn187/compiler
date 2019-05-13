@@ -222,7 +222,7 @@ public class SemanticChecker extends ASTVisitor {
         }
         if(u.expr.type instanceof ClassType){
             ClassDefineType classtype=(ClassDefineType)scoperoot.get(u.expr.type.typename).type;
-            if(classtype==null)System.out.println("CAN NOT Find classtype"+u.loc.toString());
+            //if(classtype==null)System.out.println("CAN NOT Find classtype"+u.loc.toString());
             Information info=classtype.get(u.name);
             if(info==null){
                 throw new Exception("MemberWrong4"+u.loc.toString());
@@ -296,7 +296,7 @@ public class SemanticChecker extends ASTVisitor {
         Scope o=u.belong;
         u.type=o.get(u.name).type;
         u.inclass=o.get(u.name).classflag;
-        if(u.type!=null)System.out.println("Variablename="+u.name+" Variabletype="+u.type.typename);
+        //if(u.type!=null)System.out.println("Variablename="+u.name+" Variabletype="+u.type.typename);
         if(u.type==null){
             throw new Exception("variable not exist"+u.loc.toString());
         }
