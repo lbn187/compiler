@@ -496,7 +496,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public CreatorNode visitExprnew(MxStarParser.ExprnewContext ctx) {
-        System.out.println(ctx.getText());
+        //System.out.println(ctx.getText());
         return (CreatorNode)visit(ctx.creator());
     }
     /**

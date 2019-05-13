@@ -23,10 +23,10 @@ public class IRBlock {
         visitor.visit(this);
     }
     public void add(IRInst inst) {
-        if(endflag==true){
+        /*if(endflag==true){
             System.out.println("cannot add inst after a basic block end");
             assert false;
-        }
+        }*/
         if(inst instanceof BranchIR)endflag=true;
         if(tail==null)head=tail=inst;else{
             tail.LinkNext(inst);

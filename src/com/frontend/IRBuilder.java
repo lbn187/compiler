@@ -149,7 +149,7 @@ public class IRBuilder extends ASTVisitor{
             returnvalue = null;
         } else {
             returnvalue = CurFunction.AddVirtualRegister("ReturnValue");
-            CurBlock.addfront(new Allocation(CurBlock,returnvalue,8));
+            //CurBlock.addfront(new Allocation(CurBlock,returnvalue,8));
             CurBlock.add(new Move(CurBlock, returnvalue, new Immediate(0)));
         }
         visit(u.block);
