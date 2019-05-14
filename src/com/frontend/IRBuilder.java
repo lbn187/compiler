@@ -318,9 +318,19 @@ public class IRBuilder extends ASTVisitor{
             VirtualRegister ptr=CurFunction.AddVirtualRegister("ClassPtr");
             CurBlock.add(new Load(CurBlock,ptr,ptrptr));
             if(o.type instanceof FunctionDefineType)return ptr;
-            Immediate off=new Immediate(SemanticChecker.scoperoot.get(o.expr.type.typename).offset);
-            VirtualRegister addr=CurFunction.AddVirtualRegister("MemberAddress");
-            CurBlock.add(new BinaryOpIR(CurBlock,addr,"+",ptr,off));
+            /*if(o.expr.type instanceof ArrayType){
+                Type type=o.belong.get("array."+u.name).type;
+            }else if(o.expr.type instanceof StringType){
+                Type type=o.belong.get("string."+u.name).type;
+            }else if(o.expr.type instanceof ClassType){*/
+                ClassDefineType classtype=(ClassDefineType)ScopeBuilder.scoperoot.get(o.expr.type.typename).type;
+                Immediate off=new Immediate(classtype.get(o.name).offset);
+                VirtualRegister addr=CurFunction.AddVirtualRegister("MemberAddress");
+                CurBlock.add(new BinaryOpIR(CurBlock,addr,"+",ptr,off));
+            //}
+            //Immediate off=new Immediate(((ClassDefineType)o.expr.type).get(o.name).offset);
+            //VirtualRegister addr=CurFunction.AddVirtualRegister("MemberAddress");
+            //CurBlock.add(new BinaryOpIR(CurBlock,addr,"+",ptr,off));
             return addr;
         }else System.out.println("GetLhsAddress Wrong");
         return null;
@@ -383,10 +393,58 @@ public class IRBuilder extends ASTVisitor{
         }
     }
     public void visit(SuffixOpNode u)throws Exception{
+        /*String op=u.operator;
+        if (op.equals("++")) {
+            Value addr=GetLhsAddress(u.expr);
+            VirtualRegister prev=CurFunction.AddVirtualRegister("PreValue");
+            VirtualRegister nowv=CurFunction.AddVirtualRegister("NowValue");
+            CurBlock.add(new Load(CurBlock,prev,addr));
+            CurBlock.add(new UnaryOpIR(CurBlock,nowv,"++",prev));
+            CurBlock.add(new Store(CurBlock,addr,nowv));
+            u.register=prev;
+            //CurBlock.add(new BinaryOpIR(CurBlock,register,"+",u.expr.register,new Immediate(1)));
+            //CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
+            //TODO youhua
+        }else
+        if(op.equals("--")){
+            Value addr=GetLhsAddress(u.expr);
+            VirtualRegister prev=CurFunction.AddVirtualRegister("PreValue");
+            VirtualRegister nowv=CurFunction.AddVirtualRegister("NowValue");
+            CurBlock.add(new Load(CurBlock,prev,addr));
+            CurBlock.add(new UnaryOpIR(CurBlock,nowv,"--",prev));
+            CurBlock.add(new Store(CurBlock,addr,nowv));
+            u.register=prev;
+            //CurBlock.add(new BinaryOpIR(CurBlock,register,"-",u.expr.register,new Immediate(1)));
+            //CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
+        }else System.out.println("-----GGGGGGGGGGGG");*/
         visit((UnaryOpNode)u);
     }
     public void visit(PrefixOpNode u)throws Exception{
         visit((UnaryOpNode)u);
+        /*String op=u.operator;
+        if (op.equals("++")) {
+            Value addr=GetLhsAddress(u.expr);
+            VirtualRegister prev=CurFunction.AddVirtualRegister("PreValue");
+            VirtualRegister nowv=CurFunction.AddVirtualRegister("NowValue");
+            CurBlock.add(new Load(CurBlock,prev,addr));
+            CurBlock.add(new UnaryOpIR(CurBlock,nowv,"++",prev));
+            CurBlock.add(new Store(CurBlock,addr,nowv));
+            u.register=nowv;
+            //CurBlock.add(new BinaryOpIR(CurBlock,register,"+",u.expr.register,new Immediate(1)));
+            //CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
+            //TODO youhua
+        }else
+        if(op.equals("--")){
+            Value addr=GetLhsAddress(u.expr);
+            VirtualRegister prev=CurFunction.AddVirtualRegister("PreValue");
+            VirtualRegister nowv=CurFunction.AddVirtualRegister("NowValue");
+            CurBlock.add(new Load(CurBlock,prev,addr));
+            CurBlock.add(new UnaryOpIR(CurBlock,nowv,"--",prev));
+            CurBlock.add(new Store(CurBlock,addr,nowv));
+            u.register=nowv;
+            //CurBlock.add(new BinaryOpIR(CurBlock,register,"-",u.expr.register,new Immediate(1)));
+            //CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
+        }else System.out.println("-----GGGGGGGGGGGG");*/
     }
     public void visit(UnaryOpNode u)throws Exception {
         String op = u.operator;
@@ -399,24 +457,47 @@ public class IRBuilder extends ASTVisitor{
         visitexprprocess(u.expr);
         if (op .equals("+")) {
             u.register = u.expr.register;
-        }
+        }else
         if (op.equals("-")||op.equals("~")) {
             VirtualRegister register = CurFunction.AddVirtualRegister("res");
             CurBlock.add(new UnaryOpIR(CurBlock, register, op, u.expr.register));
             u.register=register;
-        }
-        if (op.equals("++")) {
+        }else
+        if (op.equals("+++")) {
             Value addr=GetLhsAddress(u.expr);
             VirtualRegister prev=CurFunction.AddVirtualRegister("PreValue");
             VirtualRegister nowv=CurFunction.AddVirtualRegister("NowValue");
             CurBlock.add(new Load(CurBlock,prev,addr));
             CurBlock.add(new UnaryOpIR(CurBlock,nowv,"++",prev));
             CurBlock.add(new Store(CurBlock,addr,nowv));
-            if(u instanceof PrefixOpNode)u.register=nowv;else u.register=prev;
+            u.register=nowv;
             //CurBlock.add(new BinaryOpIR(CurBlock,register,"+",u.expr.register,new Immediate(1)));
             //CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
             //TODO youhua
-        }
+        }else
+        if(op.equals("---")){
+            Value addr=GetLhsAddress(u.expr);
+            VirtualRegister prev=CurFunction.AddVirtualRegister("PreValue");
+            VirtualRegister nowv=CurFunction.AddVirtualRegister("NowValue");
+            CurBlock.add(new Load(CurBlock,prev,addr));
+            CurBlock.add(new UnaryOpIR(CurBlock,nowv,"--",prev));
+            CurBlock.add(new Store(CurBlock,addr,nowv));
+            u.register=nowv;
+            //CurBlock.add(new BinaryOpIR(CurBlock,register,"-",u.expr.register,new Immediate(1)));
+            //CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
+        }else
+            if (op.equals("++")) {
+            Value addr=GetLhsAddress(u.expr);
+            VirtualRegister prev=CurFunction.AddVirtualRegister("PreValue");
+            VirtualRegister nowv=CurFunction.AddVirtualRegister("NowValue");
+            CurBlock.add(new Load(CurBlock,prev,addr));
+            CurBlock.add(new UnaryOpIR(CurBlock,nowv,"++",prev));
+            CurBlock.add(new Store(CurBlock,addr,nowv));
+            u.register=prev;
+            //CurBlock.add(new BinaryOpIR(CurBlock,register,"+",u.expr.register,new Immediate(1)));
+            //CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
+            //TODO youhua
+        }else
         if(op.equals("--")){
             Value addr=GetLhsAddress(u.expr);
             VirtualRegister prev=CurFunction.AddVirtualRegister("PreValue");
@@ -424,10 +505,10 @@ public class IRBuilder extends ASTVisitor{
             CurBlock.add(new Load(CurBlock,prev,addr));
             CurBlock.add(new UnaryOpIR(CurBlock,nowv,"--",prev));
             CurBlock.add(new Store(CurBlock,addr,nowv));
-            if(u instanceof PrefixOpNode)u.register=nowv;else u.register=prev;
+            u.register=prev;
             //CurBlock.add(new BinaryOpIR(CurBlock,register,"-",u.expr.register,new Immediate(1)));
             //CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
-        }
+        }else System.out.println("-----GGGGGGGGGGGG" + op);
     }
     public void visit(FuncExprNode u)throws Exception{
         Type type=u.exprs.get(0).type;

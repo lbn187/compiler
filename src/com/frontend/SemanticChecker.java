@@ -306,6 +306,11 @@ public class SemanticChecker extends ASTVisitor {
     //public void visit(NullLiteralNode u){}
     //public void visit(StringLiteralNode u){}
     public void visit(UnaryOpNode u)throws Exception{
+        if(u instanceof PrefixOpNode)visit((PrefixOpNode)u);
+        else if(u instanceof SuffixOpNode)visit((SuffixOpNode)u);
+        else throw new Exception("UNARY NOT PREORSUF"+u.loc.toString());
+    }
+    public void visit(PrefixOpNode u)throws Exception{
         String op=u.operator;
         visit(u.expr);
         if((op.equals("++")||op.equals("--"))&&!IsLeft(u.expr)){
@@ -323,12 +328,27 @@ public class SemanticChecker extends ASTVisitor {
         }
         if(op.equals("++")||op.equals("--")||op.equals("~")||op.equals("+")||op.equals("-"))u.type=new IntType();
         if(op.equals("!"))u.type=new BoolType();
-    }
-    public void visit(PrefixOpNode u)throws Exception{
-        visit((UnaryOpNode)u);
+        if(op.equals("++"))u.operator="+++";
+        if(op.equals("--"))u.operator="---";
     }
     public void visit(SuffixOpNode u)throws Exception{
-        visit((UnaryOpNode)u);
+        String op=u.operator;
+        visit(u.expr);
+        if((op.equals("++")||op.equals("--"))&&!IsLeft(u.expr)){
+            throw new Exception("not a LHSNode"+u.loc.toString());
+        }
+        if(op.equals("~")||op.equals("+")||op.equals("-")||op.equals("++")||op.equals("--")){
+            if(!ExprMatching(u.expr.type,new IntType())){
+                throw new Exception("Type Unmatching"+u.loc.toString());
+            }
+        }
+        if(op.equals("!")){
+            if(!ExprMatching(u.expr.type,new BoolType())){
+                throw new Exception("Type Unmatching"+u.loc.toString());
+            }
+        }
+        if(op.equals("++")||op.equals("--")||op.equals("~")||op.equals("+")||op.equals("-"))u.type=new IntType();
+        if(op.equals("!"))u.type=new BoolType();
     }
     public void visit(CreatorNode u)throws Exception{
         for(ExprNode o:u.exprs)

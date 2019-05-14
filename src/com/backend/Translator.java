@@ -30,7 +30,7 @@ public class Translator implements IRVisitor{
             nasm.GlobalVariables.add(toNasm(o.toString()));
         }
         for(StringData o:irroot.strings.values()){
-            nasm.StringLiterals.put(toNasm(o.toString()),o.value);
+            nasm.StringLiterals.put(toNasm(o.toString()),StringHandler.unescape(o.value));
         }
         for(Function o:irroot.functions.values()){
             if(o.flag==true){

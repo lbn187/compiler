@@ -460,13 +460,6 @@ __ArraySize:
         ret
 
 
-
-SECTION .data
-
-
-SECTION .bss
-
-
 SECTION .rodata
 
 L_014:
