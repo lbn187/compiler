@@ -1,5 +1,5 @@
 package com.backend;
-import javafx.util.*;
+//import javafx.util.*;
 import java.util.*;
 import java.io.*;
 import com.backend.LiveTester;
@@ -25,7 +25,7 @@ public class AllocateRegister {
     public Set<Mov> WorklistMove = new LinkedHashSet<>();
     public Set<Mov> ActiveMove = new LinkedHashSet<>();
 
-    public Set<Pair<VReg,VReg>> EdgeSet = new HashSet<>();
+    public Set<EdgePair> EdgeSet = new HashSet<>();
     public Map<VReg, Set<VReg>> EdgelistMap = new HashMap<>();
     public Map<VReg, Integer> DegreeMap = new HashMap<>();
     public Map<VReg, Set<Mov>> MovelistMap = new HashMap<>();
@@ -188,8 +188,8 @@ public class AllocateRegister {
 
     public void addEdge(VReg u, VReg v) {
         if (u == v || EdgeSet.contains(new EdgePair(u,v))) return;
-        EdgeSet.add(new Pair<>(u,v));
-        EdgeSet.add(new Pair<>(v,u));
+        EdgeSet.add(new EdgePair(u,v));
+        EdgeSet.add(new EdgePair(v,u));
         if (u.PrecolorFlag==false) {
             EdgelistMap.get(u).add(v);
             int d = DegreeMap.get(u) + 1;
