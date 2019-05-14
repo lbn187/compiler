@@ -471,13 +471,14 @@ public class IRBuilder extends ASTVisitor{
             args.add(GetLhsAddress(u.exprs.get(0)));
         }else if(u.belong.classflag==true){
             //TODO  maybe wrong
+            //System.out.println("FUNCTION IN CLASS");
             VirtualRegister ptr=CurFunction.AddVirtualRegister("ClassPtr");
             CurBlock.add(new Load(CurBlock,ptr,ThisAddress));
             args.add(ptr);
         }
-        if(type==ScopeBuilder.STRING_LENGTH||type==ScopeBuilder.STRING_SUBSTRING||type==ScopeBuilder.STRING_PARSEINT||type==ScopeBuilder.STRING_ORD||type==ScopeBuilder.ARRAY_SIZE){
+        /*if(type==ScopeBuilder.STRING_LENGTH||type==ScopeBuilder.STRING_SUBSTRING||type==ScopeBuilder.STRING_PARSEINT||type==ScopeBuilder.STRING_ORD||type==ScopeBuilder.ARRAY_SIZE){
             args.add(GetLhsAddress(u.exprs.get(0)));
-        }
+        }*/
         for(int i=1;i<u.exprs.size();i++){
             visitexprprocess(u.exprs.get(i));
             args.add(u.exprs.get(i).register);

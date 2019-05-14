@@ -139,7 +139,7 @@ public class Translator implements IRVisitor{
         VReg regl;
         VReg regr;
         if(op.equals("==")||op.equals("!=")||op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")){
-            AddCmp(node.lvalue,node.rvalue);
+            AddCmp(lhs,rhs);
             String name="";
             if(op.equals("=="))name="sete";
             if(op.equals("!="))name="setne";
@@ -148,7 +148,7 @@ public class Translator implements IRVisitor{
             if(op.equals(">"))name="setg";
             if(op.equals(">="))name="setge";
             CurBlock.Insts.add(new SetFlag(name,rax));
-            CurBlock.Insts.add(new Mov(CalVirtualRegister(dest),rax));
+            CurBlock.Insts.add(new Movzx(CalVirtualRegister(dest),rax));
             return;
         }
         if(op.equals("/")||op.equals("%")){
@@ -181,7 +181,7 @@ public class Translator implements IRVisitor{
             if(op.equals("<<")){
                 CurBlock.Insts.add(new Shift("shl",CalVirtualRegister(dest),cnt));
             }else{
-                CurBlock.Insts.add(new Shift("shr",CalVirtualRegister(dest),cnt));
+                CurBlock.Insts.add(new Shift("sar",CalVirtualRegister(dest),cnt));
             }
             return;
         }

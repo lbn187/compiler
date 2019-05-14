@@ -3,8 +3,8 @@ package com.nasm;
 public class VReg extends Var{
     public String name;
     public int PReg;
-    public boolean PrecolorFlag;
-    public boolean TinyFlag;
+    public boolean PrecolorFlag=false;
+    public boolean TinyFlag=false;
     public VReg(String s){
         name=s;
     }

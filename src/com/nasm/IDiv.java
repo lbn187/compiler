@@ -15,15 +15,15 @@ public class IDiv extends Inst{
     }
     public List<VReg> CalDefine(){
         List<VReg>list=new ArrayList<>();
-        list.add(rdx);
         list.add(rax);
+        list.add(rdx);
         return list;
     }
     public List<VReg> CalUse(){
         List<VReg>list=new ArrayList<>();
-        if(src instanceof VReg)list.add((VReg)src);
-        list.add(rdx);
         list.add(rax);
+        list.add(rdx);
+        if(src instanceof VReg)list.add((VReg)src);
         return list;
     }
 }

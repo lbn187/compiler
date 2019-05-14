@@ -8,6 +8,7 @@ public interface NasmVisitor {
     void visit(CallFunc inst);
     void visit(IDiv inst);
     void visit(Jmp inst);
+    void visit(Movzx inst);
     void visit(Mov inst);
     void visit(Nop inst);
     void visit(Pop inst);

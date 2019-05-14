@@ -337,19 +337,19 @@ public class SpillEditor implements NasmVisitor {
     }
 
 
-    /*public void visit(Movzx inst) {
+    public void visit(Movzx inst) {
         // src is always rax(al)
-        assert inst.getSrc() instanceof VirtualReg && physicalRegMap.values().contains(inst.getSrc());
-        VirtualReg dst = inst.getDst();
+        //assert inst.src instanceof VReg && physicalRegMap.values().contains(inst.getSrc());
+        VReg dst = inst.dest;
         if (spillMap.keySet().contains(dst)) {
-            VirtualReg tmp = makeTmpReg();
-            inst.setDst(tmp);
+            VReg tmp = makeTmpReg();
+            inst.dest=tmp;
             newInstList.add(inst);
             newInstList.add(new Mov(spillMap.get(dst), tmp));
         } else {
             newInstList.add(inst);
         }
-    }*/
+    }
 
     public void visit(Nop inst) {
         newInstList.add(inst);

@@ -95,10 +95,10 @@ public class StackBuilder implements NasmVisitor {
         newInstList.add(inst);
     }
 
-  /*  public void visit(Movzx inst) {
+    public void visit(Movzx inst) {
         // src is always rax(al)
         newInstList.add(inst);
-    }*/
+    }
 
     public void visit(Nop inst) {
         newInstList.add(new BinOp("sub", rsp, new Imm(8)));

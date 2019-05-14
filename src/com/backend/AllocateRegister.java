@@ -1,5 +1,5 @@
 package com.backend;
-//import javafx.util.*;
+import javafx.util.*;
 import java.util.*;
 import java.io.*;
 import com.backend.LiveTester;
@@ -7,7 +7,7 @@ import com.nasm.*;
 import static com.nasm.RegConst.*;
 public class AllocateRegister {
     public Func func;
-    public int K = 14;
+    public int K = 0;
     public Set<VReg> PreColor = new LinkedHashSet<>();
     public Set<VReg> Init = new LinkedHashSet<>();
     public Set<VReg> SimpleWork = new LinkedHashSet<>();
@@ -25,7 +25,7 @@ public class AllocateRegister {
     public Set<Mov> WorklistMove = new LinkedHashSet<>();
     public Set<Mov> ActiveMove = new LinkedHashSet<>();
 
-    public Set<EdgePair> EdgeSet = new HashSet<>();
+    public Set<Pair<VReg,VReg>> EdgeSet = new HashSet<>();
     public Map<VReg, Set<VReg>> EdgelistMap = new HashMap<>();
     public Map<VReg, Integer> DegreeMap = new HashMap<>();
     public Map<VReg, Set<Mov>> MovelistMap = new HashMap<>();
@@ -188,8 +188,8 @@ public class AllocateRegister {
 
     public void addEdge(VReg u, VReg v) {
         if (u == v || EdgeSet.contains(new EdgePair(u,v))) return;
-        EdgeSet.add(new EdgePair(u,v));
-        EdgeSet.add(new EdgePair(v,u));
+        EdgeSet.add(new Pair<>(u,v));
+        EdgeSet.add(new Pair<>(v,u));
         if (u.PrecolorFlag==false) {
             EdgelistMap.get(u).add(v);
             int d = DegreeMap.get(u) + 1;
@@ -299,7 +299,7 @@ public class AllocateRegister {
 
     public void coalesce() {
         Mov mov = WorklistMove.iterator().next();
-        assert mov.dest instanceof VReg && mov.src instanceof VReg;
+        //assert mov.dest instanceof VReg && mov.src instanceof VReg;
         VReg x = getAliasMap((VReg) mov.dest);
         VReg y = getAliasMap((VReg) mov.src);
         VReg u, v;
@@ -381,7 +381,7 @@ public class AllocateRegister {
 
     public void freezeMoves(VReg u) {
         for (Mov mov : nodeMoves(u)) {
-            assert mov.dest instanceof VReg && mov.src instanceof VReg;
+            //assert mov.dest instanceof VReg && mov.src instanceof VReg;
             VReg x = getAliasMap((VReg) mov.dest);
             VReg y = getAliasMap((VReg) mov.src);
             VReg v;
@@ -418,13 +418,13 @@ public class AllocateRegister {
             Set<Integer>okColors=new HashSet<>();
             for(int i=0;i<14;i++){
                 //    System.out.println("+"+ColorRegs[i]);
-                okColors.add(new Integer(ColorRegs[i]));
+                okColors.add(ColorRegs[i]);
             }
             for (VReg w : EdgelistMap.get(n)) {
                 VReg aw = getAliasMap(w);
                 if (ColoredNode.contains(aw) || PreColor.contains(aw)) {
                     //        System.out.println("-"+aw.PReg);
-                    okColors.remove(new Integer(aw.PReg));
+                    okColors.remove(aw.PReg);
                 }
             }
             //  System.out.println("GET: "+okColors.size());

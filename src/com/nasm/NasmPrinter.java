@@ -99,6 +99,9 @@ public class NasmPrinter implements NasmVisitor{
     public void visit(Mov inst){
         System.out.println("    mov "+get(inst.dest)+","+get(inst.src));
     }
+    public void visit(Movzx inst){
+        System.out.println("    movzx "+get(inst.dest)+",al");
+    }
     public void visit(Nop inst){
         System.out.println("    nop");
     }

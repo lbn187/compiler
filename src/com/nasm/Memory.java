@@ -29,8 +29,8 @@ public class Memory extends Var{
     public List<VReg> CalUse(){
         List<VReg> list=new ArrayList<>();
         if(ok==false||label!=null)return list;
-        if(index!=null)list.add(index);
         if(base!=rbp)list.add(base);
+        if(index!=null)list.add(index);
         return list;
     }
     public void PushInStack(int off){
