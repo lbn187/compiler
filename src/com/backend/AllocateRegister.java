@@ -7,7 +7,7 @@ import com.nasm.*;
 import static com.nasm.RegConst.*;
 public class AllocateRegister {
     public Func func;
-    public int K = 14;
+    public int K = 0;
     public Set<VReg> PreColor = new LinkedHashSet<>();
     public Set<VReg> Init = new LinkedHashSet<>();
     public Set<VReg> SimpleWork = new LinkedHashSet<>();

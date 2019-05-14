@@ -36,13 +36,13 @@ public class Main {
         IRBuilder irbuilder=new IRBuilder();
         irbuilder.getIR(root);
         IRRoot irroot=irbuilder.irroot;
-        //System.out.println("-----------START PRINT-----------------");
-        //irroot.accept(new IRPrinter(out));
-       // System.out.println("-----------END PRINT-----------------");
+        System.out.println("-----------START PRINT-----------------");
+        irroot.accept(new IRPrinter(out));
+        System.out.println("-----------END PRINT-----------------");
         Translator translator=new Translator();
         Nasm nasm=translator.getNasm(irroot);
-        AllocateRegister.visit(nasm);
-        StackBuilder.visit(nasm);
+        //AllocateRegister.visit(nasm);
+        //StackBuilder.visit(nasm);
         NasmPrinter nasmprinter=new NasmPrinter();
         nasmprinter.visit(nasm);
     }
