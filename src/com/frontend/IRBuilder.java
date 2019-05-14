@@ -200,7 +200,7 @@ public class IRBuilder extends ASTVisitor{
         if(u.mid!=null) {
             u.mid.trueblock = loopblock;
             u.mid.falseblock = afterblock;
-            visitexprprocess(u.mid);
+            visit(u.mid);
         }else CurBlock.add(new Jump(CurBlock,loopblock));
         CurBlock=loopblock;
         visit(u.stmt);
@@ -227,7 +227,7 @@ public class IRBuilder extends ASTVisitor{
         CurBlock=condblock;
         u.expr.trueblock=loopblock;
         u.expr.falseblock=afterblock;
-        visitexprprocess(u.expr);
+        visit(u.expr);
         CurBlock=loopblock;
         visit(u.stmt);
         CurBlock.add(new Jump(CurBlock,condblock));
@@ -247,7 +247,7 @@ public class IRBuilder extends ASTVisitor{
         }
         u.expr.trueblock=trueblock;
         if(u.elsestmt==null)u.expr.falseblock=mergeblock;else u.expr.falseblock=falseblock;
-        visitexprprocess(u.expr);
+        visit(u.expr);
         CurBlock=trueblock;
         visit(u.ifstmt);
         CurBlock.add(new Jump(CurBlock,mergeblock));
@@ -366,8 +366,8 @@ public class IRBuilder extends ASTVisitor{
         if(op.equals("&&")||op.equals("||")){
             if(op.equals("&&")) {
                 u.exprl.trueblock=CurFunction.AddBlock("lhs_true");
-                CurBlock.AddNext(u.exprl.trueblock);
                 u.exprl.falseblock=u.falseblock;
+                CurBlock.AddNext(u.exprl.trueblock);
                 visit(u.exprl);
                 CurBlock=u.exprl.trueblock;
             }else{
@@ -391,12 +391,12 @@ public class IRBuilder extends ASTVisitor{
     public void visit(UnaryOpNode u)throws Exception {
         String op = u.operator;
         if (op.equals("!")) {
-            u.expr.trueblock = u.trueblock;
-            u.expr.falseblock = u.falseblock;
-            visitexprprocess(u.expr);
+            u.expr.trueblock = u.falseblock;
+            u.expr.falseblock = u.trueblock;
+            visit(u.expr);
             return;
         }
-        visit(u.expr);
+        visitexprprocess(u.expr);
         if (op .equals("+")) {
             u.register = u.expr.register;
         }
