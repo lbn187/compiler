@@ -133,7 +133,7 @@ public class IRBuilder extends ASTVisitor{
             VirtualRegister ThisValue = CurFunction.AddVirtualRegister("ThisValue");
             CurFunction.args.add(ThisValue);
             ThisAddress = CurFunction.AddVirtualRegister("ThisAddress");
-            CurFunction.head.addfront(new Store(CurFunction.head, ThisAddress, ThisValue));
+            CurFunction.head.addfront(new Allocation(CurFunction.head, ThisAddress, 8));
             CurBlock.add(new Store(CurBlock,ThisAddress,ThisValue));
         }
         for (VariableDefNode o : u.variables) {
@@ -164,6 +164,9 @@ public class IRBuilder extends ASTVisitor{
     }
     public void visit(BlockNode u)throws Exception{
         for(StmtNode o:u.stmts)visit(o);
+    }
+    public void visit(ExprStmtNode u)throws Exception{
+        visitexprprocess(u.expr);
     }
     public void visit(BreakNode u)throws Exception{
         CurBlock.add(new Jump(CurBlock,CurLoopAfterBlock));

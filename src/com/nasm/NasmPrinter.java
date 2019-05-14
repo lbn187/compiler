@@ -139,10 +139,10 @@ public class NasmPrinter implements NasmVisitor{
         if(var instanceof VReg){
             return Regs[((VReg)var).PReg];
         }
-        if(!(var instanceof Memory)&&!(var instanceof Imm)){
+        /*if(!(var instanceof Memory)&&!(var instanceof Imm)){
             System.out.println("FUCK");
             return "";
-        }
+        }*/
         return var.toString();
     }
 }
