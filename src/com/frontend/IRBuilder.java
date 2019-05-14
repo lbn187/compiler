@@ -83,7 +83,7 @@ public class IRBuilder extends ASTVisitor{
             u.falseblock.add(new Jump(u.falseblock,mergeblock));
             VirtualRegister val=CurFunction.AddVirtualRegister("BoolValue");
             mergeblock.add(new Load(mergeblock,val,reg));
-            u.register=reg;
+            u.register=val;
             CurBlock=mergeblock;
         }else visit(u);
     }
@@ -149,7 +149,7 @@ public class IRBuilder extends ASTVisitor{
             returnvalue = null;
         } else {
             returnvalue = CurFunction.AddVirtualRegister("ReturnValue");
-            //CurBlock.addfront(new Allocation(CurBlock,returnvalue,8));
+            CurBlock.addfront(new Allocation(CurBlock,returnvalue,8));
             CurBlock.add(new Move(CurBlock, returnvalue, new Immediate(0)));
         }
         visit(u.block);
@@ -323,7 +323,7 @@ public class IRBuilder extends ASTVisitor{
         return null;
     }
     public void visit(AssignNode u)throws Exception{
-        visit(u.exprr);
+        visitexprprocess(u.exprr);
         Value address=GetLhsAddress(u.exprl);
         CurBlock.add(new Store(CurBlock,address,u.exprr.register));
     }
@@ -365,18 +365,18 @@ public class IRBuilder extends ASTVisitor{
                 u.exprl.trueblock=CurFunction.AddBlock("lhs_true");
                 CurBlock.AddNext(u.exprl.trueblock);
                 u.exprl.falseblock=u.falseblock;
-                visitexprprocess(u.exprl);
+                visit(u.exprl);
                 CurBlock=u.exprl.trueblock;
             }else{
                 u.exprl.trueblock=u.trueblock;
                 u.exprl.falseblock=CurFunction.AddBlock("lhs_false");
                 CurBlock.AddNext(u.exprl.falseblock);
-                visitexprprocess(u.exprl);
+                visit(u.exprl);
                 CurBlock=u.exprl.falseblock;
             }
             u.exprr.trueblock=u.trueblock;
             u.exprr.falseblock=u.falseblock;
-            visitexprprocess(u.exprr);
+            visit(u.exprr);
         }
     }
     public void visit(SuffixOpNode u)throws Exception{
