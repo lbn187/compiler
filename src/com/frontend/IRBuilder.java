@@ -485,8 +485,7 @@ public class IRBuilder extends ASTVisitor{
             u.register=nowv;
             //CurBlock.add(new BinaryOpIR(CurBlock,register,"-",u.expr.register,new Immediate(1)));
             //CurBlock.add(new Move(CurBlock,(VirtualRegister)u.expr.register,register));
-        }else
-            if (op.equals("++")) {
+        }else if (op.equals("++")) {
             Value addr=GetLhsAddress(u.expr);
             VirtualRegister prev=CurFunction.AddVirtualRegister("PreValue");
             VirtualRegister nowv=CurFunction.AddVirtualRegister("NowValue");
@@ -620,15 +619,17 @@ public class IRBuilder extends ASTVisitor{
         if(nv==(Regs.size())-1)return ptr;
         IRBlock condblock=CurFunction.AddBlock("newarray_for_cond");
         IRBlock loopblock=CurFunction.AddBlock("newarray_for_loop");
+        IRBlock stepblock=CurFunction.AddBlock("newarray_for_step");
         IRBlock afterblock=CurFunction.AddBlock("newarray_for_after");
 
         CurBlock.AddNext(condblock);
         condblock.AddNext(loopblock);
-        loopblock.AddNext(afterblock);
+        loopblock.AddNext(stepblock);
+        stepblock.AddNext(afterblock);
 
         IRBlock PreLoopBlock=CurLoopBlock;
         IRBlock PreLoopAfterBlock=CurLoopAfterBlock;
-        CurLoopBlock=condblock;
+        CurLoopBlock=stepblock;
         CurLoopAfterBlock=afterblock;
 
         VirtualRegister endposition=CurFunction.AddVirtualRegister("EndPosition");
@@ -636,6 +637,7 @@ public class IRBuilder extends ASTVisitor{
         VirtualRegister startposition=CurFunction.AddVirtualRegister("StartPosition");
         CurBlock.add(new BinaryOpIR(CurBlock,startposition,"+",ptr,new Immediate(8)));
         VirtualRegister tmp=CurFunction.AddVirtualRegister("Tmp");
+        CurFunction.head.addfront(new Allocation(CurFunction.head,tmp,8));
         CurBlock.add(new Store(CurBlock,tmp,startposition));
         //VirtualRegister i=CurFunction.AddVirtualRegister("var");
         //CurFunction.head.addfront(new Allocation(CurFunction.head,i,8));
@@ -651,6 +653,9 @@ public class IRBuilder extends ASTVisitor{
 
         CurBlock=loopblock;
         CurBlock.add(new Store(CurBlock,posvalue,CalPtr(nv+1)));
+        CurBlock.add(new Jump(CurBlock,stepblock));
+
+        CurBlock=stepblock;
         VirtualRegister posadd=CurFunction.AddVirtualRegister("pos");
         CurBlock.add(new BinaryOpIR(CurBlock,posadd,"+",posvalue,new Immediate(8)));
         CurBlock.add(new Store(CurBlock,tmp,posadd));

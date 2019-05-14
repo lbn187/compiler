@@ -201,7 +201,7 @@ public class Translator implements IRVisitor{
         if(op.equals("++")||op.equals("+++"))name="inc";else
         if(op.equals("--")||op.equals("---"))name="dec";else
         if(op.equals("-"))name="neg";else
-        if(op.equals("~"))name="not";else
+        if(op.equals("~"))name="not";
         CurBlock.Insts.add(new Mov(CalVirtualRegister(node.dest),CalValue(node.value)));
         CurBlock.Insts.add(new UniOp(name,CalVirtualRegister(node.dest)));
     }
