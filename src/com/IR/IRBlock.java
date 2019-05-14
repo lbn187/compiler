@@ -27,6 +27,7 @@ public class IRBlock {
             System.out.println("cannot add inst after a basic block end");
             assert false;
         }*/
+        if(endflag==true)return;
         if(inst instanceof BranchIR)endflag=true;
         if(tail==null)head=tail=inst;else{
             tail.LinkNext(inst);
@@ -35,7 +36,7 @@ public class IRBlock {
     }
     public void addfront(IRInst inst){
         if(head==null)head=tail=inst;else{
-            inst.LinkNext(head);
+            head.LinkPre(inst);
             head=inst;
         }
     }
@@ -61,9 +62,9 @@ public class IRBlock {
     }
     public void AddNext(IRBlock blk){
         blk.pre=this;
-        blk.next=next;
-        if(next!=null)next.pre=blk;
-        next=blk;
+        blk.next=this.next;
+        if(this.next!=null)this.next.pre=blk;
+        this.next=blk;
         if(this==function.tail)function.tail=blk;
     }
     public boolean ishead(){

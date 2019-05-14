@@ -7,8 +7,8 @@ import java.util.Map;
 
 abstract public class IRInst {
     public IRBlock curblock;
-    public IRInst pre=null;
-    public IRInst next=null;
+    public IRInst pre;
+    public IRInst next;
     boolean deleteflag=false;
  //   public List<Register>registerlist=new ArrayList<>();//used register
 //    public List<Value>valuelist=new ArrayList<>();//used value
@@ -21,35 +21,24 @@ abstract public class IRInst {
         curblock=cur;
     }
     public void LinkNext(IRInst nextv){
-        next=nextv;
         nextv.pre=this;
+        nextv.next=this.next;
+        if(this.next!=null)this.next.pre=nextv;
+        this.next=nextv;
     }
     public void LinkPre(IRInst prev){
-        pre=prev;
+        prev.pre=this.pre;
         prev.next=this;
+        if(this.pre!=null)this.pre.next=prev;
+        this.pre=prev;
     }
     public void PreAppend(IRInst v){//Add v in front
-        if(pre==null){
-            curblock.head=v;
-        }else{
-            pre.LinkNext(v);
-        }
-        v.LinkNext(this);
+        LinkPre(v);
+        if(this==curblock.head)curblock.head=v;
     }
     public void Append(IRInst v){//Add v behind
-        if(next==null){
-            curblock.tail=v;
-        }else{
-            next.LinkPre(v);
-        }
-        v.LinkPre(this);
-    }
-    public void Delete(IRInst v){//delete v from list
-        if(deleteflag==true)return;
-        deleteflag=true;
-        //if(v instanceof BranchIR)curblock.DeleteEnd();
-        if(pre!=null)pre.next=next;else curblock.head=next;
-        if(next!=null)next.pre=pre;else curblock.tail=pre;
+        LinkNext(v);
+        if(this==curblock.tail)curblock.tail=v;
     }
     public abstract void accept(IRVisitor visitor);
 }
