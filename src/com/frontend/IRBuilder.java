@@ -668,7 +668,7 @@ public class IRBuilder extends ASTVisitor{
                 throw new Exception("CreatorWrong"+u.loc.toString());
             }
             ClassDefineType classtype=(ClassDefineType)type;
-            CurBlock.add(new Malloc(CurBlock,ptr,new Immediate(classtype.size)));
+            CurBlock.add(new Malloc(CurBlock,ptr,new Immediate(classtype.offset)));
             if(classtype.get(classtype.typename)!=null){
                 Type func=(classtype.get(type.typename).type);
                 if(!(func instanceof FunctionDefineType)){

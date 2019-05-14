@@ -4,7 +4,6 @@ import java.util.Hashtable;
 import com.frontend.Information;
 public class ClassDefineType extends Type {
     public Map<String,Information> map;
-    public int size;
     public int offset=0;
     public ClassDefineType(){
         super();
@@ -14,7 +13,7 @@ public class ClassDefineType extends Type {
     public ClassDefineType(Map<String,Information>mp,int off){
         super();
         map=mp;
-        size=off;
+        offset=off;
     }
     //public void add(String s,Information tp){
     //    map.put(s,tp);

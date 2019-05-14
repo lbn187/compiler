@@ -119,9 +119,9 @@ public class NasmPrinter implements NasmVisitor{
     }
     public void visit(Shift inst){
         if(inst.bits instanceof Imm){
-            System.out.println("    "+inst.op+" "+get(inst.var)+" "+inst.bits.toString());
+            System.out.println("    "+inst.op+" "+get(inst.var)+","+inst.bits.toString());
         }else{
-            System.out.println("    "+inst.op+" "+get(inst.var)+" cx");
+            System.out.println("    "+inst.op+" "+get(inst.var)+",cx");
         }
     }
     public void visit(UniOp inst){
