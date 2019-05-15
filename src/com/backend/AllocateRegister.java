@@ -7,7 +7,7 @@ import com.nasm.*;
 import static com.nasm.RegConst.*;
 public class AllocateRegister {
     public Func func;
-    public int K=1;
+    public int K=0;
     public Set<Mov> CombineVRegMove = new LinkedHashSet<>();
     public Set<Mov> ConstrainMove = new LinkedHashSet<>();
     public Set<Mov> FrozenMove = new LinkedHashSet<>();
