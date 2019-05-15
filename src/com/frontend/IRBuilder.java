@@ -363,17 +363,6 @@ public class IRBuilder extends ASTVisitor{
             }
             return;
         }
-        if(op.equals("+")||op.equals("-")||op.equals("*")||op.equals("/")||op.equals("%")||op.equals(">>")||op.equals("<<")||
-                op.equals("&")||op.equals("|")||op.equals("^")||op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")||op.equals("==")||op.equals("!=")){
-            visitexprprocess(u.exprl);
-            visitexprprocess(u.exprr);
-            VirtualRegister register=CurFunction.AddVirtualRegister("res");
-            u.register=register;
-            CurBlock.add(new BinaryOpIR(CurBlock,register,u.operator,u.exprl.register,u.exprr.register));
-            if((op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")||op.equals("==")||op.equals("!="))&&u.trueblock!=null){
-                CurBlock.add(new Branch(CurBlock,register,u.trueblock,u.falseblock));
-            }
-        }
         if(op.equals("&&")||op.equals("||")){
             if(op.equals("&&")) {
                 u.exprl.trueblock=CurFunction.AddBlock("lhs_true");
@@ -391,6 +380,21 @@ public class IRBuilder extends ASTVisitor{
             u.exprr.trueblock=u.trueblock;
             u.exprr.falseblock=u.falseblock;
             visit(u.exprr);
+        }
+        if(op.equals("+")||op.equals("-")||op.equals("*")||op.equals("/")||op.equals("%")||op.equals(">>")||op.equals("<<")||
+                op.equals("&")||op.equals("|")||op.equals("^")||op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")||op.equals("==")||op.equals("!=")){
+            visitexprprocess(u.exprl);
+            visitexprprocess(u.exprr);
+            if((u.exprl.register instanceof Immediate)&&(u.exprr.register instanceof Immediate)){
+                u.register=new Immediate(ConstantFolding(op,((Immediate)u.exprl.register).value,((Immediate)u.exprr.register).value));
+            }else {
+                VirtualRegister register = CurFunction.AddVirtualRegister("res");
+                u.register = register;
+                CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
+            }
+            if((op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")||op.equals("==")||op.equals("!="))&&u.trueblock!=null){
+                CurBlock.add(new Branch(CurBlock,u.register,u.trueblock,u.falseblock));
+            }
         }
     }
     public void visit(SuffixOpNode u)throws Exception{
@@ -719,6 +723,26 @@ public class IRBuilder extends ASTVisitor{
             irroot.strings.put(u.name,data);
         }
         u.register=data;
+    }
+    public int ConstantFolding(String op,int lv,int rv){
+        int tmp=0;
+        if(op.equals("<"))tmp=(lv<rv?1:0);
+        if(op.equals("<="))tmp=(lv<=rv?1:0);
+        if(op.equals(">"))tmp=(lv>rv?1:0);
+        if(op.equals(">="))tmp=(lv>=rv?1:0);
+        if(op.equals("=="))tmp=(lv==rv?1:0);
+        if(op.equals("!="))tmp=(lv!=rv?1:0);
+        if(op.equals(">>"))tmp=lv>>rv;
+        if(op.equals("<<"))tmp=lv<<rv;
+        if(op.equals("+"))tmp=lv+rv;
+        if(op.equals("-"))tmp=lv-rv;
+        if(op.equals("*"))tmp=lv*rv;
+        if(op.equals("/"))tmp=lv/rv;
+        if(op.equals("&"))tmp=lv&rv;
+        if(op.equals("|"))tmp=lv|rv;
+        if(op.equals("^"))tmp=lv^rv;
+        if(op.equals("%"))tmp=lv%rv;
+        return tmp;
     }
         /*
     public void visit(VariableDecl node) {
