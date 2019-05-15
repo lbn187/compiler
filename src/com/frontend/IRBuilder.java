@@ -553,7 +553,7 @@ public class IRBuilder extends ASTVisitor{
         List<Value>args=new ArrayList<>();
         if(u.exprs.get(0) instanceof MemberNode){
             args.add(GetLhsAddress(u.exprs.get(0)));
-        }else if(u.belong.classflag==true){
+        }else if(u.belong.getscope(u.exprs.get(0).name).classflag==true){
             //TODO  maybe wrong
             //System.out.println("FUNCTION IN CLASS");
             VirtualRegister ptr=CurFunction.AddVirtualRegister("ClassPtr");
