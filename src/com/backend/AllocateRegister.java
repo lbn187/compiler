@@ -1,4 +1,4 @@
-/*package com.backend;
+package com.backend;
 
 import javafx.util.Pair;
 import com.nasm.*;
@@ -101,7 +101,6 @@ public class AllocateRegister {
         for (VReg reg : allRegs) {
             EdgelistMap.put(reg, new HashSet<>());
             if (PreColor.contains(reg)) {
-                // PreColor nodes have infinite DegreeMap.
                 DegreeMap.put(reg, 100000000);
             } else {
                 DegreeMap.put(reg, 0);
@@ -144,9 +143,6 @@ public class AllocateRegister {
         Mov mov = (Mov) inst;
         if ((!(mov.dest instanceof VReg)) || (!(mov.src instanceof VReg))) return false;
         return ((VReg) mov.dest).PReg==((VReg)mov.src).PReg;
-        //String dstReg = ((VReg) mov.dest).getColor();
-        //String srcReg = (((VReg) mov.src).getColor());
-        //return dstReg.equals(srcReg);
     }
 
     private void removeSelfMov() {
@@ -169,26 +165,12 @@ public class AllocateRegister {
 
     private void build() {
         for (Block block : func.Blocks) {
-//            if (block.getName().equals("main")) {
-//                System.out.println("i am here");
-//            }
             Set<VReg> live = new HashSet<>(block.Dies);
             if (block.ReturnTest()) {
-                // use(calleeSaveRegs)
                 for(int i=0;i<5;i++){
                     live.add(VRegs.get(CalleeRegs[i]));
                 }
-                /*for (String name : calleeSaveRegs) {
-                    live.add(physicalRegMap.get(name));
-                }
-
-import com.nasm.VReg;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.nasm.RegConst.ColorRegs;}
+            }
             ListIterator li = block.Insts.listIterator(block.Insts.size());
             while (li.hasPrevious()) {
                 Inst inst = (Inst) li.previous();
@@ -221,9 +203,6 @@ import static com.nasm.RegConst.ColorRegs;}
                 for(int i=0;i<5;i++){
                     def.add(VRegs.get(CalleeRegs[i]));
                 }
-               /* for (String name : calleeSaveRegs) {
-                    def.add(physicalRegMap.get(name));
-                }
                 live.addAll(def);
                 for (VReg d : def) {
                     for (VReg l : live) {
@@ -231,9 +210,6 @@ import static com.nasm.RegConst.ColorRegs;}
                     }
                 }
                 live.removeAll(def);
-
-//                System.out.println(live.toString());
-                // Regs that are in live now must belong to paramRegs.
             }
         }
     }
@@ -248,9 +224,6 @@ import static com.nasm.RegConst.ColorRegs;}
             DegreeMap.put(u, d);
         }
         if (!(v.PrecolorFlag)) {
-//            if (!EdgelistMap.containsKey(v)) {
-//                System.out.println(v.getName());
-//            }
             EdgelistMap.get(v).add(u);
             int d = DegreeMap.get(v) + 1;
             DegreeMap.put(v, d);
@@ -471,11 +444,7 @@ import static com.nasm.RegConst.ColorRegs;}
         while (!StackSelect.isEmpty()) {
             VReg n = StackSelect.pop();
             NodeSelect.remove(n);
-//            if (n.getName().equals("%res_4")) {
-//                System.out.println("i am here");
-//            }
             Set<String> okColors = new HashSet<>(Arrays.asList(ColorRegs));
-            //for(int i=0;i<14;i++)okColors.add(ColorRegs[i]);
             for (VReg w : EdgelistMap.get(n)) {
                 VReg aw = getAliasMap(w);
                 if (ColoredNode.contains(aw) || PreColor.contains(aw)) {
@@ -486,7 +455,6 @@ import static com.nasm.RegConst.ColorRegs;}
                 SpillNode.add(n);
             } else {
                 ColoredNode.add(n);
-                //String c = okColors.iterator().next();
                 n.PReg=Integer.valueOf(okColors.iterator().next());
             }
         }
@@ -499,17 +467,10 @@ import static com.nasm.RegConst.ColorRegs;}
         func.RspOffset+=SpillNode.size() * 8;
         SpillEditor spillEditor = new SpillEditor(SpillNode);
         List<VReg> newTemps = spillEditor.visit(func);
-//        SpillNode.clear();
-//        Init.addAll(ColoredNode);
-//        Init.addAll(CombineNode);
-//        Init.addAll(newTemps);
-//        ColoredNode.clear();
-//        ColoredNode.clear();
-//        CombineNode.clear();
     }
 
-}*/
-
+}
+/*
 package com.backend;
 //import javafx.util.*;
 import java.util.*;
@@ -863,4 +824,4 @@ public class AllocateRegister {
             }
         }
     }
-}
+}*/
