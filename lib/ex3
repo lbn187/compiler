@@ -24,11 +24,11 @@ extern malloc
 extern puts
 extern __printf_chk
 extern __sprintf_chk
-extern __stack_chk_fail
-extern __isoc99_scanf
 extern printf
 extern malloc
 extern strlen
+extern __stack_chk_fail
+extern __isoc99_scanf
 extern strcpy
 extern sprintf
 
@@ -37,9 +37,9 @@ __Global:
     push rbp
     mov rbp,rsp
     mov rax,rbx
-    mov r11,r15
+    mov r11,r13
     mov rbx,rax
-    mov r15,r11
+    mov r13,r11
     mov rsp,rbp
     pop rbp
     ret
@@ -47,10 +47,10 @@ main:
     push rbp
     mov rbp,rsp
     sub rsp,32
-    mov qword [rbp - 8],r12
-    mov qword [rbp - 16],r13
-    mov qword [rbp - 24],r14
-    mov qword [rbp - 32],r15
+    mov qword [rbp - 8],r14
+    mov qword [rbp - 16],r12
+    mov qword [rbp - 24],r15
+    mov qword [rbp - 32],r13
     call __Global
     mov r11,0
     call getInt
@@ -121,25 +121,41 @@ __L_3:
     mov rsi,r11
     call __StringADD
     mov r11,rax
+    mov r12,r11
+    mov r11,r13
+    mov rax,r11
+    cqo
+    mov r11,100000
+    idiv r11
+    mov r11,rdx
+    cmp r11,0
+    sete al
+    movzx r11,al
+    cmp r11,0
+    je __L_4
+__L_5:
+    mov r11,r12
     mov rdi,r11
     call println
-    mov r11,r14
-    add r11,200000
-    mov r14,r11
     jmp __L_4
 __L_4:
+    mov r11,r14
+    add r11,4
+    mov r14,r11
+    jmp __L_6
+__L_6:
     mov r11,r13
-    add r11,100000
+    add r11,2
     mov r13,r11
     jmp __L_1
 __L_2:
     mov r11,0
-    jmp __L_5
-__L_5:
-    mov r12,qword [rbp - 8]
-    mov r13,qword [rbp - 16]
-    mov r14,qword [rbp - 24]
-    mov r15,qword [rbp - 32]
+    jmp __L_7
+__L_7:
+    mov r14,qword [rbp - 8]
+    mov r12,qword [rbp - 16]
+    mov r15,qword [rbp - 24]
+    mov r13,qword [rbp - 32]
     mov rax,r11
     mov rsp,rbp
     pop rbp
