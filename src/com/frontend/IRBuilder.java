@@ -388,9 +388,65 @@ public class IRBuilder extends ASTVisitor{
             if((u.exprl.register instanceof Immediate)&&(u.exprr.register instanceof Immediate)){
                 u.register=new Immediate(ConstantFolding(op,((Immediate)u.exprl.register).value,((Immediate)u.exprr.register).value));
             }else {
-                VirtualRegister register = CurFunction.AddVirtualRegister("res");
-                u.register = register;
-                CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
+                if(op.equals("*")){
+                    if(u.exprr.register instanceof Immediate){
+                        int va=((Immediate)u.exprr.register).value;
+                        if(va==0){
+                            u.register=new Immediate(0);
+                        }else if(va==1){
+                            u.register=u.exprl.register;
+                        }else{
+                            boolean flag=true;
+                            int cnt=0;
+                            if(va<1)flag=false;
+                            for(;va>1;va/=2){
+                                cnt++;
+                                if(va%2==1)flag=false;
+                            }
+                            if(flag==true){
+                                VirtualRegister register = CurFunction.AddVirtualRegister("res");
+                                u.register = register;
+                                CurBlock.add(new BinaryOpIR(CurBlock,register,"<<",u.exprl.register,new Immediate(cnt)));
+                            }else{
+                                VirtualRegister register = CurFunction.AddVirtualRegister("res");
+                                u.register = register;
+                                CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
+                            }
+                        }
+                    }else if(u.exprl.register instanceof Immediate){
+                        int va=((Immediate)u.exprl.register).value;
+                        if(va==0){
+                            u.register=new Immediate(0);
+                        }else if(va==1){
+                            u.register=u.exprr.register;
+                        }else{
+                            boolean flag=true;
+                            int cnt=0;
+                            if(va<1)flag=false;
+                            for(;va>1;va/=2){
+                                cnt++;
+                                if(va%2==1)flag=false;
+                            }
+                            if(flag==true){
+                                VirtualRegister register = CurFunction.AddVirtualRegister("res");
+                                u.register = register;
+                                CurBlock.add(new BinaryOpIR(CurBlock,register,"<<",u.exprr.register,new Immediate(cnt)));
+                            }else{
+                                VirtualRegister register = CurFunction.AddVirtualRegister("res");
+                                u.register = register;
+                                CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
+                            }
+                        }
+                    }else{
+                        VirtualRegister register = CurFunction.AddVirtualRegister("res");
+                        u.register = register;
+                        CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
+                    }
+                }else {
+                    VirtualRegister register = CurFunction.AddVirtualRegister("res");
+                    u.register = register;
+                    CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
+                }
             }
             if((op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")||op.equals("==")||op.equals("!="))&&u.trueblock!=null){
                 CurBlock.add(new Branch(CurBlock,u.register,u.trueblock,u.falseblock));
