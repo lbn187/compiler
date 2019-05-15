@@ -67,6 +67,7 @@ public class ScopeBuilder {
                 o.belong=curscope;
                 FunctionDefNode tmp = (FunctionDefNode) o;
                 Scope sonscope = curscope.addson();
+                sonscope.classflag=false;
                 //sonscope.classflag=false;
                 String name=tmp.name;
                 if(o.belong.name.startsWith("."))name="__"+o.belong.name.substring(1)+"_" + tmp.name;

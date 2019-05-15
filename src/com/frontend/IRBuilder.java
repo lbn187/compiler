@@ -275,8 +275,7 @@ public class IRBuilder extends ASTVisitor{
             VariableNode o=(VariableNode)u;
             if(o.name.equals("this"))return ThisAddress;
             //System.out.println(o.belong.name);
-            if(o.belong.classflag==true){//is in a class
-                //System.out.println("INCLASS  "+o.name);
+            if(o.belong.getscope(u.name).classflag==true){//is in a class
                 VirtualRegister reg=CurFunction.AddVirtualRegister("ClassPtr");
                 CurBlock.add(new Load(CurBlock,reg,ThisAddress));
                 Immediate offset=new Immediate(o.belong.get(u.name).offset);
