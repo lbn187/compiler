@@ -138,6 +138,7 @@ __StringSubstring:
         push    rbp
         mov     rbp, rsp
         sub     rsp, 64
+        inc     rdx
         mov     qword [rbp-28H], rdi
         mov     qword [rbp-30H], rsi
         mov     qword [rbp-38H], rdx
