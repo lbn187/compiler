@@ -153,6 +153,7 @@ public class IRBuilder extends ASTVisitor{
             CurBlock.add(new Move(CurBlock, returnvalue, new Immediate(0)));
         }
         visit(u.block);
+        CurBlock.add(new Jump(CurBlock,ExitBlock));
         //CurFunction.tail.add(new Jump(CurFunction.tail,ExitBlock));
         ExitBlock.add(new Return(ExitBlock, returnvalue));
         //CurFunction.Append(ExitBlock);
@@ -608,7 +609,7 @@ public class IRBuilder extends ASTVisitor{
 
     //qian 8 wei fang zhi zhen
     public Value CalPtr(int nv){
-        VirtualRegister ptr=CurFunction.AddVirtualRegister("ClassPtr");
+        VirtualRegister ptr=CurFunction.AddVirtualRegister("ArrayPtr");
         Value size=Regs.get(nv);
         VirtualRegister ElementSize=CurFunction.AddVirtualRegister("ElementSize");
         CurBlock.add(new BinaryOpIR(CurBlock,ElementSize,"*",size,new Immediate(8)));
