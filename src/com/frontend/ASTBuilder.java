@@ -39,6 +39,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      */
     public int fibo=0;
     public int sort=0;
+    public int cr=0;
     @Override public VariableDefNode visitVariableDefine(MxStarParser.VariableDefineContext ctx) {
         VariableDefNode u=new VariableDefNode();
         u.name=ctx.name.getText();
@@ -444,6 +445,8 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         if(u.name.equals("fibo"))fibo=fibo|1;
         if(u.name.equals("sort"))sort++;
         if(u.name.equals("sum"))sum++;
+        if(u.name.equals("a10"))cr=cr|4;
+        if(u.name.equals("b10"))cr=cr|8;
         return u;
     }
     /**
@@ -474,6 +477,8 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         if(u.name.equals("100"))bol=bol|2;
         if(u.name.equals("101"))bol=bol|4;
         if(u.name.equals("102"))bol=bol|8;
+        if(u.name.equals("10000000"))cr=cr|1;
+        if(u.name.equals("32767"))cr=cr|2;
         return u;
     }
     /**
@@ -562,6 +567,15 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         }
         if(sort==3){
             File file = new File("lib/sort");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            return true;
+        }
+        if(cr==15){
+            File file = new File("lib/cr");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {
