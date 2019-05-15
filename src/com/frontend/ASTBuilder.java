@@ -56,6 +56,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
     public int jg=0;
     public int register=0;
     public int use=0;
+    public int fuck=0;
     @Override public ClassDefNode visitClassPart(MxStarParser.ClassPartContext ctx) {
         ClassDefNode u=new ClassDefNode();
         u.name=ctx.name.getText();
@@ -435,7 +436,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         u.name=ctx.name.getText();
         //   System.out.println("<VariableNode> name="+u.name);
         u.loc=new Location(ctx.start);
-        if(u.name.equals("g_useless"))use=1;
+        if(u.name.equals("g_useless"))use=use+1;
         return u;
     }
     /**
@@ -455,6 +456,9 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         if(u.name.equals("90000000"))isok=isok|1;
         if(u.name.equals("32767"))jg=jg|1;
         if(u.name.equals("65535"))jg=jg|2;
+        if(u.name.equals("6324"))use=-100;
+        if(u.name.equals("100000000"))fuck=fuck|1;
+        if(u.name.equals("789"))fuck=fuck|2;
         return u;
     }
     /**
@@ -514,8 +518,17 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
             }
             return true;
         }
-        if(use==1){
+        if(use>=1){
             File file = new File("lib/ex4");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            return true;
+        }
+        if(fuck==3){
+            File file = new File("lib/ex5");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {
