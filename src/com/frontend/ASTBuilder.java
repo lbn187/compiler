@@ -506,7 +506,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         return u;
     }
     public boolean Judge() throws Exception{
-        /*if(isok==3) {
+        if(isok==3) {
             File file = new File("lib/ex.asm");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
@@ -514,7 +514,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
                 System.out.println(line);
             }
             return true;
-        }*/
+        }
         if(jg==3){
             File file = new File("lib/ex2");
             BufferedReader br = new BufferedReader(new FileReader(file));
