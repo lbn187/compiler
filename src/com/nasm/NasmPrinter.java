@@ -18,6 +18,8 @@ public class NasmPrinter implements NasmVisitor{
         for(Func func:nasm.Functions){
             if(func.name.equals("_main"))
                 System.out.println("global main");
+            else if(func.name.equals("_init"))
+                System.out.println("global _fuckyourmother");
             else System.out.println("global "+func.name);
         }
         System.out.println("extern strcmp");
@@ -69,7 +71,8 @@ public class NasmPrinter implements NasmVisitor{
     public void visit(Func func){
         for(Block block:func.Blocks){
             if(block.name.equals("_main"))System.out.println("main:");
-            else System.out.println(block.name+":");
+            else if(block.name.equals("_init"))System.out.println("_fuckyourmother:");
+                else System.out.println(block.name+":");
             for(Inst inst:block.Insts){
                 visit(inst);
             }
@@ -88,7 +91,8 @@ public class NasmPrinter implements NasmVisitor{
         System.out.println("    cqo");
     }
     public void visit(CallFunc inst){
-        System.out.println("    call "+inst.name);
+        if(inst.name.equals("_init"))System.out.println("    call _fuckyourmother");
+        else System.out.println("    call "+inst.name);
     }
     public void visit(IDiv inst){
         System.out.println("    idiv "+get(inst.src));
