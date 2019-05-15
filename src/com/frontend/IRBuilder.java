@@ -470,62 +470,6 @@ public class IRBuilder extends ASTVisitor{
                         u.register = register;
                         CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
                     }
-                }else if(op.equals("+")||op.equals("|")||op.equals("^")){
-                    boolean flag=false;
-                    Value vv=null;
-                    if(u.exprr.register instanceof Immediate){
-                            int va=((Immediate)u.exprr.register).value;
-                            if(va==0){
-                                flag=true;
-                                vv=u.exprl.register;
-                            }
-                    }
-                    if(u.exprl.register instanceof Immediate){
-                        int va=((Immediate)u.exprl.register).value;
-                        if(va==0){
-                            flag=true;
-                            vv=u.exprr.register;
-                        }
-                    }
-                    if(flag==true){
-                        u.register=vv;
-                    }else{
-                        VirtualRegister register = CurFunction.AddVirtualRegister("res");
-                        u.register = register;
-                        CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
-                    }
-                }else if(op.equals("-")){
-                    if(u.exprr.register instanceof Immediate){
-                        int va=((Immediate)u.exprr.register).value;
-                        if(va==0){
-                            u.register=u.exprl.register;
-                        }else {
-                            VirtualRegister register = CurFunction.AddVirtualRegister("res");
-                            u.register = register;
-                            CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
-                        }
-                    }else {
-                        VirtualRegister register = CurFunction.AddVirtualRegister("res");
-                        u.register = register;
-                        CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
-                    }
-                }else if(op.equals("&")) {
-                    boolean flag=false;
-                    if(u.exprr.register instanceof Immediate) {
-                        int va = ((Immediate) u.exprr.register).value;
-                        if(va==0)flag=true;
-                    }
-                    if(u.exprl.register instanceof Immediate) {
-                        int va = ((Immediate) u.exprl.register).value;
-                        if(va==0)flag=true;
-                    }
-                    if(flag==true){
-                        u.register=new Immediate(0);
-                    }else{
-                        VirtualRegister register = CurFunction.AddVirtualRegister("res");
-                        u.register = register;
-                        CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
-                    }
                 }else{
                     VirtualRegister register = CurFunction.AddVirtualRegister("res");
                     u.register = register;
