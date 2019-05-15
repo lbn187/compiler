@@ -26,11 +26,11 @@ extern malloc
 extern puts
 extern __printf_chk
 extern __sprintf_chk
-extern __stack_chk_fail
-extern __isoc99_scanf
 extern printf
 extern malloc
 extern strlen
+extern __stack_chk_fail
+extern __isoc99_scanf
 extern strcpy
 extern sprintf
 
@@ -326,7 +326,9 @@ main:
     mov rax,0
     call getInt
     mov qword [rbp - 48],rax
-    mov qword [rbp - 48],200000
+    mov r11,qword [rbp - 48]
+    sar r11,1
+    mov qword [rbp - 48],r11
     mov r12,qword [rbp - 48]
     mov r11,r12
     shl r11,3
