@@ -7,7 +7,7 @@ import com.nasm.*;
 import static com.nasm.RegConst.*;
 public class AllocateRegister {
     public Func func;
-
+    public int AllocCnt;
     public Set<Mov> CombineVRegMove = new LinkedHashSet<>();
     public Set<Mov> ConstrainMove = new LinkedHashSet<>();
     public Set<Mov> FrozenMove = new LinkedHashSet<>();
@@ -22,12 +22,13 @@ public class AllocateRegister {
     public Set<VReg> Init = new LinkedHashSet<>();
     public Set<VReg> SimpleWork = new LinkedHashSet<>();
     public Set<VReg> FreezeWork = new LinkedHashSet<>();
-    public Set<VReg> SpillWork = new LinkedHashSet<>();
-    public Set<VReg> SpillNode = new LinkedHashSet<>();
+    public Set<VReg> ExtraWork = new LinkedHashSet<>();
+    public Set<VReg> ExtraNode = new LinkedHashSet<>();
     public Set<VReg> CombineVRegNode = new LinkedHashSet<>();
     public Set<VReg> ColoredNode = new LinkedHashSet<>();
     public Stack<VReg> StackSelect = new Stack<>();
     public Set<VReg> NodeSelect = new HashSet<>();
+    public int RegNumConst=10000000;
     public static void visit(Nasm nasm) throws IOException {
         //  System.out.println("VISIT-------------");
         for(Func func:nasm.Functions){
@@ -41,14 +42,13 @@ public class AllocateRegister {
     }
     public int K=0;
     public void run() throws IOException {
-        for(int Step=0;true;){
-            ++Step;
+        for(;true;){
             PreColor.clear();
             Init.clear();
             SimpleWork.clear();
             FreezeWork.clear();
-            SpillWork.clear();
-            SpillNode.clear();
+            ExtraWork.clear();
+            ExtraNode.clear();
             CombineVRegNode.clear();
             ColoredNode.clear();
             StackSelect.clear();
@@ -81,7 +81,7 @@ public class AllocateRegister {
             allRegs.addAll(Init);
             for(VReg reg:allRegs){
                 EdgelistMap.put(reg,new HashSet<>());
-                if(PreColor.contains(reg))DegreeMap.put(reg,100000007);
+                if(PreColor.contains(reg))DegreeMap.put(reg,RegNumConst);
                 else DegreeMap.put(reg,0);
                 MovelistMap.put(reg,new HashSet<>());
                 AliasMap.put(reg,null);
@@ -123,11 +123,11 @@ public class AllocateRegister {
             List<VReg> regs=new ArrayList<>(Init);
             for (VReg n:regs) {
                 Init.remove(n);
-                SpillWork.add(n);
+                ExtraWork.add(n);
             }
             while(true){
                 if(!SimpleWork.isEmpty()) {
-                    VReg n = SimpleWork.iterator().next();
+                    VReg n=SimpleWork.iterator().next();
                     //System.out.println("SIMPLYFIY :"+n.toString());
                     SimpleWork.remove(n);
                     StackSelect.push(n);
@@ -152,37 +152,34 @@ public class AllocateRegister {
                         ConstrainMove.add(mov);
                     }else{
                         Set<VReg> vAdj=CalAdjacent(v);
-                        Set<VReg> uvAdj=CalAdjacent(u);
-                        uvAdj.addAll(vAdj);
-                        boolean cond1=u.PrecolorFlag==true;
-                        if(cond1){
+                        boolean flag=u.PrecolorFlag==true;
+                        if(flag){
                             for (VReg t:vAdj)
                                 if(!ok(t,u)){
-                                    cond1=false;
+                                    flag=false;
                                     break;
                                 }
+
                         }
-                        boolean cond2=false;
-                        if (cond1||cond2) {
+                        if(flag){
                             CombineVRegMove.add(mov);
                             CombineVReg(u,v);
-
-                        }else{
+                        } else{
                             ActiveMove.add(mov);
                         }
                     }
-                } else if (!FreezeWork.isEmpty()) {
+                }else if (!FreezeWork.isEmpty()) {
                     VReg u = FreezeWork.iterator().next();
                     FreezeWork.remove(u);
                     SimpleWork.add(u);
                     freezeMoves(u);
-                } else if (!SpillWork.isEmpty()) {
-                    Iterator<VReg> iter = SpillWork.iterator();
+                } else if (!ExtraWork.isEmpty()) {
+                    Iterator<VReg> iter = ExtraWork.iterator();
                     VReg m=iter.next();
                     while((m.TinyFlag==true)&&iter.hasNext()){
                         m=iter.next();
                     }
-                    SpillWork.remove(m);
+                    ExtraWork.remove(m);
                     SimpleWork.add(m);
                     freezeMoves(m);
                 }else break;
@@ -197,18 +194,19 @@ public class AllocateRegister {
                         okColors.remove(String.valueOf(aw.PReg));
                     }
                 }
-                if (okColors.isEmpty()) {
-                    SpillNode.add(n);
-                } else {
+                if(!okColors.isEmpty()){
                     ColoredNode.add(n);
                     n.PReg=Integer.valueOf(okColors.iterator().next());
+                    //System.out.println(n.PReg);
+                }else{
+                    ExtraNode.add(n);
                 }
             }
             for (VReg n:CombineVRegNode)n.PReg=CalAliasMap(n).PReg;
-            if(SpillNode.isEmpty())break;
-            func.RspOffset+=SpillNode.size()*8;
-            SpillEditor spillEditor=new SpillEditor(SpillNode);
-            List<VReg> newTemps=spillEditor.visit(func);
+            if(ExtraNode.isEmpty())break;
+            func.RspOffset+=ExtraNode.size()*8;
+            ExtraSolver solver=new ExtraSolver(ExtraNode);
+            List<VReg> tmp=solver.visit(func);
         }
         for (Block block:func.Blocks) {
             LinkedList<Inst> Insts=new LinkedList<>();
@@ -271,7 +269,7 @@ public class AllocateRegister {
             Set<VReg> nodes=CalAdjacent(m);
             nodes.add(m);
             EnableMoves(nodes);
-            SpillWork.remove(m);
+            ExtraWork.remove(m);
             if (MoveRelatedJudge(m)){
                 FreezeWork.add(m);
             }else{
@@ -294,7 +292,7 @@ public class AllocateRegister {
         if(FreezeWork.contains(v)){
             FreezeWork.remove(v);
         }else{
-            SpillWork.remove(v);
+            ExtraWork.remove(v);
         }
         CombineVRegNode.add(v);
         AliasMap.put(v,u);
@@ -308,7 +306,7 @@ public class AllocateRegister {
         }
         if(FreezeWork.contains(u)){
             FreezeWork.remove(u);
-            SpillWork.add(u);
+            ExtraWork.add(u);
         }
     }
     public VReg CalAliasMap(VReg n) {
@@ -355,8 +353,8 @@ public class AllocateRegister {
     public Set<VReg> Init = new LinkedHashSet<>();
     public Set<VReg> SimpleWork = new LinkedHashSet<>();
     public Set<VReg> FreezeWork = new LinkedHashSet<>();
-    public Set<VReg> SpillWork = new LinkedHashSet<>();
-    public Set<VReg> SpillNode = new LinkedHashSet<>();
+    public Set<VReg> ExtraWork = new LinkedHashSet<>();
+    public Set<VReg> ExtraNode = new LinkedHashSet<>();
     public Set<VReg> CombineVRegNode = new LinkedHashSet<>();
     public Set<VReg> ColoredNode = new LinkedHashSet<>();
     public Stack<VReg> StackSelect = new Stack<>();
@@ -380,8 +378,8 @@ public class AllocateRegister {
             Init.clear();
             SimpleWork.clear();
             FreezeWork.clear();
-            SpillWork.clear();
-            SpillNode.clear();
+            ExtraWork.clear();
+            ExtraNode.clear();
             CombineVRegNode.clear();
             ColoredNode.clear();
             StackSelect.clear();
@@ -457,7 +455,7 @@ public class AllocateRegister {
             for (VReg n:regs) {
                 Init.remove(n);
                 if (DegreeMap.get(n)>=K){
-                    SpillWork.add(n);
+                    ExtraWork.add(n);
                 }else if(MoveRelatedJudge(n)){
                     FreezeWork.add(n);
                 }else{
@@ -519,13 +517,13 @@ public class AllocateRegister {
                     FreezeWork.remove(u);
                     SimpleWork.add(u);
                     freezeMoves(u);
-                } else if (!SpillWork.isEmpty()) {
-                    Iterator<VReg> iter = SpillWork.iterator();
+                } else if (!ExtraWork.isEmpty()) {
+                    Iterator<VReg> iter = ExtraWork.iterator();
                     VReg m=iter.next();
                     while((m.TinyFlag==true)&&iter.hasNext()){
                         m=iter.next();
                     }
-                    SpillWork.remove(m);
+                    ExtraWork.remove(m);
                     SimpleWork.add(m);
                     freezeMoves(m);
                 }else break;
@@ -541,16 +539,16 @@ public class AllocateRegister {
                     }
                 }
                 if (okColors.isEmpty()) {
-                    SpillNode.add(n);
+                    ExtraNode.add(n);
                 } else {
                     ColoredNode.add(n);
                     n.PReg=Integer.valueOf(okColors.iterator().next());
                 }
             }
             for (VReg n:CombineVRegNode)n.PReg=CalAliasMap(n).PReg;
-            if(SpillNode.isEmpty())break;
-            func.RspOffset+=SpillNode.size()*8;
-            SpillEditor spillEditor=new SpillEditor(SpillNode);
+            if(ExtraNode.isEmpty())break;
+            func.RspOffset+=ExtraNode.size()*8;
+            SpillEditor spillEditor=new SpillEditor(ExtraNode);
             List<VReg> newTemps=spillEditor.visit(func);
         }
         for (Block block:func.Blocks) {
@@ -614,7 +612,7 @@ public class AllocateRegister {
             Set<VReg> nodes=CalAdjacent(m);
             nodes.add(m);
             EnableMoves(nodes);
-            SpillWork.remove(m);
+            ExtraWork.remove(m);
             if (MoveRelatedJudge(m)){
                 FreezeWork.add(m);
             }else{
@@ -649,7 +647,7 @@ public class AllocateRegister {
         if(FreezeWork.contains(v)){
             FreezeWork.remove(v);
         }else{
-            SpillWork.remove(v);
+            ExtraWork.remove(v);
         }
         CombineVRegNode.add(v);
         AliasMap.put(v,u);
@@ -663,7 +661,7 @@ public class AllocateRegister {
         }
         if (DegreeMap.get(u)>=K&&FreezeWork.contains(u)){
             FreezeWork.remove(u);
-            SpillWork.add(u);
+            ExtraWork.add(u);
         }
     }
     public VReg CalAliasMap(VReg n) {

@@ -519,7 +519,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
             File file = new File("lib/ex2");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
-            String line;
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
             }
