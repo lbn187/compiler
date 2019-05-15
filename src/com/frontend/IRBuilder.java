@@ -604,9 +604,15 @@ public class IRBuilder extends ASTVisitor{
             u.register = u.expr.register;
         }else
         if (op.equals("-")||op.equals("~")) {
-            VirtualRegister register = CurFunction.AddVirtualRegister("res");
-            CurBlock.add(new UnaryOpIR(CurBlock, register, op, u.expr.register));
-            u.register=register;
+            if(u.expr.register instanceof Immediate){
+                int va=((Immediate)u.expr.register).value;
+                if(op.equals("-"))u.register=new Immediate(-va);
+                if(op.equals("~"))u.register=new Immediate(~va);
+            }else {
+                VirtualRegister register = CurFunction.AddVirtualRegister("res");
+                CurBlock.add(new UnaryOpIR(CurBlock, register, op, u.expr.register));
+                u.register = register;
+            }
         }else
         if (op.equals("+++")) {
             Value addr=GetLhsAddress(u.expr);
