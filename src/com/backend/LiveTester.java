@@ -21,9 +21,10 @@ public class LiveTester {
         for (Block block:func.Blocks) {
             ExVarMap.put(block, new HashSet<>());
             KillMap.put(block, new HashSet<>());
-            if (block.EntryTest()==true)
-                for(int i=0;i<5;i++)
+            if (block.EntryTest()==true) {
+                for (int i = 0; i < 5; i++)
                     KillMap.get(block).add(VRegs.get(CalleeRegs[i]));
+            }
             for(Inst inst:block.Insts){
                 for(VReg use:inst.CalUse()){
                     if(KillMap.get(block).contains(use))continue;
@@ -35,8 +36,10 @@ public class LiveTester {
         }
         for (Block block:func.Blocks) {
             DiesMap.put(block, new HashSet<>());
-            for(Block succ:block.Succs)
+            for(Block succ:block.Succs) {
+                //System.out.println("SUCCBLOCK:"+succ.name);
                 DiesMap.get(block).addAll(ExVarMap.get(succ));
+            }
         }
         for(boolean changeFlag=true;changeFlag;){
             changeFlag=false;

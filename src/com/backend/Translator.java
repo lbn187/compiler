@@ -315,9 +315,7 @@ public class Translator implements IRVisitor{
     public Var CalValue(Value value){
         if(value instanceof Immediate)return new Imm(((Immediate)value).value);
         if(value instanceof VirtualRegister)return CalVirtualRegister((VirtualRegister)value);
-        if(value instanceof StringData) {
-            return new Label(toNasm(value.toString()));
-        }
+        if(value instanceof StringData)return new Label(toNasm(value.toString()));
         return null;
     }
 }

@@ -7,5 +7,4 @@ public class EdgePair {
         s=a;
         t=b;
     }
-
 }

@@ -105,7 +105,6 @@ public class IRPrinter implements IRVisitor {
         if (node.dest != null) {
             funcCall.append(node.dest).append(" = ");
         }
-        //TODO
         funcCall.append(node.function.typename).append(" ( ");
         for (Value arg : node.args) {
             funcCall.append(arg).append(" ");
@@ -113,23 +112,11 @@ public class IRPrinter implements IRVisitor {
         funcCall.append(")");
         println(funcCall.toString());
     }
-/*
-    public void visit(Phi node) {
-        StringBuilder phi = new StringBuilder(node.dest + " = phi");
-        for (IRBlock pred : node.getAllSource().keySet()) {
-            Operand var = node.getAllSource().get(pred);
-            phi.append(" <").append(pred.getLabel()).append("> ").append(var);
-        }
-        println(phi.toString());
-    }*/
-
     public void visit(Move node) {
         println("mov " + node.dest + " " + node.value);
     }
 
     public void visit(Branch node) {
-//        if (node.getIfFalse() == null)
-//            System.out.println("null false");
         println("br " + node.flag.toString() + " <" + String.valueOf(node.trueblock.id) + "> <" + String.valueOf(node.falseblock.id) + ">");
     }
 

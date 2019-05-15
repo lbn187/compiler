@@ -9,7 +9,6 @@ public class StackBuilder implements NasmVisitor{
     public Func func;
     public LinkedList<Inst> newinsts;
     public int rbpOffset=0;
-
     public static void visit(Nasm nasm){
         for (Func func:nasm.Functions){
             StackBuilder builder=new StackBuilder(func);
