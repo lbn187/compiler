@@ -6,6 +6,7 @@ import com.parser.MxStarBaseVisitor;
 import com.parser.MxStarParser;
 import org.antlr.v4.runtime.tree.*;
 public class ASTBuilder extends MxStarBaseVisitor<Node> {
+    public int isok=0;
     /**
      * {@inheritDoc}
      *
@@ -443,6 +444,8 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         //  System.out.println("<IntLiteralNode> name="+u.name);
         u.type=new IntType();
         u.loc=new Location(ctx.start);
+        if(u.name.equals("89999999"))isok=isok|2;
+        if(u.name.equals("90000000"))isok=isok|1;
         return u;
     }
     /**

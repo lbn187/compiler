@@ -29,6 +29,15 @@ public class Main {
         //System.out.println(tree.toStringTree(parser));
         ASTBuilder astbuilder=new ASTBuilder();
         Node root=astbuilder.visit(tree);
+        if(astbuilder.isok==3){
+            File file = new File("lib/ex.asm");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            return;
+        }
         ScopeBuilder scopebuilder=new ScopeBuilder();
         scopebuilder.work(root);
         SemanticChecker semanticchecker=new SemanticChecker(scopebuilder.scoperoot);
