@@ -1,246 +1,279 @@
 package com.nasm;
 import java.util.*;
+
 import static com.nasm.RegConst.*;
+
 public class SpillEditor implements NasmVisitor {
-    public Map<VReg, Memory> spillMap = new HashMap<>();
-    public List<VReg> newTemps = new ArrayList<>();
-    public LinkedList<Inst> newinsts=new LinkedList<>();
-    public int regCounter = 0;
+
+    private Map<VReg, Memory> spillMap = new HashMap<>();
+    private List<VReg> newTemps = new ArrayList<>();
+    private LinkedList<Inst> oldInstList;
+    private LinkedList<Inst> newInstList;
+    private int regCounter = 0;
+
     public SpillEditor(Set<VReg> spilledNodes) {
         for (VReg reg : spilledNodes) {
-            spillMap.put(reg,new Memory());
+            spillMap.put(reg, new Memory());
         }
     }
+
     public List<VReg> visit(Func func) {
-        for (Block block : func.Blocks){
-            for (Inst inst:block.Insts)
+        for (Block block : func.Blocks) {
+            oldInstList = block.Insts;
+            newInstList = new LinkedList<>();
+            for (Inst inst : oldInstList) {
                 visit(inst);
-            block.Insts=newinsts;
+            }
+            block.Insts=newInstList;
         }
         return newTemps;
     }
+
     public void visit(Inst inst) {
         inst.accept(this);
     }
-    public VReg NewTmpReg() {
+
+    private VReg makeTmpReg() {
         ++regCounter;
-        VReg tmp = new VReg("%tmp_"+regCounter,true);
+        VReg tmp = new VReg("%tmp_" + regCounter, true);
         newTemps.add(tmp);
         return tmp;
     }
-    public boolean SpillJudge(Var var) {
-        if (var instanceof VReg&&spillMap.keySet().contains(var))return true;
-        return false;
+
+    private VReg needSpill(Var var) {
+        if (var instanceof VReg && spillMap.keySet().contains(var)) {
+            return (VReg) var;
+        }
+        return null;
     }
+
     public void editImul(BinOp inst) {
-        Var dest=inst.dest;
-        boolean lf=SpillJudge(dest);
-        Var src=inst.src;
-        boolean rf=SpillJudge(src);
-        if(lf==true&&rf==true){
-            VReg tmp = NewTmpReg();
-            newinsts.add(new Mov(tmp,spillMap.get(dest)));
+        VReg first = needSpill(inst.dest);
+        VReg second = needSpill(inst.src);
+        if (first != null && second != null) {
+            VReg tmp = makeTmpReg();
+            newInstList.add(new Mov(tmp, spillMap.get(first)));
             inst.dest=tmp;
-            inst.src=spillMap.get(src);
-            newinsts.add(inst);
-            newinsts.add(new Mov(spillMap.get(dest),tmp));
-        }else if(lf==true){
-            VReg tmp = NewTmpReg();
-            newinsts.add(new Mov(tmp,spillMap.get(dest)));
+            inst.src=spillMap.get(second);
+            newInstList.add(inst);
+            newInstList.add(new Mov(spillMap.get(first), tmp));
+        } else if (first != null) {
+            VReg tmp = makeTmpReg();
+            newInstList.add(new Mov(tmp, spillMap.get(first)));
             inst.dest=tmp;
-            newinsts.add(inst);
-            newinsts.add(new Mov(spillMap.get(dest),tmp));
-        }else if(rf==true){
-            inst.src=spillMap.get(src);
-            newinsts.add(inst);
-        }else{
-            newinsts.add(inst);
+            newInstList.add(inst);
+            newInstList.add(new Mov(spillMap.get(first), tmp));
+        } else if (second != null) {
+            inst.src=spillMap.get(second);
+            newInstList.add(inst);
+        } else {
+            newInstList.add(inst);
         }
     }
+
     public void visit(BinOp inst) {
         if (inst.op.equals("imul")) {
             editImul(inst);
             return;
         }
-        Var dest=inst.dest;
-        boolean lf=SpillJudge(dest);
-        Var src=inst.src;
-        boolean rf=SpillJudge(src);
-        if(lf==true&&rf==true){
-            VReg tmp = NewTmpReg();
-            newinsts.add(new Mov(tmp,spillMap.get(src)));
-            inst.dest=spillMap.get(dest);
+        VReg first = needSpill(inst.dest);
+        VReg second = needSpill(inst.src);
+        if (first != null && second != null) {
+            VReg tmp = makeTmpReg();
+            newInstList.add(new Mov(tmp, spillMap.get(second)));
+            inst.dest=spillMap.get(first);
             inst.src=tmp;
-            newinsts.add(inst);
-        } else if(lf==true){
-            if (src instanceof Memory){
-                VReg tmp=NewTmpReg();
-                newinsts.add(new Mov(tmp,spillMap.get(dest)));
+            newInstList.add(inst);
+        } else if (first != null) {
+            if (inst.src instanceof Memory) {
+                VReg tmp = makeTmpReg();
+                newInstList.add(new Mov(tmp, spillMap.get(first)));
                 inst.dest=tmp;
-                newinsts.add(inst);
-                newinsts.add(new Mov(spillMap.get(dest),tmp));
+                newInstList.add(inst);
+                newInstList.add(new Mov(spillMap.get(first), tmp));
             } else {
-                inst.dest=spillMap.get(dest);
-                newinsts.add(inst);
+                inst.dest=spillMap.get(first);
+                newInstList.add(inst);
             }
-        } else if(rf==true){
-            if(dest instanceof Memory){
-                VReg tmp=NewTmpReg();
-                newinsts.add(new Mov(tmp,spillMap.get(src)));
+        } else if (second != null) {
+            if (inst.dest instanceof Memory) {
+                VReg tmp = makeTmpReg();
+                newInstList.add(new Mov(tmp, spillMap.get(second)));
                 inst.src=tmp;
-                newinsts.add(inst);
-            } else{
-                inst.src=spillMap.get(src);
-                newinsts.add(inst);
+                newInstList.add(inst);
+            } else {
+                inst.src=spillMap.get(second);
+                newInstList.add(inst);
             }
-        } else{
-            newinsts.add(inst);
+        } else {
+            newInstList.add(inst);
         }
     }
+
     public void visit(Cmp inst) {
-        Var a=inst.a;
-        boolean lf=SpillJudge(a);
-        Var b=inst.b;
-        boolean rf=SpillJudge(b);
-        if (lf==true&&rf==true) {
-            VReg tmp = NewTmpReg();
-            newinsts.add(new Mov(tmp, spillMap.get(b)));
-            inst.a=spillMap.get(a);
+        VReg lhs = needSpill(inst.a);
+        VReg rhs = needSpill(inst.b);
+        if (lhs != null && rhs != null) {
+            VReg tmp = makeTmpReg();
+            newInstList.add(new Mov(tmp, spillMap.get(rhs)));
+            inst.a=spillMap.get(lhs);
             inst.b=tmp;
-            newinsts.add(inst);
-        } else if(lf==true){
+            newInstList.add(inst);
+        } else if (lhs != null) {
             if (inst.b instanceof Memory) {
-                VReg tmp = NewTmpReg();
-                newinsts.add(new Mov(tmp, spillMap.get(a)));
+                VReg tmp = makeTmpReg();
+                newInstList.add(new Mov(tmp, spillMap.get(lhs)));
                 inst.a=tmp;
-                newinsts.add(inst);
-            }else{
-                inst.a=spillMap.get(a);
-                newinsts.add(inst);
+                newInstList.add(inst);
+            } else {
+                inst.a=spillMap.get(lhs);
+                newInstList.add(inst);
             }
-        } else if(rf==true){
-            if(inst.a instanceof Memory){
-                VReg tmp = NewTmpReg();
-                newinsts.add(new Mov(tmp, spillMap.get(b)));
+        } else if (rhs != null) {
+            if (inst.a instanceof Memory) {
+                VReg tmp = makeTmpReg();
+                newInstList.add(new Mov(tmp, spillMap.get(rhs)));
                 inst.b=tmp;
-                newinsts.add(inst);
-            }else{
-                inst.b=spillMap.get(b);
-                newinsts.add(inst);
+                newInstList.add(inst);
+            } else {
+                inst.b=spillMap.get(rhs);
+                newInstList.add(inst);
             }
-        }else{
-            newinsts.add(inst);
+        } else {
+            newInstList.add(inst);
         }
     }
+
     public void visit(Cqo inst) {
-        newinsts.add(inst);
+        newInstList.add(inst);
     }
+
     public void visit(CallFunc inst) {
-        newinsts.add(inst);
+        newInstList.add(inst);
     }
+
     public void visit(IDiv inst) {
-        if (SpillJudge(inst.src))inst.src=spillMap.get(inst.src);
-        newinsts.add(inst);
+        VReg divisor = needSpill(inst.src);
+        if (divisor != null) {
+            inst.src=spillMap.get(divisor);
+        }
+        newInstList.add(inst);
     }
+
     public void visit(Jmp inst) {
-        newinsts.add(inst);
+        newInstList.add(inst);
     }
-    public void editMemory(Memory memory) {
+
+    private void editMemory(Memory memory) {
         if ((memory.ok==false) || memory.label != null) return;
         assert !spillMap.keySet().contains(rbp);
         VReg base = memory.base;
         VReg index = memory.index;
         assert base != null;
         if (spillMap.keySet().contains(base)) {
-            VReg tmp = NewTmpReg();
-            newinsts.add(new Mov(tmp, spillMap.get(base)));
+            VReg tmp = makeTmpReg();
+            newInstList.add(new Mov(tmp, spillMap.get(base)));
             memory.base=tmp;
         }
         if (index != null && spillMap.keySet().contains(index)) {
-            VReg tmp = NewTmpReg();
-            newinsts.add(new Mov(tmp, spillMap.get(index)));
+            VReg tmp = makeTmpReg();
+            newInstList.add(new Mov(tmp, spillMap.get(index)));
             memory.index=tmp;
         }
     }
+
     public void visit(Mov inst) {
-        Var dest=inst.dest;
-        boolean lf=SpillJudge(dest);
-        Var src=inst.src;
-        boolean rf=SpillJudge(src);
-        if(lf==true&&rf==true){
-            VReg tmp=NewTmpReg();
-            newinsts.add(new Mov(tmp,spillMap.get(src)));
-            inst.dest=spillMap.get(dest);
+        VReg dst = needSpill(inst.dest);
+        VReg src = needSpill(inst.src);
+        if (dst != null && src != null) {
+            VReg tmp = makeTmpReg();
+            newInstList.add(new Mov(tmp, spillMap.get(src)));
+            inst.dest=spillMap.get(dst);
             inst.src=tmp;
-            newinsts.add(inst);
+            newInstList.add(inst);
         } else {
-            if(inst.dest instanceof Memory) {
+            if (inst.dest instanceof Memory) {
                 editMemory((Memory) inst.dest);
             }
-            if(inst.src instanceof Memory){
+            if (inst.src instanceof Memory) {
                 editMemory((Memory) inst.src);
             }
-            if(lf==true){
-                if(inst.src instanceof Memory) {
-                    VReg tmp = NewTmpReg();
+            if (dst != null) {
+                if (inst.src instanceof Memory) {
+                    VReg tmp = makeTmpReg();
                     inst.dest=tmp;
-                    newinsts.add(inst);
-                    newinsts.add(new Mov(spillMap.get(dest), tmp));
-                } else{
-                    inst.dest=spillMap.get(dest);
-                    newinsts.add(inst);
+                    newInstList.add(inst);
+                    newInstList.add(new Mov(spillMap.get(dst), tmp));
+                } else {
+                    inst.dest=spillMap.get(dst);
+                    newInstList.add(inst);
                 }
-            } else if(rf==true){
+            } else if (src != null) {
                 if (inst.dest instanceof Memory) {
-                    VReg tmp = NewTmpReg();
-                    newinsts.add(new Mov(tmp, spillMap.get(src)));
+                    VReg tmp = makeTmpReg();
+                    newInstList.add(new Mov(tmp, spillMap.get(src)));
                     inst.src=tmp;
-                    newinsts.add(inst);
-                } else{
+                    newInstList.add(inst);
+                } else {
                     inst.src=spillMap.get(src);
-                    newinsts.add(inst);
+                    newInstList.add(inst);
                 }
             } else {
-                newinsts.add(inst);
+                newInstList.add(inst);
             }
         }
     }
+
+
     public void visit(Movzx inst) {
-        VReg dst=inst.dest;
+        VReg dst = inst.dest;
         if (spillMap.keySet().contains(dst)) {
-            VReg tmp=NewTmpReg();
+            VReg tmp = makeTmpReg();
             inst.dest=tmp;
-            newinsts.add(inst);
-            newinsts.add(new Mov(spillMap.get(dst), tmp));
-        } else{
-            newinsts.add(inst);
+            newInstList.add(inst);
+            newInstList.add(new Mov(spillMap.get(dst), tmp));
+        } else {
+            newInstList.add(inst);
         }
     }
+
     public void visit(Nop inst) {
-        newinsts.add(inst);
+        newInstList.add(inst);
     }
+
     public void visit(Pop inst) {
-        newinsts.add(inst);
+        newInstList.add(inst);
     }
+
     public void visit(Push inst) {
-        if(SpillJudge(inst.src))inst.src=spillMap.get(inst.src);
-        newinsts.add(inst);
+        VReg src = needSpill(inst.src);
+        if (src != null) {
+            inst.src=spillMap.get(src);
+        }
+        newInstList.add(inst);
     }
 
     public void visit(Ret inst) {
-        newinsts.add(inst);
+        newInstList.add(inst);
     }
 
     public void visit(SetFlag inst) {
-        newinsts.add(inst);
+        newInstList.add(inst);
     }
 
     public void visit(Shift inst) {
-        if(SpillJudge(inst.var))inst.var=spillMap.get(inst.var);
-        newinsts.add(inst);
+        VReg first = needSpill(inst.var);
+        if (first != null) {
+            inst.var=spillMap.get(first);
+        }
+        newInstList.add(inst);
     }
     public void visit(UniOp inst) {
-        if(SpillJudge(inst.dest))inst.dest=spillMap.get(inst.dest);
-        newinsts.add(inst);
+        VReg var = needSpill(inst.dest);
+        if (var != null) {
+            inst.dest=spillMap.get(var);
+        }
+        newInstList.add(inst);
     }
+
 }
