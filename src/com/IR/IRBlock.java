@@ -80,29 +80,4 @@ public class IRBlock {
         // every basicBlock's tail is a BranchInst
         return succs;
     }
-    public void spiltBlock(IRInst splitInst) {
-        IRBlock latter = function.AddBlock("after_call");
-        this.AddNext(latter);
-        IRInst inst = splitInst.next;
-        while (inst != null) {
-            inst.curblock=latter;
-            inst = inst.next;
-        }
-        this.tail = splitInst;
-        latter.head = splitInst.next;
-        inst = splitInst.next;
-        if (inst != null) {
-            while (inst.next != null) inst = inst.next;
-        }
-        latter.tail = inst;
-        this.tail.next = null;
-        if (latter.head != null) latter.head.pre= null;
-    }
-    public void delete() {
-        if (this.pre != null) this.pre.next = this.next;
-        if (this.next != null) this.next.pre = this.pre;
-        if (this == function.head) function.head=this.next;
-        if (this == function.tail) function.tail=this.pre;
-        this.deleteflag = true;
-    }
 }

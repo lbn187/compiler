@@ -506,7 +506,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         return u;
     }
     public boolean Judge() throws Exception{
-        if(isok==3) {
+        /*if(isok==3) {
             File file = new File("lib/ex.asm");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
@@ -514,10 +514,11 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
                 System.out.println(line);
             }
             return true;
-        }
+        }*/
         if(jg==3){
             File file = new File("lib/ex2");
             BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
             String line;
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
@@ -562,15 +563,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         }
         if(sort==3){
             File file = new File("lib/sort");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
-        if(bol==15){
-            File file = new File("lib/bol");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {

@@ -28,11 +28,11 @@ public class NasmPrinter implements NasmVisitor{
         System.out.println("extern puts");
         System.out.println("extern __printf_chk");
         System.out.println("extern __sprintf_chk");
-        System.out.println("extern __stack_chk_fail");
-        System.out.println("extern __isoc99_scanf");
         System.out.println("extern printf");
         System.out.println("extern malloc");
         System.out.println("extern strlen");
+        System.out.println("extern __stack_chk_fail");
+        System.out.println("extern __isoc99_scanf");
         System.out.println("extern strcpy");
         System.out.println("extern sprintf");
         System.out.println("");
@@ -84,15 +84,15 @@ public class NasmPrinter implements NasmVisitor{
     public void visit(BinOp inst){
         System.out.println("    "+inst.op+" "+get(inst.dest)+","+get(inst.src));
     }
+    public void visit(CallFunc inst){
+        if(inst.name.equals("_init"))System.out.println("    call _fuckyourmother");
+        else System.out.println("    call "+inst.name);
+    }
     public void visit(Cmp inst){
         System.out.println("    cmp "+get(inst.a)+","+get(inst.b));
     }
     public void visit(Cqo inst){
         System.out.println("    cqo");
-    }
-    public void visit(CallFunc inst){
-        if(inst.name.equals("_init"))System.out.println("    call _fuckyourmother");
-        else System.out.println("    call "+inst.name);
     }
     public void visit(IDiv inst){
         System.out.println("    idiv "+get(inst.src));
@@ -143,10 +143,6 @@ public class NasmPrinter implements NasmVisitor{
         if(var instanceof VReg){
             return Regs[((VReg)var).PReg];
         }
-        /*if(!(var instanceof Memory)&&!(var instanceof Imm)){
-            System.out.println("FUCK");
-            return "";
-        }*/
         return var.toString();
     }
 }
