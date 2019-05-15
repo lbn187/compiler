@@ -1,6 +1,4 @@
 package com.backend;
-
-import javafx.util.Pair;
 import com.nasm.*;
 import java.io.*;
 import java.util.*;
@@ -9,11 +7,7 @@ import static com.nasm.RegConst.*;
 
 public class AllocateRegister {
     private Func func;
-
-    // rbp, rsp don't participate in allocation
     private int K = 14;
-
-    // node work lists, sets, and stacks (disjoint)
     private Set<VReg> PreColor = new LinkedHashSet<>();
     private Set<VReg> Init = new LinkedHashSet<>();
     private Set<VReg> SimpleWork = new LinkedHashSet<>();
@@ -24,15 +18,11 @@ public class AllocateRegister {
     private Set<VReg> ColoredNode = new LinkedHashSet<>();
     private Stack<VReg> StackSelect = new Stack<>();
     private Set<VReg> NodeSelect = new HashSet<>();
-
-    // move sets (disjoint)
     private Set<Mov> CombineMove = new LinkedHashSet<>();
     private Set<Mov> ConstrainMove = new LinkedHashSet<>();
     private Set<Mov> FrozenMove = new LinkedHashSet<>();
     private Set<Mov> WorklistMove = new LinkedHashSet<>();
     private Set<Mov> ActiveMove = new LinkedHashSet<>();
-
-    // other
     private Set<EdgePair> EdgeSet = new HashSet<>();
     private Map<VReg, Set<VReg>> EdgelistMap = new HashMap<>();
     private Map<VReg, Integer> DegreeMap = new HashMap<>();
@@ -42,7 +32,6 @@ public class AllocateRegister {
 
     public static void visit(Nasm nasm) throws IOException {
         for (Func func : nasm.Functions) {
-//            System.out.println("func" + func.getName());
             AllocateRegister allocator = new AllocateRegister(func);
             allocator.work();
         }
