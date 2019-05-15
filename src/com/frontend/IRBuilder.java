@@ -300,7 +300,7 @@ public class IRBuilder extends ASTVisitor{
             CurBlock.add(new BinaryOpIR(CurBlock,base,"+",ptr,new Immediate(8)));//store the ptr
             visitexprprocess(o.exprexpr);
             VirtualRegister off=CurFunction.AddVirtualRegister("Offset");
-            CurBlock.add(new BinaryOpIR(CurBlock,off,"*",o.exprexpr.register,new Immediate(8)));
+            CurBlock.add(new BinaryOpIR(CurBlock,off,"<<",o.exprexpr.register,new Immediate(3)));
             VirtualRegister elementaddress=CurFunction.AddVirtualRegister("ElementAddress");
             CurBlock.add(new BinaryOpIR(CurBlock,elementaddress,"+",base,off));
             return elementaddress;
@@ -324,10 +324,10 @@ public class IRBuilder extends ASTVisitor{
             }else if(o.expr.type instanceof StringType){
                 Type type=o.belong.get("string."+u.name).type;
             }else if(o.expr.type instanceof ClassType){*/
-                ClassDefineType classtype=(ClassDefineType)ScopeBuilder.scoperoot.get(o.expr.type.typename).type;
-                Immediate off=new Immediate(classtype.get(o.name).offset);
-                VirtualRegister addr=CurFunction.AddVirtualRegister("MemberAddress");
-                CurBlock.add(new BinaryOpIR(CurBlock,addr,"+",ptr,off));
+            ClassDefineType classtype=(ClassDefineType)ScopeBuilder.scoperoot.get(o.expr.type.typename).type;
+            Immediate off=new Immediate(classtype.get(o.name).offset);
+            VirtualRegister addr=CurFunction.AddVirtualRegister("MemberAddress");
+            CurBlock.add(new BinaryOpIR(CurBlock,addr,"+",ptr,off));
             //}
             //Immediate off=new Immediate(((ClassDefineType)o.expr.type).get(o.name).offset);
             //VirtualRegister addr=CurFunction.AddVirtualRegister("MemberAddress");
@@ -511,10 +511,25 @@ public class IRBuilder extends ASTVisitor{
                         u.register = register;
                         CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
                     }
+                }else if(op.equals("%")) {
+                    if(u.exprr.register instanceof Immediate) {
+                        int va = ((Immediate) u.exprr.register).value;
+                        if(va==1) {
+                            u.register=new Immediate(0);
+                        }else {
+                            VirtualRegister register = CurFunction.AddVirtualRegister("res");
+                            u.register = register;
+                            CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
+                        }
+                    }else {
+                        VirtualRegister register = CurFunction.AddVirtualRegister("res");
+                        u.register = register;
+                        CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
+                    }
                 }else{
-                    VirtualRegister register = CurFunction.AddVirtualRegister("res");
-                    u.register = register;
-                    CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
+                        VirtualRegister register = CurFunction.AddVirtualRegister("res");
+                        u.register = register;
+                        CurBlock.add(new BinaryOpIR(CurBlock, register, u.operator, u.exprl.register, u.exprr.register));
                 }
             }
             if((op.equals("<")||op.equals("<=")||op.equals(">")||op.equals(">=")||op.equals("==")||op.equals("!="))&&u.trueblock!=null){
@@ -747,7 +762,7 @@ public class IRBuilder extends ASTVisitor{
         VirtualRegister ptr=CurFunction.AddVirtualRegister("ArrayPtr");
         Value size=Regs.get(nv);
         VirtualRegister ElementSize=CurFunction.AddVirtualRegister("ElementSize");
-        CurBlock.add(new BinaryOpIR(CurBlock,ElementSize,"*",size,new Immediate(8)));
+        CurBlock.add(new BinaryOpIR(CurBlock,ElementSize,"<<",size,new Immediate(3)));
         VirtualRegister AllSize=CurFunction.AddVirtualRegister("AllArraySize");
         CurBlock.add(new BinaryOpIR(CurBlock,AllSize,"+",ElementSize,new Immediate(8)));
         CurBlock.add(new Malloc(CurBlock,ptr,AllSize));
