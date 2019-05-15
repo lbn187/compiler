@@ -61,7 +61,7 @@ public class NasmPrinter implements NasmVisitor{
             System.out.println(s+":");
             System.out.println("    resb 8");
         }
-        File file = new File("lib/to.asm");
+        File file = new File("lib/o3.asm");
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line;
         while ((line = br.readLine()) != null) {
