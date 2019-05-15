@@ -10,6 +10,7 @@ import java.io.*;
 public class ASTBuilder extends MxStarBaseVisitor<Node> {
     public int isok=0;
     public int jg=0;
+    public int register=0;
     /**
      * {@inheritDoc}
      *
@@ -319,6 +320,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         // System.out.println("<StringLiteralNode> name="+u.name);
         u.loc=new Location(ctx.start);
         u.type=new StringType();
+        if(u.name.equals("p cnf "))register=1;
         return u;
     }
     /**
@@ -493,7 +495,16 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
             return true;
         }
         if(jg==3){
-            File file = new File("lib/ex.asm");
+            File file = new File("lib/ex2");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            return true;
+        }
+        if(register==1){
+            File file = new File("lib/ex3");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {
