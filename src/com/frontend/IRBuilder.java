@@ -653,7 +653,8 @@ public class IRBuilder extends ASTVisitor{
         CurBlock.add(new Branch(CurBlock,condition,loopblock,afterblock));
 
         CurBlock=loopblock;
-        CurBlock.add(new Store(CurBlock,posvalue,CalPtr(nv+1)));
+        Store store=new Store(CurBlock,posvalue,CalPtr(nv+1));
+        CurBlock.add(store);
         CurBlock.add(new Jump(CurBlock,stepblock));
 
         CurBlock=stepblock;
