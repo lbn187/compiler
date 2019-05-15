@@ -123,8 +123,8 @@ __StringSubstring:
         mov     rdx, qword [rbp-10H]
         mov     qword [rax], rdx
         mov     dword [rbp-14H], 0
-        jmp     L_004
-L_003:  mov     eax, dword [rbp-14H]
+        jmp     G_004
+G_003:  mov     eax, dword [rbp-14H]
         add     eax, 8
         movsxd  rdx, eax
         mov     rax, qword [rbp-8H]
@@ -140,10 +140,10 @@ L_003:  mov     eax, dword [rbp-14H]
         movzx   eax, byte [rax]
         mov     byte [rdx], al
         add     dword [rbp-14H], 1
-L_004:  mov     eax, dword [rbp-14H]
+G_004:  mov     eax, dword [rbp-14H]
         cdqe
         cmp     rax, qword [rbp-10H]
-        jl      L_003
+        jl      G_003
         mov     rax, qword [rbp-10H]
         add     rax, 8
         mov     rdx, rax
