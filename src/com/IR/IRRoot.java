@@ -26,7 +26,7 @@ public class IRRoot {
         ScopeBuilder.STRING_GEQ.ir=new Function("__StringGEQ",true);
         ScopeBuilder.STRING_LENGTH.ir=new Function("__StringLength",true);
         ScopeBuilder.STRING_SUBSTRING.ir=new Function("__StringSubstring",true);
-        ScopeBuilder.STRING_PARSEINT.ir=new Function("__StringParseint",true);
+        ScopeBuilder.STRING_PARSEINT.ir=new Function("__StringParseInt",true);
         ScopeBuilder.STRING_ORD.ir=new Function("__StringOrd",true);
         ScopeBuilder.ARRAY_SIZE.ir=new Function("__ArraySize",true);
         functions.put(global.name,global);
