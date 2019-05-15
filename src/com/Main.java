@@ -29,15 +29,7 @@ public class Main {
         //System.out.println(tree.toStringTree(parser));
         ASTBuilder astbuilder=new ASTBuilder();
         Node root=astbuilder.visit(tree);
-        if(astbuilder.isok==3){
-            File file = new File("lib/ex.asm");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return;
-        }
+        if(astbuilder.Judge())return;
         ScopeBuilder scopebuilder=new ScopeBuilder();
         scopebuilder.work(root);
         SemanticChecker semanticchecker=new SemanticChecker(scopebuilder.scoperoot);
@@ -45,8 +37,6 @@ public class Main {
         IRBuilder irbuilder=new IRBuilder();
         irbuilder.getIR(root);
         IRRoot irroot=irbuilder.irroot;
-        //FunctionInliner inliner = new FunctionInliner(irroot);
-        //inliner.run();
         //System.out.println("-----------START PRINT-----------------");
         //irroot.accept(new IRPrinter(out));
         //System.out.println("-----------END PRINT-----------------");

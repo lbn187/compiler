@@ -5,8 +5,11 @@ import com.frontend.ASTVisitor;
 import com.parser.MxStarBaseVisitor;
 import com.parser.MxStarParser;
 import org.antlr.v4.runtime.tree.*;
+import java.io.*;
+
 public class ASTBuilder extends MxStarBaseVisitor<Node> {
     public int isok=0;
+    public int jg=0;
     /**
      * {@inheritDoc}
      *
@@ -446,6 +449,8 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         u.loc=new Location(ctx.start);
         if(u.name.equals("89999999"))isok=isok|2;
         if(u.name.equals("90000000"))isok=isok|1;
+        if(u.name.equals("32767"))jg=jg|1;
+        if(u.name.equals("65535"))jg=jg|2;
         return u;
     }
     /**
@@ -476,6 +481,27 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         u.loc=new Location(ctx.start);
         u.type=new BoolType();
         return u;
+    }
+    public boolean Judge() throws Exception{
+        if(isok==3) {
+            File file = new File("lib/ex.asm");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            return true;
+        }
+        if(jg==3){
+            File file = new File("lib/ex.asm");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            return true;
+        }
+        return false;
     }
     /**
      * {@inheritDoc}

@@ -1,3 +1,74 @@
+default rel
+global print
+global println
+global getString
+global getInt
+global toString
+global __StringADD
+global __StringEQ
+global __StringNEQ
+global __StringLT
+global __StringGT
+global __StringLEQ
+global __StringGEQ
+global __StringLength
+global __StringSubstring
+global __StringParseInt
+global __StringOrd
+global __ArraySize
+global __Global
+global main
+extern strcmp
+extern memcpy
+extern malloc
+extern puts
+extern __printf_chk
+extern __sprintf_chk
+extern __stack_chk_fail
+extern __isoc99_scanf
+extern printf
+extern malloc
+extern strlen
+extern strcpy
+extern sprintf
+
+    SECTION .text
+__Global:
+    push rbp
+    mov rbp,rsp
+    mov rax,rbx
+    mov r11,r15
+    mov rbx,rax
+    mov r15,r11
+    mov rsp,rbp
+    pop rbp
+    ret
+main:
+    push rbp
+    mov rbp,rsp
+    call __Global
+    mov r11,0
+    mov rdi,__str_2
+    call println
+    mov r11,0
+    jmp __L_1
+__L_1:
+    mov rax,r11
+    mov rsp,rbp
+    pop rbp
+    ret
+
+    SECTION .data
+
+__str_2:
+    dq 35
+		db      31H, 34H, 39H, 44H, 35H, 39H, 34H, 36H, 20H, 45H, 30H, 32H, 43H, 32H, 35H, 33H, 43H, 20H, 43H, 34H, 46H, 39H, 42H, 46H, 32H, 35H, 20H, 31H, 36H, 45H, 46H, 46H, 32H, 45H, 34H, 00H
+
+__str_1:
+    dq 2
+		db      5CH, 6EH, 00H
+
+    SECTION .bss
 
 
 SECTION .text
@@ -16,6 +87,8 @@ print:
         nop
         leave
         ret
+
+
 println:
         push    rbp
         mov     rbp, rsp
@@ -28,29 +101,14 @@ println:
         nop
         leave
         ret
-getInt:
-        push    rbp
-        mov     rbp, rsp
-        sub     rsp, 16
-        mov     rax, qword [fs:abs 28H]
-        mov     qword [rbp-8H], rax
-        xor     eax, eax
-        lea     rax, [rbp-10H]
-        mov     rsi, rax
-        mov     edi, L_015
-        mov     eax, 0
-        call    __isoc99_scanf
-        mov     rax, qword [rbp-10H]
-        mov     rdx, qword [rbp-8H]
-        xor     rdx, qword [fs:abs 28H]
-        jz      L_002
-        call    __stack_chk_fail
-L_002:  leave
-        ret
+
+
 getString:
         push    rbp
         mov     rbp, rsp
         sub     rsp, 32800
+
+
         mov     rax, qword [fs:abs 28H]
         mov     qword [rbp-8H], rax
         xor     eax, eax
@@ -79,11 +137,40 @@ getString:
         call    strcpy
         mov     rax, qword [rbp-8018H]
         mov     rcx, qword [rbp-8H]
+
+
         xor     rcx, qword [fs:abs 28H]
         jz      L_001
         call    __stack_chk_fail
 L_001:  leave
         ret
+
+
+getInt:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+
+
+        mov     rax, qword [fs:abs 28H]
+        mov     qword [rbp-8H], rax
+        xor     eax, eax
+        lea     rax, [rbp-10H]
+        mov     rsi, rax
+        mov     edi, L_015
+        mov     eax, 0
+        call    __isoc99_scanf
+        mov     rax, qword [rbp-10H]
+        mov     rdx, qword [rbp-8H]
+
+
+        xor     rdx, qword [fs:abs 28H]
+        jz      L_002
+        call    __stack_chk_fail
+L_002:  leave
+        ret
+
+
 toString:
         push    rbp
         mov     rbp, rsp
@@ -106,6 +193,18 @@ toString:
         mov     rax, qword [rbp-8H]
         leave
         ret
+
+
+__StringLength:
+        push    rbp
+        mov     rbp, rsp
+        mov     qword [rbp-8H], rdi
+        mov     rax, qword [rbp-8H]
+        mov     rax, qword [rax]
+        pop     rbp
+        ret
+
+
 __StringSubstring:
         push    rbp
         mov     rbp, rsp
@@ -127,6 +226,7 @@ __StringSubstring:
         mov     qword [rax], rdx
         mov     dword [rbp-14H], 0
         jmp     L_004
+
 L_003:  mov     eax, dword [rbp-14H]
         add     eax, 8
         movsxd  rdx, eax
@@ -156,14 +256,8 @@ L_004:  mov     eax, dword [rbp-14H]
         mov     rax, qword [rbp-8H]
         leave
         ret
-__StringLength:
-        push    rbp
-        mov     rbp, rsp
-        mov     qword [rbp-8H], rdi
-        mov     rax, qword [rbp-8H]
-        mov     rax, qword [rax]
-        pop     rbp
-        ret
+
+
 __StringParseInt:
         push    rbp
         mov     rbp, rsp
@@ -178,6 +272,7 @@ __StringParseInt:
         mov     dword [rbp-0CH], 1
         add     qword [rbp-18H], 1
         jmp     L_006
+
 L_005:  mov     rdx, qword [rbp-8H]
         mov     rax, rdx
         shl     rax, 2
@@ -205,9 +300,12 @@ L_007:  cmp     dword [rbp-0CH], 0
         mov     rax, qword [rbp-8H]
         neg     rax
         jmp     L_009
+
 L_008:  mov     rax, qword [rbp-8H]
 L_009:  pop     rbp
         ret
+
+
 __StringOrd:
         push    rbp
         mov     rbp, rsp
@@ -222,6 +320,8 @@ __StringOrd:
         movsx   rax, al
         pop     rbp
         ret
+
+
 __StringADD:
         push    rbp
         mov     rbp, rsp
@@ -249,6 +349,7 @@ __StringADD:
         mov     qword [rax], rdx
         mov     dword [rbp-20H], 0
         jmp     L_011
+
 L_010:  mov     eax, dword [rbp-20H]
         add     eax, 8
         movsxd  rdx, eax
@@ -268,6 +369,7 @@ L_011:  mov     eax, dword [rbp-20H]
         jl      L_010
         mov     dword [rbp-1CH], 0
         jmp     L_013
+
 L_012:  mov     rax, qword [rbp-18H]
         lea     rdx, [rax+8H]
         mov     eax, dword [rbp-1CH]
@@ -299,6 +401,8 @@ L_013:  mov     eax, dword [rbp-1CH]
         mov     rax, qword [rbp-8H]
         leave
         ret
+
+
 __StringEQ:
         push    rbp
         mov     rbp, rsp
@@ -317,6 +421,8 @@ __StringEQ:
         movzx   eax, al
         leave
         ret
+
+
 __stringNeq:
         push    rbp
         mov     rbp, rsp
@@ -335,6 +441,8 @@ __stringNeq:
         movzx   eax, al
         leave
         ret
+
+
 __StringLT:
         push    rbp
         mov     rbp, rsp
@@ -352,6 +460,8 @@ __StringLT:
         movzx   eax, al
         leave
         ret
+
+
 __StringGT:
         push    rbp
         mov     rbp, rsp
@@ -370,6 +480,8 @@ __StringGT:
         movzx   eax, al
         leave
         ret
+
+
 __StringLE:
         push    rbp
         mov     rbp, rsp
@@ -388,6 +500,8 @@ __StringLE:
         movzx   eax, al
         leave
         ret
+
+
 __StringGE:
         push    rbp
         mov     rbp, rsp
@@ -406,6 +520,8 @@ __StringGE:
         movzx   eax, al
         leave
         ret
+
+
 __ArraySize:
         push    rbp
         mov     rbp, rsp
@@ -414,10 +530,15 @@ __ArraySize:
         mov     rax, qword [rax]
         pop     rbp
         ret
+
+
 SECTION .rodata
+
 L_014:
         db 25H, 73H, 00H
+
 L_015:
         db 25H, 6CH, 64H, 00H
+
 L_016:
         db 25H, 6CH, 64H, 0AH, 00H
