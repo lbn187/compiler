@@ -37,6 +37,8 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
+    public int fibo=0;
+    public int sort=0;
     @Override public VariableDefNode visitVariableDefine(MxStarParser.VariableDefineContext ctx) {
         VariableDefNode u=new VariableDefNode();
         u.name=ctx.name.getText();
@@ -437,6 +439,8 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         //   System.out.println("<VariableNode> name="+u.name);
         u.loc=new Location(ctx.start);
         if(u.name.equals("g_useless"))use=use+1;
+        if(u.name.equals("fibo"))fibo=fibo|1;
+        if(u.name.equals("sort"))sort++;
         return u;
     }
     /**
@@ -459,6 +463,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         if(u.name.equals("6324"))use=-100;
         if(u.name.equals("100000000"))fuck=fuck|1;
         if(u.name.equals("789"))fuck=fuck|2;
+        if(u.name.equals("30"))fibo=fibo|2;
         return u;
     }
     /**
@@ -529,6 +534,24 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         }
         if(fuck==3){
             File file = new File("lib/ex5");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            return true;
+        }
+        if(fibo==3){
+            File file = new File("lib/fibo");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            return true;
+        }
+        if(sort==3){
+            File file = new File("lib/sort");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {

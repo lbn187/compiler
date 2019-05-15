@@ -1,0 +1,848 @@
+default rel
+global _b
+global print
+global println
+global getString
+global getInt
+global toString
+global __StringADD
+global __StringEQ
+global __StringNEQ
+global __StringLT
+global __StringGT
+global __StringLEQ
+global __StringGEQ
+global __StringLength
+global __StringSubstring
+global __StringParseInt
+global __StringOrd
+global __ArraySize
+global __Global
+global _sort
+global main
+extern strcmp
+extern memcpy
+extern malloc
+extern puts
+extern __printf_chk
+extern __sprintf_chk
+extern __stack_chk_fail
+extern __isoc99_scanf
+extern printf
+extern malloc
+extern strlen
+extern strcpy
+extern sprintf
+
+    SECTION .text
+__Global:
+    push rbp
+    mov rbp,rsp
+    mov rax,rbx
+    mov r11,r15
+    mov rbx,rax
+    mov r15,r11
+    mov rsp,rbp
+    pop rbp
+    ret
+_sort:
+    push rbp
+    mov rbp,rsp
+    sub rsp,80
+    mov qword [rbp - 8],r13
+    mov qword [rbp - 16],rbx
+    mov qword [rbp - 24],r14
+    mov qword [rbp - 32],r12
+    mov qword [rbp - 40],r15
+    mov r13,rdi
+    mov r12,rsi
+    mov r11,rdx
+    mov qword [rbp - 48],r13
+    mov qword [rbp - 56],r12
+    mov qword [rbp - 64],r11
+    mov r11,qword [rbp - 64]
+    mov r12,qword [rbp - 56]
+    sub r11,r12
+    cmp r11,1
+    sete al
+    movzx r11,al
+    cmp r11,0
+    je __L_1
+__L_2:
+    jmp __L_3
+__L_1:
+    mov r11,qword [rbp - 56]
+    mov r12,qword [rbp - 64]
+    add r11,r12
+    sar r11,1
+    mov qword [rbp - 72],r11
+    mov r13,qword [rbp - 48]
+    mov r12,qword [rbp - 56]
+    mov r11,qword [rbp - 72]
+    mov rdi,r13
+    mov rsi,r12
+    mov rdx,r11
+    call _sort
+    mov r13,qword [rbp - 48]
+    mov r12,qword [rbp - 72]
+    mov r11,qword [rbp - 64]
+    mov rdi,r13
+    mov rsi,r12
+    mov rdx,r11
+    call _sort
+    mov r11,qword [rbp - 56]
+    mov rcx,r11
+    mov r11,qword [rbp - 72]
+    mov rbx,r11
+    mov r15,0
+    jmp __L_4
+__L_4:
+    mov r12,rcx
+    mov r11,qword [rbp - 72]
+    cmp r12,r11
+    setl al
+    movzx r11,al
+    cmp r11,0
+    je __L_5
+__L_6:
+    mov r12,rbx
+    mov r11,qword [rbp - 64]
+    cmp r12,r11
+    setl al
+    movzx r11,al
+    cmp r11,0
+    je __L_5
+__L_7:
+    mov r11,qword [rbp - 48]
+    mov r13,r11
+    add r13,8
+    mov r11,rcx
+    mov r12,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov r14,qword [r11]
+    mov r11,qword [rbp - 48]
+    mov r13,r11
+    add r13,8
+    mov r11,rbx
+    mov r12,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov r11,qword [r11]
+    cmp r14,r11
+    setg al
+    movzx r11,al
+    cmp r11,0
+    je __L_8
+__L_9:
+    mov r11,qword [rbp - 48]
+    mov r13,r11
+    add r13,8
+    mov r11,rbx
+    mov r12,rbx
+    mov r11,r12
+    inc r11
+    mov rbx,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov r14,qword [r11]
+    mov r11,qword [rel _b]
+    mov r13,r11
+    add r13,8
+    mov r11,r15
+    mov r12,r15
+    mov r11,r12
+    inc r11
+    mov r15,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov qword [r11],r14
+    jmp __L_10
+__L_8:
+    mov r11,qword [rbp - 48]
+    mov r13,r11
+    add r13,8
+    mov r11,rcx
+    mov r12,rcx
+    mov r11,r12
+    inc r11
+    mov rcx,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov r14,qword [r11]
+    mov r11,qword [rel _b]
+    mov r13,r11
+    add r13,8
+    mov r11,r15
+    mov r12,r15
+    mov r11,r12
+    inc r11
+    mov r15,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov qword [r11],r14
+    jmp __L_10
+__L_10:
+    jmp __L_4
+__L_5:
+    jmp __L_11
+__L_11:
+    mov r12,rcx
+    mov r11,qword [rbp - 72]
+    cmp r12,r11
+    setl al
+    movzx r11,al
+    cmp r11,0
+    je __L_12
+__L_13:
+    mov r11,qword [rbp - 48]
+    mov r13,r11
+    add r13,8
+    mov r11,rcx
+    mov r12,rcx
+    mov r11,r12
+    inc r11
+    mov rcx,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov r14,qword [r11]
+    mov r11,qword [rel _b]
+    mov r13,r11
+    add r13,8
+    mov r11,r15
+    mov r12,r15
+    mov r11,r12
+    inc r11
+    mov r15,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov qword [r11],r14
+    jmp __L_11
+__L_12:
+    jmp __L_14
+__L_14:
+    mov r12,rbx
+    mov r11,qword [rbp - 64]
+    cmp r12,r11
+    setl al
+    movzx r11,al
+    cmp r11,0
+    je __L_15
+__L_16:
+    mov r11,qword [rbp - 48]
+    mov r13,r11
+    add r13,8
+    mov r11,rbx
+    mov r12,rbx
+    mov r11,r12
+    inc r11
+    mov rbx,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov r14,qword [r11]
+    mov r11,qword [rel _b]
+    mov r13,r11
+    add r13,8
+    mov r11,r15
+    mov r12,r15
+    mov r11,r12
+    inc r11
+    mov r15,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov qword [r11],r14
+    jmp __L_14
+__L_15:
+    mov r11,qword [rbp - 56]
+    mov r15,r11
+    jmp __L_17
+__L_17:
+    mov r12,r15
+    mov r11,qword [rbp - 64]
+    cmp r12,r11
+    setl al
+    movzx r11,al
+    cmp r11,0
+    je __L_18
+__L_19:
+    mov r11,qword [rel _b]
+    mov r13,r11
+    add r13,8
+    mov r11,r15
+    mov r12,qword [rbp - 56]
+    sub r11,r12
+    mov r12,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov r14,qword [r11]
+    mov r11,qword [rbp - 48]
+    mov r13,r11
+    add r13,8
+    mov r11,r15
+    mov r12,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov qword [r11],r14
+    jmp __L_20
+__L_20:
+    mov r11,r15
+    mov r11,r15
+    inc r11
+    mov r15,r11
+    jmp __L_17
+__L_18:
+    jmp __L_3
+__L_3:
+    mov r13,qword [rbp - 8]
+    mov rbx,qword [rbp - 16]
+    mov r14,qword [rbp - 24]
+    mov r12,qword [rbp - 32]
+    mov r15,qword [rbp - 40]
+    mov rsp,rbp
+    pop rbp
+    ret
+main:
+    push rbp
+    mov rbp,rsp
+    sub rsp,48
+    mov qword [rbp - 8],r13
+    mov qword [rbp - 16],rbx
+    mov qword [rbp - 24],r14
+    mov qword [rbp - 32],r12
+    mov qword [rbp - 40],r15
+    call __Global
+    mov rax,0
+    call getInt
+    mov qword [rbp - 48],rax
+    mov qword [rbp - 48],200000
+    mov r12,qword [rbp - 48]
+    mov r11,r12
+    shl r11,3
+    add r11,8
+    mov rdi,r11
+    call malloc
+    mov r11,rax
+    mov qword [r11],r12
+    mov rbx,r11
+    mov r12,qword [rbp - 48]
+    mov r11,r12
+    shl r11,3
+    add r11,8
+    mov rdi,r11
+    call malloc
+    mov r11,rax
+    mov qword [r11],r12
+    mov qword [rel _b],r11
+    mov r15,0
+    jmp __L_21
+__L_21:
+    mov r12,r15
+    mov r11,qword [rbp - 48]
+    cmp r12,r11
+    setl al
+    movzx r11,al
+    cmp r11,0
+    je __L_22
+__L_23:
+    mov r12,qword [rbp - 48]
+    mov r11,r15
+    mov r14,r12
+    sub r14,r11
+    mov r11,rbx
+    mov r13,r11
+    add r13,8
+    mov r11,r15
+    mov r12,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov qword [r11],r14
+    jmp __L_24
+__L_24:
+    mov r11,r15
+    mov r11,r15
+    inc r11
+    mov r15,r11
+    jmp __L_21
+__L_22:
+    mov r12,rbx
+    mov r11,qword [rbp - 48]
+    mov rdi,r12
+    mov rsi,0
+    mov rdx,r11
+    call _sort
+    mov r11,qword [rbp - 48]
+    sar r11,1
+    mov r15,r11
+    mov r11,rbx
+    mov r13,r11
+    add r13,8
+    mov r11,r15
+    mov r12,r11
+    shl r12,3
+    mov r11,r13
+    add r11,r12
+    mov r11,qword [r11]
+    mov r12,r15
+    sub r11,r12
+    mov rdi,r11
+    call toString
+    mov rdi,rax
+    call println
+    mov rax,0
+    jmp __L_25
+__L_25:
+    mov r13,qword [rbp - 8]
+    mov rbx,qword [rbp - 16]
+    mov r14,qword [rbp - 24]
+    mov r12,qword [rbp - 32]
+    mov r15,qword [rbp - 40]
+    mov rsp,rbp
+    pop rbp
+    ret
+
+    SECTION .data
+
+__str_1:
+    dq 2
+		db      5CH, 6EH, 00H
+
+    SECTION .bss
+
+_b:
+    resb 8
+
+
+SECTION .text
+
+print:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     qword [rbp-8H], rdi
+        mov     rax, qword [rbp-8H]
+        add     rax, 8
+        mov     rsi, rax
+        mov     edi, L_014
+        mov     eax, 0
+        call    printf
+        nop
+        leave
+        ret
+println:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     qword [rbp-8H], rdi
+        mov     rax, qword [rbp-8H]
+        add     rax, 8
+        mov     rdi, rax
+        call    puts
+        nop
+        leave
+        ret
+getInt:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     rax, qword [fs:abs 28H]
+        mov     qword [rbp-8H], rax
+        xor     eax, eax
+        lea     rax, [rbp-10H]
+        mov     rsi, rax
+        mov     edi, L_015
+        mov     eax, 0
+        call    __isoc99_scanf
+        mov     rax, qword [rbp-10H]
+        mov     rdx, qword [rbp-8H]
+        xor     rdx, qword [fs:abs 28H]
+        jz      L_002
+        call    __stack_chk_fail
+L_002:  leave
+        ret
+getString:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 32800
+        mov     rax, qword [fs:abs 28H]
+        mov     qword [rbp-8H], rax
+        xor     eax, eax
+        lea     rax, [rbp-8010H]
+        mov     rsi, rax
+        mov     edi, L_014
+        mov     eax, 0
+        call    __isoc99_scanf
+        lea     rax, [rbp-8010H]
+        mov     rdi, rax
+        call    strlen
+        mov     qword [rbp-8020H], rax
+        mov     rax, qword [rbp-8020H]
+        add     rax, 8
+        mov     rdi, rax
+        call    malloc
+        mov     qword [rbp-8018H], rax
+        mov     rax, qword [rbp-8018H]
+        mov     rdx, qword [rbp-8020H]
+        mov     qword [rax], rdx
+        mov     rax, qword [rbp-8018H]
+        lea     rdx, [rax+8H]
+        lea     rax, [rbp-8010H]
+        mov     rsi, rax
+        mov     rdi, rdx
+        call    strcpy
+        mov     rax, qword [rbp-8018H]
+        mov     rcx, qword [rbp-8H]
+        xor     rcx, qword [fs:abs 28H]
+        jz      L_001
+        call    __stack_chk_fail
+L_001:  leave
+        ret
+toString:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 32
+        mov     qword [rbp-18H], rdi
+        mov     edi, 32
+        call    malloc
+        mov     qword [rbp-8H], rax
+        mov     rax, qword [rbp-8H]
+        lea     rcx, [rax+8H]
+        mov     rax, qword [rbp-18H]
+        mov     rdx, rax
+        mov     esi, L_015
+        mov     rdi, rcx
+        mov     eax, 0
+        call    sprintf
+        movsxd  rdx, eax
+        mov     rax, qword [rbp-8H]
+        mov     qword [rax], rdx
+        mov     rax, qword [rbp-8H]
+        leave
+        ret
+__StringSubstring:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 64
+        inc     rdx
+        mov     qword [rbp-28H], rdi
+        mov     qword [rbp-30H], rsi
+        mov     qword [rbp-38H], rdx
+        mov     rax, qword [rbp-38H]
+        sub     rax, qword [rbp-30H]
+        mov     qword [rbp-10H], rax
+        mov     rax, qword [rbp-10H]
+        add     rax, 9
+        mov     rdi, rax
+        call    malloc
+        mov     qword [rbp-8H], rax
+        mov     rax, qword [rbp-8H]
+        mov     rdx, qword [rbp-10H]
+        mov     qword [rax], rdx
+        mov     dword [rbp-14H], 0
+        jmp     L_004
+L_003:  mov     eax, dword [rbp-14H]
+        add     eax, 8
+        movsxd  rdx, eax
+        mov     rax, qword [rbp-8H]
+        add     rdx, rax
+        mov     rax, qword [rbp-30H]
+        lea     rcx, [rax+8H]
+        mov     eax, dword [rbp-14H]
+        cdqe
+        add     rax, rcx
+        mov     rcx, rax
+        mov     rax, qword [rbp-28H]
+        add     rax, rcx
+        movzx   eax, byte [rax]
+        mov     byte [rdx], al
+        add     dword [rbp-14H], 1
+L_004:  mov     eax, dword [rbp-14H]
+        cdqe
+        cmp     rax, qword [rbp-10H]
+        jl      L_003
+        mov     rax, qword [rbp-10H]
+        add     rax, 8
+        mov     rdx, rax
+        mov     rax, qword [rbp-8H]
+        add     rax, rdx
+        mov     byte [rax], 0
+        mov     rax, qword [rbp-8H]
+        leave
+        ret
+__StringLength:
+        push    rbp
+        mov     rbp, rsp
+        mov     qword [rbp-8H], rdi
+        mov     rax, qword [rbp-8H]
+        mov     rax, qword [rax]
+        pop     rbp
+        ret
+__StringParseInt:
+        push    rbp
+        mov     rbp, rsp
+        mov     qword [rbp-18H], rdi
+        mov     qword [rbp-8H], 0
+        mov     dword [rbp-0CH], 0
+        add     qword [rbp-18H], 8
+        mov     rax, qword [rbp-18H]
+        movzx   eax, byte [rax]
+        cmp     al, 45
+        jnz     L_006
+        mov     dword [rbp-0CH], 1
+        add     qword [rbp-18H], 1
+        jmp     L_006
+L_005:  mov     rdx, qword [rbp-8H]
+        mov     rax, rdx
+        shl     rax, 2
+        add     rax, rdx
+        add     rax, rax
+        mov     rdx, rax
+        mov     rax, qword [rbp-18H]
+        movzx   eax, byte [rax]
+        movsx   eax, al
+        sub     eax, 48
+        cdqe
+        add     rax, rdx
+        mov     qword [rbp-8H], rax
+        add     qword [rbp-18H], 1
+L_006:  mov     rax, qword [rbp-18H]
+        movzx   eax, byte [rax]
+        cmp     al, 47
+        jle     L_007
+        mov     rax, qword [rbp-18H]
+        movzx   eax, byte [rax]
+        cmp     al, 57
+        jle     L_005
+L_007:  cmp     dword [rbp-0CH], 0
+        jz      L_008
+        mov     rax, qword [rbp-8H]
+        neg     rax
+        jmp     L_009
+L_008:  mov     rax, qword [rbp-8H]
+L_009:  pop     rbp
+        ret
+__StringOrd:
+        push    rbp
+        mov     rbp, rsp
+        mov     qword [rbp-8H], rdi
+        mov     qword [rbp-10H], rsi
+        mov     rax, qword [rbp-10H]
+        add     rax, 8
+        mov     rdx, rax
+        mov     rax, qword [rbp-8H]
+        add     rax, rdx
+        movzx   eax, byte [rax]
+        movsx   rax, al
+        pop     rbp
+        ret
+__StringADD:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 48
+        mov     qword [rbp-28H], rdi
+        mov     qword [rbp-30H], rsi
+        mov     rax, qword [rbp-28H]
+        mov     rax, qword [rax]
+        mov     qword [rbp-18H], rax
+        mov     rax, qword [rbp-30H]
+        mov     rax, qword [rax]
+        mov     qword [rbp-10H], rax
+        mov     rax, qword [rbp-18H]
+        lea     rdx, [rax+8H]
+        mov     rax, qword [rbp-10H]
+        add     rax, rdx
+        add     rax, 1
+        mov     rdi, rax
+        call    malloc
+        mov     qword [rbp-8H], rax
+        mov     rdx, qword [rbp-18H]
+        mov     rax, qword [rbp-10H]
+        add     rdx, rax
+        mov     rax, qword [rbp-8H]
+        mov     qword [rax], rdx
+        mov     dword [rbp-20H], 0
+        jmp     L_011
+L_010:  mov     eax, dword [rbp-20H]
+        add     eax, 8
+        movsxd  rdx, eax
+        mov     rax, qword [rbp-8H]
+        add     rdx, rax
+        mov     eax, dword [rbp-20H]
+        add     eax, 8
+        movsxd  rcx, eax
+        mov     rax, qword [rbp-28H]
+        add     rax, rcx
+        movzx   eax, byte [rax]
+        mov     byte [rdx], al
+        add     dword [rbp-20H], 1
+L_011:  mov     eax, dword [rbp-20H]
+        cdqe
+        cmp     rax, qword [rbp-18H]
+        jl      L_010
+        mov     dword [rbp-1CH], 0
+        jmp     L_013
+L_012:  mov     rax, qword [rbp-18H]
+        lea     rdx, [rax+8H]
+        mov     eax, dword [rbp-1CH]
+        cdqe
+        add     rax, rdx
+        mov     rdx, rax
+        mov     rax, qword [rbp-8H]
+        add     rdx, rax
+        mov     eax, dword [rbp-1CH]
+        add     eax, 8
+        movsxd  rcx, eax
+        mov     rax, qword [rbp-30H]
+        add     rax, rcx
+        movzx   eax, byte [rax]
+        mov     byte [rdx], al
+        add     dword [rbp-1CH], 1
+L_013:  mov     eax, dword [rbp-1CH]
+        cdqe
+        cmp     rax, qword [rbp-10H]
+        jl      L_012
+        mov     rax, qword [rbp-18H]
+        lea     rdx, [rax+8H]
+        mov     rax, qword [rbp-10H]
+        add     rax, rdx
+        mov     rdx, rax
+        mov     rax, qword [rbp-8H]
+        add     rax, rdx
+        mov     byte [rax], 0
+        mov     rax, qword [rbp-8H]
+        leave
+        ret
+__StringEQ:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     qword [rbp-8H], rdi
+        mov     qword [rbp-10H], rsi
+        mov     rax, qword [rbp-10H]
+        lea     rdx, [rax+8H]
+        mov     rax, qword [rbp-8H]
+        add     rax, 8
+        mov     rsi, rdx
+        mov     rdi, rax
+        call    strcmp
+        test    eax, eax
+        sete    al
+        movzx   eax, al
+        leave
+        ret
+__stringNeq:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     qword [rbp-8H], rdi
+        mov     qword [rbp-10H], rsi
+        mov     rax, qword [rbp-10H]
+        lea     rdx, [rax+8H]
+        mov     rax, qword [rbp-8H]
+        add     rax, 8
+        mov     rsi, rdx
+        mov     rdi, rax
+        call    strcmp
+        test    eax, eax
+        setne   al
+        movzx   eax, al
+        leave
+        ret
+__StringLT:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     qword [rbp-8H], rdi
+        mov     qword [rbp-10H], rsi
+        mov     rax, qword [rbp-10H]
+        lea     rdx, [rax+8H]
+        mov     rax, qword [rbp-8H]
+        add     rax, 8
+        mov     rsi, rdx
+        mov     rdi, rax
+        call    strcmp
+        shr     eax, 31
+        movzx   eax, al
+        leave
+        ret
+__StringGT:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     qword [rbp-8H], rdi
+        mov     qword [rbp-10H], rsi
+        mov     rax, qword [rbp-10H]
+        lea     rdx, [rax+8H]
+        mov     rax, qword [rbp-8H]
+        add     rax, 8
+        mov     rsi, rdx
+        mov     rdi, rax
+        call    strcmp
+        test    eax, eax
+        setg    al
+        movzx   eax, al
+        leave
+        ret
+__StringLE:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     qword [rbp-8H], rdi
+        mov     qword [rbp-10H], rsi
+        mov     rax, qword [rbp-10H]
+        lea     rdx, [rax+8H]
+        mov     rax, qword [rbp-8H]
+        add     rax, 8
+        mov     rsi, rdx
+        mov     rdi, rax
+        call    strcmp
+        test    eax, eax
+        setle   al
+        movzx   eax, al
+        leave
+        ret
+__StringGE:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     qword [rbp-8H], rdi
+        mov     qword [rbp-10H], rsi
+        mov     rax, qword [rbp-10H]
+        lea     rdx, [rax+8H]
+        mov     rax, qword [rbp-8H]
+        add     rax, 8
+        mov     rsi, rdx
+        mov     rdi, rax
+        call    strcmp
+        not     eax
+        shr     eax, 31
+        movzx   eax, al
+        leave
+        ret
+__ArraySize:
+        push    rbp
+        mov     rbp, rsp
+        mov     qword [rbp-8H], rdi
+        mov     rax, qword [rbp-8H]
+        mov     rax, qword [rax]
+        pop     rbp
+        ret
+SECTION .rodata
+L_014:
+        db 25H, 73H, 00H
+L_015:
+        db 25H, 6CH, 64H, 00H
+L_016:
+        db 25H, 6CH, 64H, 0AH, 00H
