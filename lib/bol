@@ -1,4 +1,10 @@
 default rel
+global _N
+global _h
+global _i
+global _j
+global _k
+global _total
 global print
 global println
 global getString
@@ -17,9 +23,6 @@ global __StringParseInt
 global __StringOrd
 global __ArraySize
 global __Global
-global _worka
-global _workb
-global _workc
 global main
 extern strcmp
 extern memcpy
@@ -39,242 +42,466 @@ extern sprintf
 __Global:
     push rbp
     mov rbp,rsp
-    mov rax,rbx
-    mov r11,r14
-    mov rbx,rax
-    mov r14,r11
-    mov rsp,rbp
-    pop rbp
-    ret
-_worka:
-    push rbp
-    mov rbp,rsp
-    mov rdx,r13
-    mov rcx,r12
-    mov rax,rbx
-    mov r12,rdi
-    mov r11,rsi
-    mov r13,r11
-    mov r11,0
-    mov r11,r12
-    add r11,r12
-    mov r12,r13
-    sub r11,r12
-    jmp __L_1
-__L_1:
-    mov r13,rdx
-    mov r12,rcx
-    mov rbx,rax
-    mov rax,r11
-    mov rsp,rbp
-    pop rbp
-    ret
-_workb:
-    push rbp
-    mov rbp,rsp
-    mov rdx,r13
-    mov rcx,r12
-    mov rax,rbx
-    mov r12,rdi
-    mov r11,rsi
-    mov r13,r12
-    mov r12,r11
-    mov r11,0
-    mov r11,r13
-    neg r11
-    add r11,r12
-    add r11,r12
-    jmp __L_2
-__L_2:
-    mov r13,rdx
-    mov r12,rcx
-    mov rbx,rax
-    mov rax,r11
-    mov rsp,rbp
-    pop rbp
-    ret
-_workc:
-    push rbp
-    mov rbp,rsp
-    mov rdx,r13
-    mov rcx,r12
-    mov rax,rbx
-    mov r12,rdi
-    mov r11,rsi
-    mov r13,r11
-    mov r11,0
-    mov r11,r12
-    add r11,r12
-    add r11,r12
-    mov r12,r13
-    sub r11,r12
-    mov r12,r13
-    sub r11,r12
-    jmp __L_3
-__L_3:
-    mov r13,rdx
-    mov r12,rcx
-    mov rbx,rax
-    mov rax,r11
+    mov r11,rbx
+    mov qword [rel _h],99
+    mov qword [rel _i],100
+    mov qword [rel _j],101
+    mov qword [rel _k],102
+    mov qword [rel _total],0
+    mov rbx,r11
     mov rsp,rbp
     pop rbp
     ret
 main:
     push rbp
     mov rbp,rsp
-    sub rsp,64
-    mov qword [rbp - 8],r13
+    sub rsp,48
+    mov qword [rbp - 8],r15
     mov qword [rbp - 16],r12
-    mov qword [rbp - 24],rbx
-    mov qword [rbp - 32],r15
-    mov qword [rbp - 40],r14
+    mov qword [rbp - 24],r14
+    mov qword [rbp - 32],r13
+    mov qword [rbp - 40],rbx
     call __Global
     mov rax,0
     call getInt
-    mov qword [rbp - 48],rax
-    mov qword [rbp - 56],0
-    mov rax,1
-    mov qword [rbp - 64],0
-    mov rbx,1
-    mov r15,0
-    mov r14,1
-    mov r13,0
-    mov r13,1
-    jmp __L_4
-__L_4:
-    mov r11,r13
-    cmp r11,80000000
+    mov qword [rel _N],rax
+    mov rcx,1
+    jmp __L_1
+__L_1:
+    mov r12,rcx
+    mov r11,qword [rel _N]
+    cmp r12,r11
     setle al
     movzx r11,al
     cmp r11,0
-    je __L_5
-__L_6:
-    mov r12,qword [rbp - 48]
-    mov r11,qword [rbp - 56]
-    mov rdi,r12
-    mov rsi,r11
-    call _worka
-    mov r11,rax
-    mov qword [rbp - 48],r11
-    mov r12,qword [rbp - 48]
-    mov r11,qword [rbp - 56]
-    mov rdi,r12
-    mov rsi,r11
-    call _workb
-    mov r11,rax
-    mov qword [rbp - 56],r11
-    mov r12,qword [rbp - 48]
-    mov r11,qword [rbp - 56]
-    mov rdi,r12
-    mov rsi,r11
-    call _workc
-    mov r11,rax
-    mov rax,r11
-    mov r11,qword [rbp - 48]
-    neg r11
-    mov r12,qword [rbp - 56]
-    add r11,r12
-    mov r12,rax
-    sub r11,r12
-    mov r12,qword [rbp - 64]
-    add r11,r12
-    mov r12,rbx
-    add r11,r12
-    mov r12,r15
-    sub r11,r12
-    mov r12,r14
-    add r11,r12
-    mov qword [rbp - 64],r11
-    mov r11,qword [rbp - 48]
-    mov r12,qword [rbp - 56]
-    add r11,r12
-    mov r12,rax
-    add r11,r12
-    mov r12,qword [rbp - 64]
-    sub r11,r12
-    mov r12,rbx
-    sub r11,r12
-    mov r12,r15
-    sub r11,r12
-    mov r12,r14
-    add r11,r12
-    mov rbx,r11
-    mov r11,qword [rbp - 48]
-    mov r12,qword [rbp - 56]
-    add r11,r12
-    mov r12,rax
-    sub r11,r12
-    mov r12,qword [rbp - 64]
-    add r11,r12
-    mov r12,rbx
-    sub r11,r12
-    mov r12,r15
-    add r11,r12
-    mov r12,r14
-    sub r11,r12
-    mov r15,r11
-    mov r11,qword [rbp - 48]
-    mov r12,qword [rbp - 56]
-    sub r11,r12
-    mov r12,rax
-    sub r11,r12
-    mov r12,qword [rbp - 64]
-    sub r11,r12
-    mov r12,rbx
-    add r11,r12
-    mov r12,r15
-    add r11,r12
-    mov r12,r14
-    add r11,r12
-    mov r14,r11
-    mov r11,qword [rbp - 48]
-    mov r12,qword [rbp - 56]
-    add r11,r12
-    mov r12,rax
-    add r11,r12
-    mov r12,qword [rbp - 64]
-    add r11,r12
-    mov r12,rbx
-    add r11,r12
-    mov r12,r15
-    add r11,r12
-    mov r12,r14
-    add r11,r12
-    cmp r11,100000000
-    setg al
+    je __L_2
+__L_3:
+    mov r12,rcx
+    mov r11,qword [rel _h]
+    cmp r12,r11
+    setne al
     movzx r11,al
     cmp r11,0
-    je __L_7
-__L_8:
-    mov qword [rbp - 48],123
-    mov qword [rbp - 56],456
-    mov rax,789
-    mov qword [rbp - 64],155
-    mov rbx,123
-    mov r15,55
-    mov r14,32
-    jmp __L_7
+    je __L_4
+__L_5:
+    mov r12,rcx
+    mov r11,qword [rel _i]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_4
+__L_6:
+    mov r12,rcx
+    mov r11,qword [rel _j]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_4
 __L_7:
+    mov r12,rcx
+    mov r11,qword [rel _k]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_4
+__L_8:
+    mov rbx,1
     jmp __L_9
 __L_9:
+    mov r12,rbx
+    mov r11,qword [rel _N]
+    cmp r12,r11
+    setle al
+    movzx r11,al
+    cmp r11,0
+    je __L_10
+__L_11:
+    mov r12,rbx
+    mov r11,qword [rel _h]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_12
+__L_13:
+    mov r12,rbx
+    mov r11,qword [rel _i]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_12
+__L_14:
+    mov r12,rbx
+    mov r11,qword [rel _j]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_12
+__L_15:
+    mov r12,rbx
+    mov r11,qword [rel _k]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_12
+__L_16:
+    mov r12,rbx
+    mov r11,rcx
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_12
+__L_17:
+    mov r15,1
+    jmp __L_18
+__L_18:
+    mov r12,r15
+    mov r11,qword [rel _N]
+    cmp r12,r11
+    setle al
+    movzx r11,al
+    cmp r11,0
+    je __L_19
+__L_20:
+    mov r12,r15
+    mov r11,qword [rel _h]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_21
+__L_22:
+    mov r12,r15
+    mov r11,qword [rel _i]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_21
+__L_23:
+    mov r12,r15
+    mov r11,qword [rel _j]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_21
+__L_24:
+    mov r12,r15
+    mov r11,qword [rel _k]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_21
+__L_25:
+    mov r12,r15
+    mov r11,rcx
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_21
+__L_26:
+    mov r12,r15
+    mov r11,rbx
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_21
+__L_27:
+    mov r14,1
+    jmp __L_28
+__L_28:
+    mov r12,r14
+    mov r11,qword [rel _N]
+    cmp r12,r11
+    setle al
+    movzx r11,al
+    cmp r11,0
+    je __L_29
+__L_30:
+    mov r12,r14
+    mov r11,qword [rel _h]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_31
+__L_32:
+    mov r12,r14
+    mov r11,qword [rel _i]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_31
+__L_33:
+    mov r12,r14
+    mov r11,qword [rel _j]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_31
+__L_34:
+    mov r12,r14
+    mov r11,qword [rel _k]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_31
+__L_35:
+    mov r12,r14
+    mov r11,rcx
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_31
+__L_36:
+    mov r12,r14
+    mov r11,rbx
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_31
+__L_37:
+    mov r12,r14
+    mov r11,r15
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_31
+__L_38:
+    mov r13,1
+    jmp __L_39
+__L_39:
+    mov r12,r13
+    mov r11,qword [rel _N]
+    cmp r12,r11
+    setle al
+    movzx r11,al
+    cmp r11,0
+    je __L_40
+__L_41:
+    mov r12,r13
+    mov r11,qword [rel _h]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_42
+__L_43:
+    mov r12,r13
+    mov r11,qword [rel _i]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_42
+__L_44:
+    mov r12,r13
+    mov r11,qword [rel _j]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_42
+__L_45:
+    mov r12,r13
+    mov r11,qword [rel _k]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_42
+__L_46:
+    mov r12,r13
+    mov r11,rcx
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_42
+__L_47:
+    mov r12,r13
+    mov r11,rbx
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_42
+__L_48:
+    mov r12,r13
+    mov r11,r15
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_42
+__L_49:
+    mov r12,r13
+    mov r11,r14
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_42
+__L_50:
+    mov r12,1
+    jmp __L_51
+__L_51:
+    mov r11,qword [rel _N]
+    cmp r12,r11
+    setle al
+    movzx r11,al
+    cmp r11,0
+    je __L_52
+__L_53:
+    mov r11,qword [rel _h]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_54
+__L_55:
+    mov r11,qword [rel _i]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_54
+__L_56:
+    mov r11,qword [rel _j]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_54
+__L_57:
+    mov r11,qword [rel _k]
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_54
+__L_58:
+    mov r11,rcx
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_54
+__L_59:
+    mov r11,rbx
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_54
+__L_60:
+    mov r11,r15
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_54
+__L_61:
+    mov r11,r14
+    cmp r12,r11
+    setne al
+    movzx r11,al
+    cmp r11,0
+    je __L_54
+__L_62:
+    mov r11,qword [rel _total]
+    mov r11,qword [rel _total]
+    inc r11
+    mov qword [rel _total],r11
+    jmp __L_54
+__L_54:
+    jmp __L_63
+__L_63:
+    mov r11,r12
+    mov r11,r12
+    inc r11
+    mov r12,r11
+    jmp __L_51
+__L_52:
+    jmp __L_42
+__L_42:
+    jmp __L_64
+__L_64:
     mov r11,r13
     mov r11,r13
     inc r11
     mov r13,r11
+    jmp __L_39
+__L_40:
+    jmp __L_31
+__L_31:
+    jmp __L_65
+__L_65:
+    mov r11,r14
+    mov r11,r14
+    inc r11
+    mov r14,r11
+    jmp __L_28
+__L_29:
+    jmp __L_21
+__L_21:
+    jmp __L_66
+__L_66:
+    mov r11,r15
+    mov r11,r15
+    inc r11
+    mov r15,r11
+    jmp __L_18
+__L_19:
+    jmp __L_12
+__L_12:
+    jmp __L_67
+__L_67:
+    mov r11,rbx
+    mov r11,rbx
+    inc r11
+    mov rbx,r11
+    jmp __L_9
+__L_10:
     jmp __L_4
-__L_5:
-    mov rdi,r14
+__L_4:
+    jmp __L_68
+__L_68:
+    mov r11,rcx
+    mov r11,rcx
+    inc r11
+    mov rcx,r11
+    jmp __L_1
+__L_2:
+    mov rdi,qword [rel _total]
     call toString
     mov rdi,rax
     call println
     mov rax,0
-    jmp __L_10
-__L_10:
-    mov r13,qword [rbp - 8]
+    jmp __L_69
+__L_69:
+    mov r15,qword [rbp - 8]
     mov r12,qword [rbp - 16]
-    mov rbx,qword [rbp - 24]
-    mov r15,qword [rbp - 32]
-    mov r14,qword [rbp - 40]
+    mov r14,qword [rbp - 24]
+    mov r13,qword [rbp - 32]
+    mov rbx,qword [rbp - 40]
     mov rsp,rbp
     pop rbp
     ret
@@ -286,6 +513,24 @@ __str_1:
 		db      5CH, 6EH, 00H
 
     SECTION .bss
+
+_N:
+    resb 8
+
+_h:
+    resb 8
+
+_i:
+    resb 8
+
+_j:
+    resb 8
+
+_k:
+    resb 8
+
+_total:
+    resb 8
 
 
 SECTION .text

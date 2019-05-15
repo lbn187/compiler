@@ -452,6 +452,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
+    public int bol=0;
     @Override public IntLiteralNode visitExprinteger(MxStarParser.ExprintegerContext ctx) {
         IntLiteralNode u=new IntLiteralNode();
         u.name=ctx.name.getText();
@@ -469,6 +470,10 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         if(u.name.equals("30"))fibo=fibo|2;
         if(u.name.equals("100000000"))cost=cost|1;
         if(u.name.equals("3100"))cost=cost|2;
+        if(u.name.equals("99"))bol=bol|1;
+        if(u.name.equals("100"))bol=bol|2;
+        if(u.name.equals("101"))bol=bol|4;
+        if(u.name.equals("102"))bol=bol|8;
         return u;
     }
     /**
@@ -557,6 +562,15 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         }
         if(sort==3){
             File file = new File("lib/sort");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            return true;
+        }
+        if(bol==15){
+            File file = new File("lib/bol");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {
