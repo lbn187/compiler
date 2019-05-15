@@ -296,6 +296,7 @@ public class SemanticChecker extends ASTVisitor {
         Scope o=u.belong;
         u.type=o.get(u.name).type;
         u.inclass=o.get(u.name).classflag;
+        u.belong=o.getscope(u.name);
         //if(u.type!=null)System.out.println("Variablename="+u.name+" Variabletype="+u.type.typename);
         if(u.type==null){
             throw new Exception("variable not exist"+u.loc.toString());

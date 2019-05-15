@@ -283,7 +283,7 @@ public class IRBuilder extends ASTVisitor{
                 CurBlock.add(new BinaryOpIR(CurBlock,Address,"+",reg,offset));
                 return Address;
             }
-            return o.belong.get(u.name).register;
+            return o.belong.get(o.name).register;
         }else
         if(u instanceof ArefNode){
             ArefNode o=(ArefNode)u;
@@ -675,8 +675,10 @@ public class IRBuilder extends ASTVisitor{
             }
             ClassDefineType classtype=(ClassDefineType)type;
             CurBlock.add(new Malloc(CurBlock,ptr,new Immediate(classtype.offset)));
+            //System.out.println("CLASS "+classtype.typename);
             if(classtype.get(classtype.typename)!=null){
-                Type func=(classtype.get(type.typename).type);
+                //System.out.println("INIT CLASS");
+                Type func=(classtype.get(classtype.typename).type);
                 if(!(func instanceof FunctionDefineType)){
                     throw new Exception("CreatorWrong"+u.loc.toString());
                 }
