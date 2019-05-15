@@ -25,11 +25,11 @@ extern malloc
 extern puts
 extern __printf_chk
 extern __sprintf_chk
-extern __stack_chk_fail
-extern __isoc99_scanf
 extern printf
 extern malloc
 extern strlen
+extern __stack_chk_fail
+extern __isoc99_scanf
 extern strcpy
 extern sprintf
 
@@ -240,21 +240,21 @@ __L_21:
     cmp r11,0
     je __L_22
 __L_23:
-    mov rbx,0
-    jmp __L_24
-__L_24:
-    mov r12,rbx
-    mov r11,qword [rbp - 48]
-    cmp r12,r11
-    setl al
-    movzx r11,al
-    cmp r11,0
-    je __L_25
-__L_26:
     mov r12,qword [rbp - 80]
     mov r11,qword [rbp - 72]
     cmp r12,r11
     setge al
+    movzx r11,al
+    cmp r11,0
+    je __L_24
+__L_25:
+    mov rbx,0
+    jmp __L_26
+__L_26:
+    mov r12,rbx
+    mov r11,qword [rbp - 48]
+    cmp r12,r11
+    setl al
     movzx r11,al
     cmp r11,0
     je __L_27
@@ -332,16 +332,16 @@ __L_28:
     mov r11,r13
     add r11,r12
     mov qword [r11],r14
-    jmp __L_27
-__L_27:
     jmp __L_29
 __L_29:
     mov r11,rbx
     mov r11,rbx
     inc r11
     mov rbx,r11
+    jmp __L_26
+__L_27:
     jmp __L_24
-__L_25:
+__L_24:
     jmp __L_30
 __L_30:
     mov r11,qword [rbp - 80]

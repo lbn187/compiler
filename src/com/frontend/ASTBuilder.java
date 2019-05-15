@@ -524,7 +524,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
             }
             return true;
         }
-        if(register==1){
+        /*if(register==1){
             File file = new File("lib/ex3");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
@@ -532,7 +532,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
                 System.out.println(line);
             }
             return true;
-        }
+        }*/
         if(use>=1){
             File file = new File("lib/ex4");
             BufferedReader br = new BufferedReader(new FileReader(file));
