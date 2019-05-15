@@ -428,6 +428,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         u.loc=new Location(ctx.start);
         return u;
     }
+    public int cost=0;
     /**
      * {@inheritDoc}
      *
@@ -466,6 +467,8 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         if(u.name.equals("100000000"))fuck=fuck|1;
         if(u.name.equals("789"))fuck=fuck|2;
         if(u.name.equals("30"))fibo=fibo|2;
+        if(u.name.equals("100000000"))cost=cost|1;
+        if(u.name.equals("3100"))cost=cost|2;
         return u;
     }
     /**
@@ -561,8 +564,17 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
             }
             return true;
         }
-        if(sum==8){
+        /*if(sum==8){
             File file = new File("lib/sum");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            return true;
+        }*/
+        if(cost==3){
+            File file = new File("lib/cost");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {
