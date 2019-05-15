@@ -29,7 +29,7 @@ public class Scope{
         if(map.get(str)!=null)return false;
         //System.out.println("SCOPENAME:"+name+" ADD "+str+" "+id.typename+" OFFSET:"+offset);
         map.put(str,new Information(id,offset,classflag));
-        offset+=8;
+        offset+=id.size;
         return true;
     }
     public Information get(String str){

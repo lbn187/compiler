@@ -121,8 +121,9 @@ public class IRBuilder extends ASTVisitor{
     }
     public void visit(FunctionDefNode u)throws Exception {
         String name = u.belong.name + "_" + u.name;
-        Type type=ScopeBuilder.scoperoot.map.get(u.name).type;
-        if(!(type instanceof FunctionDefineType))System.out.println("-------------------------");
+        if(u.belong.name.startsWith("."))name="__"+u.belong.name.substring(1)+"_" + u.name;
+        Type type=u.belong.map.get(u.name).type;
+        if(!(type instanceof FunctionDefineType))System.out.println(u.name+"-------------------------");
         CurFunction = new Function(name, false);
         ((FunctionDefineType)type).ir=CurFunction;
         ExitBlock = CurFunction.AddBlock(CurFunction.name + ".exit");

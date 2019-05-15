@@ -68,7 +68,9 @@ public class ScopeBuilder {
                 FunctionDefNode tmp = (FunctionDefNode) o;
                 Scope sonscope = curscope.addson();
                 //sonscope.classflag=false;
-                FunctionDefineType functype = new FunctionDefineType(tmp.name,tmp.type);
+                String name=tmp.name;
+                if(o.belong.name.startsWith("."))name="__"+o.belong.name.substring(1)+"_" + tmp.name;
+                FunctionDefineType functype = new FunctionDefineType(name,tmp.type);
                 for (VariableDefNode u : tmp.variables) {
                     VariableDefNode ttmp = u;
                     ttmp.belong = sonscope;

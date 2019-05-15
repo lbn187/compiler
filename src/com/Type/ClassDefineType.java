@@ -21,7 +21,7 @@ public class ClassDefineType extends Type {
     public void add(String s,Type tp){
         Information info=new Information(tp,offset,true);//???
         map.put(s,info);
-        offset+=8;
+        offset+=tp.size;
     }
     public Information get(String s){
         return map.get(s);

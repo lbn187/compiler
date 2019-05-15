@@ -19,6 +19,7 @@ public class IRRoot {
         ScopeBuilder.TOSTRING.ir=new Function("toString",true);
         ScopeBuilder.STRING_ADD.ir=new Function("__StringADD",true);
         ScopeBuilder.STRING_EQ.ir=new Function("__StringEQ",true);
+        ScopeBuilder.STRING_NEQ.ir=new Function("__StringNEQ",true);
         ScopeBuilder.STRING_LT.ir=new Function("__StringLT",true);
         ScopeBuilder.STRING_GT.ir=new Function("__StringGT",true);
         ScopeBuilder.STRING_LEQ.ir=new Function("__StringLEQ",true);
@@ -36,6 +37,7 @@ public class IRRoot {
         functions.put(ScopeBuilder.TOSTRING.typename,ScopeBuilder.TOSTRING.ir);
         functions.put(ScopeBuilder.STRING_ADD.typename,ScopeBuilder.STRING_ADD.ir);
         functions.put(ScopeBuilder.STRING_EQ.typename,ScopeBuilder.STRING_EQ.ir);
+        functions.put(ScopeBuilder.STRING_NEQ.typename,ScopeBuilder.STRING_NEQ.ir);
         functions.put(ScopeBuilder.STRING_LT.typename,ScopeBuilder.STRING_LT.ir);
         functions.put(ScopeBuilder.STRING_GT.typename,ScopeBuilder.STRING_GT.ir);
         functions.put(ScopeBuilder.STRING_LEQ.typename,ScopeBuilder.STRING_LEQ.ir);
