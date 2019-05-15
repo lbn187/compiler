@@ -6,11 +6,9 @@ public class FunctionBackuper implements IRVisitor {
     private Function originFunc;
     private Map<IRBlock, IRBlock> bbCopyMap = new HashMap<>();
     private Map<IRInst, IRInst> instCopyMap = new HashMap<>();
-
     public FunctionBackuper(Function originFunc) {
         this.originFunc = originFunc;
     }
-
     public Function fork() {
         Function backupFunc = new Function(originFunc);
         IRBlock backupBB = backupFunc.head;
@@ -23,7 +21,6 @@ public class FunctionBackuper implements IRVisitor {
             bbCopyMap.put(originBB, backupBB);
             originBB = originBB.next;
         }
-
         originBB = originFunc.head;
         while (originBB != null) {
             backupBB = bbCopyMap.get(originBB);
@@ -32,9 +29,6 @@ public class FunctionBackuper implements IRVisitor {
                 visit(originInst);
                 assert instCopyMap.containsKey(originInst);
                 IRInst backupInst = instCopyMap.get(originInst);
-//                if (backupInst == null) {
-//                    System.out.println("backupInst is null");
-//                }
                 if (backupInst instanceof Branch) {
                     Branch condBranch = (Branch) backupInst;
                     condBranch.ReplaceTarget(condBranch.trueblock, bbCopyMap.get(condBranch.trueblock));

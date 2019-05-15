@@ -36,7 +36,7 @@ public class FunctionInliner {
                     if (inst instanceof Call) {
                         Call callInst = (Call) inst;
                         Function callFunc = funcBackupMap.get(callInst.function.ir);
-                        if (callFunc != null && callFunc.InstsCount()<100) {
+                        if (callFunc != null && callFunc.InstsCount()<25) {
                             callList.add(callInst);
                         }
                     }
