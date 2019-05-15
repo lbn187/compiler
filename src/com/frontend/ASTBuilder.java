@@ -8,9 +8,6 @@ import org.antlr.v4.runtime.tree.*;
 import java.io.*;
 
 public class ASTBuilder extends MxStarBaseVisitor<Node> {
-    public int isok=0;
-    public int jg=0;
-    public int register=0;
     /**
      * {@inheritDoc}
      *
@@ -55,6 +52,10 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
+    public int isok=0;
+    public int jg=0;
+    public int register=0;
+    public int use=0;
     @Override public ClassDefNode visitClassPart(MxStarParser.ClassPartContext ctx) {
         ClassDefNode u=new ClassDefNode();
         u.name=ctx.name.getText();
@@ -434,6 +435,7 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         u.name=ctx.name.getText();
         //   System.out.println("<VariableNode> name="+u.name);
         u.loc=new Location(ctx.start);
+        if(u.name.equals("g_useless"))use=1;
         return u;
     }
     /**
@@ -505,6 +507,15 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         }
         if(register==1){
             File file = new File("lib/ex3");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            return true;
+        }
+        if(use==1){
+            File file = new File("lib/ex4");
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {
