@@ -45,6 +45,8 @@ public class Main {
         IRBuilder irbuilder=new IRBuilder();
         irbuilder.getIR(root);
         IRRoot irroot=irbuilder.irroot;
+        //FunctionInliner inliner = new FunctionInliner(irroot);
+        //inliner.run();
         //System.out.println("-----------START PRINT-----------------");
         //irroot.accept(new IRPrinter(out));
         //System.out.println("-----------END PRINT-----------------");

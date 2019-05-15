@@ -14,4 +14,8 @@ public class Branch extends BranchIR {
     public void accept(IRVisitor visitor) {
         visitor.visit(this);
     }
+    public void ReplaceTarget(IRBlock oldTarget,IRBlock newTarget) {
+        if (trueblock == oldTarget) trueblock = newTarget;
+        if (falseblock == oldTarget) falseblock = newTarget;
+    }
 }

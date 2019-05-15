@@ -48,7 +48,4 @@ public class IRRoot {
         functions.put(ScopeBuilder.STRING_ORD.typename,ScopeBuilder.STRING_ORD.ir);
         functions.put(ScopeBuilder.ARRAY_SIZE.typename,ScopeBuilder.ARRAY_SIZE.ir);
     }
-    public void accept(IRVisitor visitor) {
-        visitor.visit(this);
-    }
 }

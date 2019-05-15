@@ -41,4 +41,11 @@ abstract public class IRInst {
         if(this==curblock.tail)curblock.tail=v;
     }
     public abstract void accept(IRVisitor visitor);
+    public void delete() {
+        if (this.pre != null) this.pre.next = this.next;
+        if (this.next != null) this.next.pre = this.pre;
+        if (this == curblock.head) curblock.head=this.next;
+        if (this == curblock.tail) curblock.tail=this.pre;
+        this.deleteflag = true;
+    }
 }

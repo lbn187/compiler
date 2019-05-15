@@ -13,15 +13,19 @@ public class Function {
     public int VirtualRegisterCnt=0;
     public int BlockCnt=0;
     public boolean flag;
-    public void accept(IRVisitor visitor) {
-        visitor.visit(this);
-    }
     public Function(String s,boolean initflag){
         name=s;
         flag=initflag;
         if(initflag==false){
             head=tail=AddBlock(".entry");
         }
+    }
+    public Function(Function other){
+        name=other.name;
+        args.addAll(other.args);
+        VirtualRegisterCnt=other.VirtualRegisterCnt;
+        BlockCnt=other.BlockCnt;
+        head=tail=new IRBlock(this,other.head.name,other.head.id);
     }
     public VirtualRegister AddVirtualRegister(String s){
         VirtualRegister register=new VirtualRegister(s,++VirtualRegisterCnt);
@@ -30,6 +34,19 @@ public class Function {
     public IRBlock AddBlock(String s){
         IRBlock blk=new IRBlock(this,s,++BlockCnt);
         return blk;
+    }
+    public int InstsCount() {
+        int counter = 0;
+        IRBlock bb = this.head;
+        while (bb != null) {
+            IRInst inst = bb.head;
+            while (inst != null) {
+                ++counter;
+                inst = inst.next;
+            }
+            bb = bb.next;
+        }
+        return counter;
     }
     public void Append(IRBlock v){
         tail.AddNext(v);

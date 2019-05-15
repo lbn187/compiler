@@ -1,9 +1,9 @@
 package com.IR;
 
 public interface IRVisitor {
-    void visit(IRRoot node);
-    void visit(IRBlock node);
-    void visit(Function node);
+    //void visit(IRRoot node);
+    //void visit(IRBlock node);
+    //void visit(Function node);
     void visit(BinaryOpIR node);
     void visit(UnaryOpIR node);
     //void visit(CmpIR node);
