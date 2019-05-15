@@ -117,25 +117,25 @@ main:
     jmp __L_6
 __L_6:
     mov r11,r15
-    cmp r11,60000000
+    cmp r11,90000000
     setl al
     movzx r11,al
     cmp r11,0
     je __L_7
 __L_8:
-    mov r14,0
-    jmp __L_9
-__L_9:
-    mov r11,r14
-    cmp r11,10
-    setl al
-    movzx r11,al
-    cmp r11,0
-    je __L_10
-__L_11:
     mov r11,r15
     cmp r11,89999999
     setge al
+    movzx r11,al
+    cmp r11,0
+    je __L_9
+__L_10:
+    mov r14,0
+    jmp __L_11
+__L_11:
+    mov r11,r14
+    cmp r11,10
+    setl al
     movzx r11,al
     cmp r11,0
     je __L_12
@@ -158,16 +158,16 @@ __L_15:
     mov r12,r11
     jmp __L_14
 __L_14:
-    jmp __L_12
-__L_12:
     jmp __L_16
 __L_16:
     mov r11,r14
     mov r11,r14
     inc r11
     mov r14,r11
+    jmp __L_11
+__L_12:
     jmp __L_9
-__L_10:
+__L_9:
     jmp __L_17
 __L_17:
     mov r11,r15
