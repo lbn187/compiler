@@ -18,7 +18,6 @@ global __StringParseInt
 global __StringOrd
 global __ArraySize
 global __Global
-global _hilo
 global _shift_l
 global _shift_r
 global _xorshift
@@ -52,56 +51,26 @@ __Global:
     mov rsp,rbp
     pop rbp
     ret
-_hilo:
-    push rbp
-    mov rbp,rsp
-    mov rdx,r12
-    mov rcx,r13
-    mov rax,r14
-    mov r12,rdi
-    mov r11,rsi
-    mov r14,r12
-    mov r12,r11
-    mov r11,0
-    mov r13,r12
-    mov r11,r14
-    mov r12,r11
-    shl r12,16
-    mov r11,r13
-    or r11,r12
-    jmp __L_1
-__L_1:
-    mov r12,rdx
-    mov r13,rcx
-    mov r14,rax
-    mov rax,r11
-    mov rsp,rbp
-    pop rbp
-    ret
 _shift_l:
     push rbp
     mov rbp,rsp
-    sub rsp,16
-    mov qword [rbp - 8],r12
-    mov qword [rbp - 16],r13
+    mov r8,r12
+    mov rdx,r13
+    mov rax,rbx
     mov r12,rdi
     mov r11,rsi
-    mov r13,r11
+    mov r13,r12
+    mov r12,r11
     mov r11,0
     mov r11,r13
-    mov r13,r12
-    mov rcx,r11
-    shl r13,cl
-    mov rdi,32767
-    mov rsi,65535
-    call _hilo
-    mov r12,rax
-    mov r11,r13
-    and r11,r12
-    jmp __L_2
-__L_2:
-    mov r12,qword [rbp - 8]
-    mov r13,qword [rbp - 16]
+    mov rcx,r12
+    shl r11,cl
+    and r11,2147483647
+    jmp __L_1
+__L_1:
+    mov r12,r8
+    mov r13,rdx
+    mov rbx,rax
     mov rax,r11
     mov rsp,rbp
     pop rbp
@@ -109,20 +78,16 @@ __L_2:
 _shift_r:
     push rbp
     mov rbp,rsp
-    sub rsp,32
-    mov qword [rbp - 8],r12
-    mov qword [rbp - 16],r13
-    mov qword [rbp - 24],r15
-    mov qword [rbp - 32],r14
+    mov r9,r12
+    mov r8,r13
+    mov rdx,r15
+    mov rax,r14
     mov r12,rdi
     mov r11,rsi
     mov r15,r12
     mov r14,r11
     mov r11,0
-    mov rdi,32767
-    mov rsi,65535
-    call _hilo
-    mov r11,rax
+    mov r11,2147483647
     mov r12,r14
     mov rcx,r12
     sar r11,cl
@@ -135,19 +100,13 @@ _shift_r:
     sar r12,cl
     mov r11,r13
     and r11,r12
-    mov r13,r11
-    mov rdi,32767
-    mov rsi,65535
-    call _hilo
-    mov r12,rax
-    mov r11,r13
-    and r11,r12
-    jmp __L_3
-__L_3:
-    mov r12,qword [rbp - 8]
-    mov r13,qword [rbp - 16]
-    mov r15,qword [rbp - 24]
-    mov r14,qword [rbp - 32]
+    and r11,2147483647
+    jmp __L_2
+__L_2:
+    mov r12,r9
+    mov r13,r8
+    mov r15,rdx
+    mov r14,rax
     mov rax,r11
     mov rsp,rbp
     pop rbp
@@ -162,23 +121,26 @@ _xorshift:
     mov qword [rbp - 32],r14
     mov r12,rdi
     mov r11,rsi
-    mov r15,r11
+    mov r13,r12
+    mov r12,r11
     mov r11,0
-    mov r11,r12
+    mov r11,r13
     add r11,1
     mov r13,r11
+    mov r11,r12
+    imul r11,10
+    mov r15,r11
     mov r14,0
-    jmp __L_4
-__L_4:
+    jmp __L_3
+__L_3:
     mov r12,r14
     mov r11,r15
-    imul r11,10
     cmp r12,r11
     setl al
     movzx r11,al
     cmp r11,0
-    je __L_5
-__L_6:
+    je __L_4
+__L_5:
     mov r11,r13
     mov rdi,r11
     mov rsi,13
@@ -203,18 +165,18 @@ __L_6:
     mov r11,r13
     xor r11,r12
     mov r13,r11
-    jmp __L_7
-__L_7:
+    jmp __L_6
+__L_6:
     mov r11,r14
     mov r11,r14
     inc r11
     mov r14,r11
-    jmp __L_4
-__L_5:
+    jmp __L_3
+__L_4:
     mov r11,r13
     xor r11,123456789
-    jmp __L_8
-__L_8:
+    jmp __L_7
+__L_7:
     mov r12,qword [rbp - 8]
     mov r13,qword [rbp - 16]
     mov r15,qword [rbp - 24]
@@ -237,15 +199,15 @@ _int2chr:
     setge al
     movzx r11,al
     cmp r11,0
-    je __L_9
-__L_10:
+    je __L_8
+__L_9:
     mov r11,r12
     cmp r11,94
     setle al
     movzx r11,al
     cmp r11,0
-    je __L_9
-__L_11:
+    je __L_8
+__L_10:
     mov r13,qword [rel _asciiTable]
     mov r11,r12
     mov rdi,r13
@@ -253,11 +215,11 @@ __L_11:
     mov rdx,r11
     call __StringSubstring
     mov r11,rax
-    jmp __L_12
-__L_9:
+    jmp __L_11
+__L_8:
     mov r11,__str_3
-    jmp __L_12
-__L_12:
+    jmp __L_11
+__L_11:
     mov r12,qword [rbp - 8]
     mov r13,qword [rbp - 16]
     mov rax,r11
@@ -277,15 +239,15 @@ _toStringHex:
     mov r11,0
     mov r13,__str_3
     mov r14,28
-    jmp __L_13
-__L_13:
+    jmp __L_12
+__L_12:
     mov r11,r14
     cmp r11,0
     setge al
     movzx r11,al
     cmp r11,0
-    je __L_14
-__L_15:
+    je __L_13
+__L_14:
     mov r11,r15
     mov r12,r14
     mov rcx,r12
@@ -297,8 +259,8 @@ __L_15:
     setl al
     movzx r11,al
     cmp r11,0
-    je __L_16
-__L_17:
+    je __L_15
+__L_16:
     mov r11,16
     add r11,r12
     mov rdi,r11
@@ -309,8 +271,8 @@ __L_17:
     call __StringADD
     mov r11,rax
     mov r13,r11
-    jmp __L_18
-__L_16:
+    jmp __L_17
+__L_15:
     mov r11,23
     add r11,r12
     mov rdi,r11
@@ -321,18 +283,18 @@ __L_16:
     call __StringADD
     mov r11,rax
     mov r13,r11
+    jmp __L_17
+__L_17:
     jmp __L_18
 __L_18:
-    jmp __L_19
-__L_19:
     mov r11,r14
     sub r11,4
     mov r14,r11
-    jmp __L_13
-__L_14:
+    jmp __L_12
+__L_13:
     mov r11,r13
-    jmp __L_20
-__L_20:
+    jmp __L_19
+__L_19:
     mov r12,qword [rbp - 8]
     mov r13,qword [rbp - 16]
     mov r15,qword [rbp - 24]
@@ -381,8 +343,8 @@ _getnumber:
     mov r12,rax
     mov r11,r14
     or r11,r12
-    jmp __L_21
-__L_21:
+    jmp __L_20
+__L_20:
     mov r12,qword [rbp - 8]
     mov r13,qword [rbp - 16]
     mov r15,qword [rbp - 24]
@@ -421,40 +383,40 @@ main:
     mov qword [rbp - 128],0
     mov r11,qword [rbp - 48]
     mov qword [rbp - 136],r11
-    jmp __L_22
-__L_22:
+    jmp __L_21
+__L_21:
     mov r12,qword [rbp - 136]
     mov r11,qword [rbp - 56]
     cmp r12,r11
     setl al
     movzx r11,al
     cmp r11,0
-    je __L_23
-__L_24:
+    je __L_22
+__L_23:
     mov r11,qword [rbp - 64]
     mov qword [rbp - 144],r11
-    jmp __L_25
-__L_25:
+    jmp __L_24
+__L_24:
     mov r12,qword [rbp - 144]
     mov r11,qword [rbp - 72]
     cmp r12,r11
     setl al
     movzx r11,al
     cmp r11,0
-    je __L_26
-__L_27:
+    je __L_25
+__L_26:
     mov r11,qword [rbp - 80]
     mov qword [rbp - 152],r11
-    jmp __L_28
-__L_28:
+    jmp __L_27
+__L_27:
     mov r12,qword [rbp - 152]
     mov r11,qword [rbp - 88]
     cmp r12,r11
     setl al
     movzx r11,al
     cmp r11,0
-    je __L_29
-__L_30:
+    je __L_28
+__L_29:
     mov r13,qword [rbp - 48]
     mov r12,qword [rbp - 96]
     mov r11,qword [rbp - 152]
@@ -555,30 +517,30 @@ __L_30:
     mov r11,r13
     add r11,r12
     mov qword [rbp - 128],r11
-    jmp __L_31
-__L_31:
+    jmp __L_30
+__L_30:
     mov r11,qword [rbp - 152]
     mov r11,qword [rbp - 152]
     inc r11
     mov qword [rbp - 152],r11
-    jmp __L_28
-__L_29:
-    jmp __L_32
-__L_32:
+    jmp __L_27
+__L_28:
+    jmp __L_31
+__L_31:
     mov r11,qword [rbp - 144]
     mov r11,qword [rbp - 144]
     inc r11
     mov qword [rbp - 144],r11
-    jmp __L_25
-__L_26:
-    jmp __L_33
-__L_33:
+    jmp __L_24
+__L_25:
+    jmp __L_32
+__L_32:
     mov r11,qword [rbp - 136]
     mov r11,qword [rbp - 136]
     inc r11
     mov qword [rbp - 136],r11
-    jmp __L_22
-__L_23:
+    jmp __L_21
+__L_22:
     mov rdi,qword [rbp - 104]
     call _toStringHex
     mov rdi,rax
@@ -610,8 +572,8 @@ __L_23:
     mov rdi,__str_3
     call println
     mov rax,0
-    jmp __L_34
-__L_34:
+    jmp __L_33
+__L_33:
     mov r12,qword [rbp - 8]
     mov r13,qword [rbp - 16]
     mov r15,qword [rbp - 24]
