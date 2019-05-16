@@ -37,6 +37,8 @@ public class Main {
         IRBuilder irbuilder=new IRBuilder();
         irbuilder.getIR(root);
         IRRoot irroot=irbuilder.irroot;
+        DPSolver dpsolver=new DPSolver();
+        dpsolver.run(irroot);
         //System.out.println("-----------START PRINT-----------------");
         //irroot.accept(new IRPrinter(out));
         //System.out.println("-----------END PRINT-----------------");

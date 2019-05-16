@@ -37,9 +37,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
-    public int fibo=0;
-    public int sort=0;
-    public int cr=0;
     @Override public VariableDefNode visitVariableDefine(MxStarParser.VariableDefineContext ctx) {
         VariableDefNode u=new VariableDefNode();
         u.name=ctx.name.getText();
@@ -55,11 +52,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
-    public int isok=0;
-    public int jg=0;
-    public int register=0;
-    public int use=0;
-    public int fuck=0;
     @Override public ClassDefNode visitClassPart(MxStarParser.ClassPartContext ctx) {
         ClassDefNode u=new ClassDefNode();
         u.name=ctx.name.getText();
@@ -189,7 +181,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         if(ctx.stmt().size()==2)u.elsestmt=(StmtNode)visit(ctx.stmt(1));
         return u;
     }
-    public int sum=0;
     /**
      * {@inheritDoc}
      *
@@ -326,7 +317,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         // System.out.println("<StringLiteralNode> name="+u.name);
         u.loc=new Location(ctx.start);
         u.type=new StringType();
-        if(u.name.equals("p cnf "))register=1;
         return u;
     }
     /**
@@ -429,9 +419,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         u.loc=new Location(ctx.start);
         return u;
     }
-    public int cost=0;
-    public int num233=0;
-    public int num7=0;
     /**
      * {@inheritDoc}
      *
@@ -446,15 +433,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         u.name=ctx.name.getText();
         //   System.out.println("<VariableNode> name="+u.name);
         u.loc=new Location(ctx.start);
-        if(u.name.equals("g_useless"))use=use+1;
-        if(u.name.equals("fibo"))fibo=fibo|1;
-        if(u.name.equals("sort"))sort++;
-        if(u.name.equals("sum"))sum++;
-        if(u.name.equals("a10"))cr=cr|4;
-        if(u.name.equals("b10"))cr=cr|8;
-        if(u.name.equals("h"))numh++;
-        if(u.name.equals("sum"))numsum++;
-        if(u.name.equals("a"))numa++;
         return u;
     }
     /**
@@ -471,24 +449,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         //  System.out.println("<IntLiteralNode> name="+u.name);
         u.type=new IntType();
         u.loc=new Location(ctx.start);
-        if(u.name.equals("89999999"))isok=isok|2;
-        if(u.name.equals("90000000"))isok=isok|1;
-        if(u.name.equals("32767"))jg=jg|1;
-        if(u.name.equals("65535"))jg=jg|2;
-        if(u.name.equals("6324"))use=-100;
-        if(u.name.equals("100000000"))fuck=fuck|1;
-        if(u.name.equals("789"))fuck=fuck|2;
-        if(u.name.equals("30"))fibo=fibo|2;
-        if(u.name.equals("100000000"))cost=cost|1;
-        if(u.name.equals("3100"))cost=cost|2;
-        if(u.name.equals("99"))bol=bol|1;
-        if(u.name.equals("100"))bol=bol|2;
-        if(u.name.equals("101"))bol=bol|4;
-        if(u.name.equals("102"))bol=bol|8;
-        if(u.name.equals("10000000"))cr=cr|1;
-        if(u.name.equals("32767"))cr=cr|2;
-        if(u.name.equals("233"))num233++;
-        if(u.name.equals("7"))num7++;
         return u;
     }
     /**
@@ -521,115 +481,6 @@ public class ASTBuilder extends MxStarBaseVisitor<Node> {
         return u;
     }
     public boolean Judge() throws Exception{
-
-        if(isok==3) {
-            File file = new File("lib/ex.asm");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
-        if(jg==3){
-            File file = new File("lib/ex2");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
-        if(register==1){
-            File file = new File("lib/ex3");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
-        if(use>=1){
-            File file = new File("lib/ex4");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
-        if(fuck==3){
-            File file = new File("lib/ex5");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
-        if(fibo==3){
-            File file = new File("lib/fibo");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
-        if(sort==3){
-            File file = new File("lib/sort");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
-        if(cr==15){
-            File file = new File("lib/cr");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
-        if(num233==56&&num7==55){
-            File file = new File("lib/dpop");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
-        if(numh==3&&numsum==3&&numa==6){
-            File file = new File("lib/dph");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
-        /*if(sum==8){
-            File file = new File("lib/sum");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }*/
-        if(cost==3){
-            File file = new File("lib/cost");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            return true;
-        }
         return false;
     }
     /**
